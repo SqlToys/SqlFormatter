@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 307   17-12-18 1:09 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 308   17-12-23 19:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1535,12 +1535,18 @@ begin
   end;
 
   { adds sort order }
-  if Options[ gtstSortShort ] then begin
-    if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending) then AddStr(gtkwDesc) else
-    if((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and not Options[ gtstSkipAscending ] then AddStr(gtkwAsc);
-  end else begin
-    if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending)then AddStr(gtkwDescending) else
-    if((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and not Options[ gtstSkipAscending ] then AddStr(gtkwAscending);
+  if Assigned(aNode.Owner) then begin
+      if (aNode.Owner.Kind = gtsiExprList) and (aNode.Owner.Keyword = gtkwOrder_By) then begin
+
+        if Options[ gtstSortShort ] then begin
+          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending) then AddStr(gtkwDesc) else
+          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAsc);
+        end else begin
+          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending)then AddStr(gtkwDescending) else
+          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAscending);
+        end;
+
+      end;
   end;
 
 //  AddStr(aNode.SortOrder);
