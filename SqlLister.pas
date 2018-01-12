@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 308   17-12-23 19:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 309   18-01-08 9:37 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -33,7 +33,7 @@ type
 
   TGtSqlListerOptions      =( gtloTextOnly, gtloSkipOneExprOnLine, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine,
                               gtloTableConstraint, gtloAlterTableConstraint,
-                              gtloSameAsPrevClause, gtloCondLeftSideOrder, gtloCondEqualSwap,
+                              gtloSameAsPrevClause, gtloCondLeftSideOrderREMOVED, gtloCondEqualSwap,
                               gtloSingleColumn, gtloOnLeftSideIntend, gtloOnRightSideIntend, gtloExprAliasIntend,
                               gtloSkipFrom
                             );
@@ -41,13 +41,16 @@ type
 
 type
   // uwaga na kolejnosc w tabeli wartosci domyslnych.
-  TGtListerCaseSettings =( gtlcTable, gtlcColumn, gtlcTableAlias, gtlcColumnAlias, gtlcParameter, gtlcIdentifier, gtlcKeyword, gtlcColumnQuotedAlias, gtlcFunction );
+  TGtListerCaseSettings =( gtlcTableCONVERTER, gtlcColumnCONVERTER, gtlcTableAliasCONVERTER
+                         , gtlcColumnAliasCONVERTER, gtlcParameterCONVERTER
+                         , gtlcIdentifierCONVERTER, gtlcKeyword
+                         , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
 
   TGtListerSettings = (gtstRightIntend, gtstLineAfterQuery,
                        gtstSpaceBeforeComma, gtstSpaceBeforeSemicolon,
                        gtstEmptyLineBeforeClause, gtstUpperKeywordsREMOVED,
-                       gtstExprAsKeyword, gtstTableAsKeyword, gtstColumnConstraint,
-                       gtstOuterJoin, gtstSortShort, gtstSkipAscending,
+                       gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraint,
+                       gtstOuterJoinCONVERTER, gtstSortShortCONVERTER, gtstSkipAscendingCONVERTER,
                        gtstOneExprOnLine, gtstOneCondOnLine,
                        gtstEmptyLineAroundUnion,
                        gtstSpaceOutsideBrackets, gtstSpaceInsideBrackets,
@@ -56,15 +59,18 @@ type
                        gtstCaseWhenAtNewLine, gtstCaseThenAtNewLine,
                        gtstCaseElseAtNewLine, gtstCaseEndAtNewLine,
                        gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLine,
-                       gtstNoSemicolonOnSingleQuery, gtstInnerJoin,
+                       gtstNoSemicolonOnSingleQuery, gtstInnerJoinCONVERTER,
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
                        gtstSpaceInsideBracketsSkipFun,
-                       gtstCreateTable_ColConsNewLineAfter, gtstJoinCondLeftSideOrder,
+                       gtstCreateTable_ColConsNewLineAfter, gtstJoinCondLeftSideOrderCONVERTER,
                        gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
                        gtstEmptyLineBeforeClauseSkipSubquery, gtstOnCondIntend,
                        gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShort,
-                       gtstOnCondRefsFirst, gtstExtQueryKeywordStyle, gtstLinesNoAfterQuery
+                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyle, gtstLinesNoAfterQuery
   );
+
+  TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
+  TGtListerSettingsArray = array [ TGtListerSettings ] of Boolean;
 
 {-------------------------------- Lister State --------------------------------}
 
@@ -130,8 +136,9 @@ type
     FormattingMode: TGtSqlFormattingOption;
     MaxIdentifierLen: Integer;        // max length of any identifier
 
-    Options: array [ TGtListerSettings ] of Boolean;
-    CaseOpt: array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
+    Options: TGtListerSettingsArray;
+//  CaseOpt: array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
+    CaseOpt: TGtListerCaseSettingsArray;
 
     //Dialect: TGtSqlDialect;
 
@@ -309,6 +316,10 @@ const
   gtRtfNewLine = '\par ';
   gtRtfNewLine_trim = '\par';
 
+{----------------------------------- General ----------------------------------}
+
+function UpperLowerStr(aStr: String; aCase: TGtSqlCaseOption = gtcoNoChange): String;
+
 implementation
 
 uses SysUtils, GtStandard;
@@ -350,8 +361,8 @@ begin
   CaseOpt[ gtlcKeyword ] := gtcoUpperCase;
   // Options[ gtstUpperKeywords    ] := True;
   Options[ gtstColumnConstraint ] := True;
-  Options[ gtstSortShort        ] := True;
-  Options[ gtstSkipAscending    ] := True;
+  Options[ gtstSortShortCONVERTER ] := True;
+  Options[ gtstSkipAscendingCONVERTER ] := True;
 
   MaxIdentifierLen := 30;
 end;
@@ -654,23 +665,23 @@ begin
   if aStr = '' then Exit;
 
   { optional upper/lower/nochange case }
-  case aStyle of
-    gtlsTable       : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcTable ]);
-    gtlsColumn      : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumn ]);
-    gtlsTableAlias  : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcTableAlias ]);
-    gtlsColumnAlias : if Copy(aStr,1,1) = '"'
-                        then aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumnQuotedAlias ])
-                        else aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumnAlias ]);
-    gtlsParameter   : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcParameter ]);
-    gtlsFunction,
-    gtlsAggrFunction: aStr := UpperLowerStr(aStr, CaseOpt[ gtlcFunction ]);
-    gtlsConstraint,
-    gtlsSynonym,
-    gtlsTransaction,
-    gtlsIdentifier  : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcIdentifier ]);
-    gtlsDatatype .. gtlsPrior,
-    gtlsKeyword     : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcKeyword ]);
-  end;
+//case aStyle of
+//  gtlsTable       : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcTable ]);
+//  gtlsColumn      : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumn ]);
+//  gtlsTableAlias  : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcTableAlias ]);
+//  gtlsColumnAlias : if Copy(aStr,1,1) = '"'
+//                      then aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumnQuotedAlias ])
+//                      else aStr := UpperLowerStr(aStr, CaseOpt[ gtlcColumnAlias ]);
+//  gtlsParameter   : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcParameter ]);
+//  gtlsFunction,
+//  gtlsAggrFunction: aStr := UpperLowerStr(aStr, CaseOpt[ gtlcFunction ]);
+//  gtlsConstraint,
+//  gtlsSynonym,
+//  gtlsTransaction,
+//  gtlsIdentifier  : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcIdentifier ]);
+//  gtlsDatatype .. gtlsPrior,
+//  gtlsKeyword     : aStr := UpperLowerStr(aStr, CaseOpt[ gtlcKeyword ]);
+//end;
 
   if (aStyle = gtlsOperator) then begin
     { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siê do identyfikatora }
@@ -1414,7 +1425,7 @@ procedure TGtSqlFormatLister.List_ExprColumn;
           if lTabClause[i].Check(gtsiTableRef) or lTabClause[i].Check(gtsiDml, gtkwSelect) then begin
             if AnsiUpperCase(lTabClause[i].AliasName) = AnsiUpperCase(aColumnPrefix) then begin
               if lQuery = aNode.GetQuery then Result := gtlsTableAlias else Result := gtlsExtQueryAliasOrTable;
-              if CaseOpt[ gtlcTableAlias ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].AliasName;
+//            if CaseOpt[ gtlcTableAlias ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].AliasName;
 
               Exit;
             end else
@@ -1422,7 +1433,7 @@ procedure TGtSqlFormatLister.List_ExprColumn;
                // column prefix is a full-part of an table name ie. lejek_projekt.numer for drk.lejek_projekt
                (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].AliasName = '') then begin
               if lQuery = aNode.GetQuery then Result := gtlsTable else Result := gtlsExtQueryAliasOrTable;
-              if CaseOpt[ gtlcTable ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].Name;
+//            if CaseOpt[ gtlcTable ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].Name;
 
               Exit;
             end;
@@ -1513,7 +1524,7 @@ begin
          aNode[i].Check(gtsiExpr, gttkIdentifier) or aNode[i].Check(gtsiExpr, gttkParameterName) or
          aNode[i].Check(gtsiExpr, gttkColumnName) or aNode[i].Check(gtsiExpr, gttkStar)
         then List(aNode[i], aListerOpt)
-        else List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrder, gtloOnRightSideIntend]);
+        else List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED, gtloOnRightSideIntend]);
     end;
 
   AddRightBracket(aNode.BracketsCount);
@@ -1525,8 +1536,8 @@ begin
     if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
       then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
 
-    if Options[ gtstExprAsKeyword ] then AddStr(gtkwAs) else AddSpace;
-//    if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
+//    if Options[ gtstExprAsKeyword ] then AddStr(gtkwAs) else AddSpace;
+    if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
 
     if gtloExprAliasIntend in aListerOpt
       then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
@@ -1535,21 +1546,20 @@ begin
   end;
 
   { adds sort order }
-  if Assigned(aNode.Owner) then begin
-      if (aNode.Owner.Kind = gtsiExprList) and (aNode.Owner.Keyword = gtkwOrder_By) then begin
-
-        if Options[ gtstSortShort ] then begin
-          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending) then AddStr(gtkwDesc) else
-          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAsc);
-        end else begin
-          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending)then AddStr(gtkwDescending) else
-          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAscending);
-        end;
-
-      end;
-  end;
-
-//  AddStr(aNode.SortOrder);
+  AddStr(aNode.SortOrder);
+//  if Assigned(aNode.Owner) then begin
+//      if (aNode.Owner.Kind = gtsiExprList) and (aNode.Owner.Keyword = gtkwOrder_By) then begin
+//
+//        if Options[ gtstSortShort ] then begin
+//          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending) then AddStr(gtkwDesc) else
+//          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAsc);
+//        end else begin
+//          if(aNode.SortOrder = gtkwDesc)or(aNode.SortOrder = gtkwDescending)then AddStr(gtkwDescending) else
+//          if{((aNode.SortOrder = gtkwAsc)or(aNode.SortOrder = gtkwAscending)) and} not Options[ gtstSkipAscending ] then AddStr(gtkwAscending);
+//        end;
+//
+//      end;
+//  end;
 
   { BNF: NULLS FIRST | NULLS LAST }
   if aNode.NullsFirst then AddStr(gtkwNulls_First) else
@@ -1734,17 +1744,17 @@ begin
           else AddStr(aNode.LogicOp);
       end;
 
-      if not b then begin
-        { first condition }
-        if (gtloCondLeftSideOrder in aListerOpt) and (aNode[i].CompOp = gttkEqual) and (aNode[i].Count = 2)
-        and aNode[i][1].ExprHasReferenceTo(aNode.OwnerTableNameOrAlias)
-        and not aNode[i][0].ExprHasReferenceTo(aNode.OwnerTableNameOrAlias)
-          then List(aNode[i], aListerOpt + [gtloCondEqualSwap])
-          else List(aNode[i], aListerOpt - [gtloCondEqualSwap]);
-      end else begin
-        { next conditions }
-        List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrder, gtloOnRightSideIntend]);
-      end;
+//      if not b then begin
+//        { first condition }
+//        if (gtloCondLeftSideOrder in aListerOpt) and (aNode[i].CompOp = gttkEqual) and (aNode[i].Count = 2)
+//        and aNode[i][1].ExprHasReferenceTo(aNode.OwnerTableNameOrAlias)
+//        and not aNode[i][0].ExprHasReferenceTo(aNode.OwnerTableNameOrAlias)
+//          then List(aNode[i], aListerOpt + [gtloCondEqualSwap])
+//          else List(aNode[i], aListerOpt - [gtloCondEqualSwap]);
+//      end else begin
+//        { next conditions }
+        List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED, gtloOnRightSideIntend]);
+//      end;
 
       b := True;
     end;
@@ -2050,8 +2060,8 @@ begin
 
     { query alias }
     if aNode.AliasName <> '' then begin
-      if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
-    //if aNode.AliasAsToken then AddStr(gtkwAs);
+    //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
+      if aNode.AliasAsToken then AddStr(gtkwAs);
       AddStr(aNode.AliasName, gtlsTableAlias);
     end;
   end else begin
@@ -2064,12 +2074,12 @@ begin
 
     { table alias, +1 because of identifier extra space }
     if not lDoIntend then begin
-      if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
-    //if aNode.AliasAsToken then AddStr(gtkwAs);
+    //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
+      if aNode.AliasAsToken then AddStr(gtkwAs);
       AddStr(aNode.AliasName, gtlsTableAlias);
     end else begin
-      if Options[ gtstTableAsKeyword ] then begin
-    //if aNode.AliasAsToken then begin
+    //if Options[ gtstTableAsKeyword ] then begin
+      if aNode.AliasAsToken then begin
         AddSpace(ML_TableName + 1 - Length(aNode.Name));
         if aNode.AliasName = '' then AddSpace(3) else AddStr(gtkwAs);
         AddSpace(ML_AliasName + 1 - Length(aNode.AliasName));
@@ -2832,14 +2842,14 @@ begin
 
   if aNode.Check(gtsiCondTree, gtkwOn) then AddStr(gtkwOn) else AddStr(gtkwUsing);
 
-  if Options[gtstJoinCondLeftSideOrder] then aListerOpt := aListerOpt + [gtloCondLeftSideOrder];
+//  if Options[gtstJoinCondLeftSideOrder] then aListerOpt := aListerOpt + [gtloCondLeftSideOrder];
   if Options[gtstOnCondIntend] then aListerOpt := aListerOpt + [gtloOnLeftSideIntend, gtloOnRightSideIntend];
 
-  if Options[gtstOnCondRefsFirst] then begin
-    if aNode.Owner.AliasName <> ''
-      then aNode.OnCondMoveRefsFirst(aNode.Owner.AliasName)
-      else aNode.OnCondMoveRefsFirst(aNode.Owner.Name);
-  end;
+//  if Options[gtstOnCondRefsFirst] then begin
+//    if aNode.Owner.AliasName <> ''
+//      then aNode.OnCondMoveRefsFirst(aNode.Owner.AliasName)
+//      else aNode.OnCondMoveRefsFirst(aNode.Owner.Name);
+//  end;
 
   List_CondTree(aNode, aListerOpt + [gtloSkipOneCondOnLine]);
 end;
