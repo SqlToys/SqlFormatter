@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 24    17-12-16 19:57 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 25    18-01-14 11:21 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -30,7 +30,7 @@ const
   { editor }
   YA_SET_KEY_TAB_MAX_LEN            : String = YA_SETTINGS_KEY + 'TableMaxLen';
   YA_SET_KEY_ALIAS_MAX_LEN          : String = YA_SETTINGS_KEY + 'AliasMaxLen';
-  YA_SET_KEY_SET_MAX_LEN            : String = YA_SETTINGS_KEY + 'SetMaxLen';
+//YA_SET_KEY_SET_MAX_LEN            : String = YA_SETTINGS_KEY + 'SetMaxLen';
   YA_SET_KEY_COL_MAX_LEN            : String = YA_SETTINGS_KEY + 'ColumnMaxLen';
   YA_SET_KEY_TYPE_MAX_LEN           : String = YA_SETTINGS_KEY + 'DatatypeMaxLen';
   YA_SET_KEY_SHORT_QUERY            : String = YA_SETTINGS_KEY + 'ShortQuery';
@@ -456,7 +456,7 @@ begin
     aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
     aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
 
-    aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
+  //aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
 
     aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
     aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));

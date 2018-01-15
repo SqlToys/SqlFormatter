@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 309   18-01-08 9:37 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 311   18-01-14 11:21 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -46,7 +46,7 @@ type
                          , gtlcIdentifierCONVERTER, gtlcKeyword
                          , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
 
-  TGtListerSettings = (gtstRightIntend, gtstLineAfterQuery,
+  TGtListerSettings = (gtstRightIntend, gtstLineAfterQueryREMOVED,
                        gtstSpaceBeforeComma, gtstSpaceBeforeSemicolon,
                        gtstEmptyLineBeforeClause, gtstUpperKeywordsREMOVED,
                        gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraint,
@@ -137,7 +137,6 @@ type
     MaxIdentifierLen: Integer;        // max length of any identifier
 
     Options: TGtListerSettingsArray;
-//  CaseOpt: array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
     CaseOpt: TGtListerCaseSettingsArray;
 
     //Dialect: TGtSqlDialect;
@@ -184,7 +183,7 @@ type
     SubQueryIntend: Boolean;
     SubQueryIntendSpace: Integer;     // >0 -> yes | =0 -> no
 
-    MaxSetLeftExprToIntend,           // max length of set expr left side to be intended
+//  MaxSetLeftExprToIntend,           // max length of set expr left side to be intended
     MaxTableNameToIntend,             // max length of table name to be intended
     MaxAliasNameToIntend,             // max length of table alias to be intended
     MaxColumnNameToIntend,            // max length of column name to be intended
@@ -919,7 +918,7 @@ begin
   ML_RightOnExprColumn := 0;
   ML_ExprAlias := 0;
 
-  MaxSetLeftExprToIntend := 20;
+//MaxSetLeftExprToIntend := 20;
   MaxTableNameToIntend := 30;
   MaxAliasNameToIntend := 10;
   MaxColumnNameToIntend := 20;
@@ -1621,7 +1620,7 @@ begin
 
     for i := 0 to aNode.Count - 1 do begin
       lCol := aNode[i].Find(gtsiExpr, gttkColumnName);
-      if Assigned(lCol) and (Length(lCol.Name) < MaxSetLeftExprToIntend)
+      if Assigned(lCol) and (Length(lCol.Name) < MaxColumnNameToIntend) //MaxSetLeftExprToIntend)
                         and (Length(lCol.Name) > ML_SetExpr_LeftSide)
         then ML_SetExpr_LeftSide := Length(lCol.Name);
     end;
@@ -3217,7 +3216,7 @@ begin
       end;
       SkipSemicolonAfterThisQuery := False;
 
-      if Options[ gtstLineAfterQuery ]
+      if LinesNoAfterQuery > 0
         then AddEmptyLine( IntIf(Options[gtstLinesNoAfterQuery], LinesNoAfterQuery, -1) )
         else AddCurrLine;
 
