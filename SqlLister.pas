@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 311   18-01-14 11:21 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 312   18-01-28 17:44 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -48,11 +48,11 @@ type
 
   TGtListerSettings = (gtstRightIntend, gtstLineAfterQueryREMOVED,
                        gtstSpaceBeforeComma, gtstSpaceBeforeSemicolon,
-                       gtstEmptyLineBeforeClause, gtstUpperKeywordsREMOVED,
+                       gtstEmptyLineBeforeClauseREMOVED, gtstUpperKeywordsREMOVED,
                        gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraint,
                        gtstOuterJoinCONVERTER, gtstSortShortCONVERTER, gtstSkipAscendingCONVERTER,
                        gtstOneExprOnLine, gtstOneCondOnLine,
-                       gtstEmptyLineAroundUnion,
+                       gtstEmptyLineAroundUnionREMOVED,
                        gtstSpaceOutsideBrackets, gtstSpaceInsideBrackets,
                        gtstSpaceAroundOperator, gtstSpaceAfterComma, gtstCommaAtNewLine,
                        gtstCaseAtNewLine,
@@ -66,7 +66,7 @@ type
                        gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
                        gtstEmptyLineBeforeClauseSkipSubquery, gtstOnCondIntend,
                        gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShort,
-                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyle, gtstLinesNoAfterQuery
+                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQuery
   );
 
   TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
@@ -981,7 +981,7 @@ begin
               (aClause <> gtkwBegin) and (aClause <> gtkwEnd);
 
   { aRemoveClauseBodySpace (OLD: add clause back) - bez nowego wiersza np. column subquery w SELECT }
-  if aRemoveClauseBodySpace and (Trim(RawText) = ',') and ClauseIntend and not aAppend 
+  if aRemoveClauseBodySpace and (Trim(RawText) = ',') and ClauseIntend and not aAppend
   and Assigned(aIntendToken) and (not Assigned(aClause) or (aClause = gttkNone)) then begin
     RemSpace(ClauseBodySpace);
     AddIntendToken;
@@ -995,14 +995,15 @@ begin
   if ClauseIntend and not aAppend and (Trim(RawText) <> '') {and not SkipClauseNewLine} then AddCurrLine;
 
   { empty line before clause }
-  if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and not FirstClause and {not LastLineEmpty and}
-   ((SubQueryLevel = 0) or
-    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
-       ((aClause = gtkwSelect) or
-        (aClause = gtkwFrom) or (aClause = gtkwWhere) or (aClause = gtkwGroup_By) or
-        (aClause = gtkwHaving) or (aClause = gtkwOrder_By) or (aClause = gtkwConnect_By) or
-        (aClause = gtkwSet) or (aClause = gtkwValues))
-    then AddEmptyLine;
+//if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and not FirstClause and {not LastLineEmpty and}
+//  if aEmptyLineBeforeClause and not SkipClauseNewLine and not FirstClause and {not LastLineEmpty and}
+//   ((SubQueryLevel = 0) or
+//    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
+//       ((aClause = gtkwSelect) or
+//        (aClause = gtkwFrom) or (aClause = gtkwWhere) or (aClause = gtkwGroup_By) or
+//        (aClause = gtkwHaving) or (aClause = gtkwOrder_By) or (aClause = gtkwConnect_By) or
+//        (aClause = gtkwSet) or (aClause = gtkwValues))
+//    then AddEmptyLine;
 
   FirstClause := False;
 
@@ -2676,6 +2677,8 @@ procedure TGtSqlFormatLister.List_Clause_Expr;
 begin
   if not Assigned(aNode) then Exit;
 
+  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+
   AddClause(aClauseToken, aClauseAppend);
 
   List_ExprList(aNode, aListerOpt);
@@ -2685,6 +2688,8 @@ end;
 procedure TGtSqlFormatLister.List_Clause_Cond;
 begin
   if not Assigned(aNode) then Exit;
+
+  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
 
   AddClause(aClauseToken, aClauseAppend);
 
@@ -2745,10 +2750,11 @@ begin
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
   { add new line before clause }
-  if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and
-   ((SubQueryLevel = 0) or
-    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
-     aNode.GetQuery.Owner.Check(gtsiDml, gtkwInsert)
+//if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and
+  if aNode.EmptyLineBefore and not SkipClauseNewLine //and
+//   ((SubQueryLevel = 0) or
+//    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
+//     aNode.GetQuery.Owner.Check(gtsiDml, gtkwInsert)
     then AddEmptyLine;
 
   AddClause(gtkwSelect, ClauseAppendCondition);
@@ -2809,7 +2815,8 @@ begin
   { commit not commited text }
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
-  if Options[gtstEmptyLineBeforeClause] and Options[gtstEmptyLineAroundUnion] then AddCurrLine;
+//if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
+  if aNode.EmptyLineBefore then AddCurrLine;
 
   lSkipClauseNewLine := SkipClauseNewLine;
   SkipClauseNewLine := True;
@@ -2827,7 +2834,8 @@ begin
   { commit not commited text }
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
-  if Options[gtstEmptyLineBeforeClause] and Options[gtstEmptyLineAroundUnion] then AddCurrLine;
+//if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
+  if aNode.EmptyLineAfter then AddCurrLine;
 
   FirstClause := True;
 
@@ -2883,6 +2891,8 @@ var i, lMaxTableName, lMaxAliasName, lMaxTableAndAliasName,
     lItem: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
+
+  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
 
   lMaxTableName         := ML_TableName;
   lMaxAliasName         := ML_AliasName;
@@ -2951,12 +2961,12 @@ begin
   if aQuery.IsSubQuery then Inc(SubQueryLevel);
 
   lKeywordStyle := FKeywordStyle;
-  if (FKeywordStyle = gtlsKeyword) or not Options[gtstExtQueryKeywordStyle] then begin
-    if aQuery.Check(gtsiDml, gtkwSelect)  then FKeywordStyle := gtlsDmlSelect else
-    if aQuery.Check(gtsiDml, gtkwInsert)  then FKeywordStyle := gtlsDmlInsert else
-    if aQuery.Check(gtsiDml, gtkwUpdate)  then FKeywordStyle := gtlsDmlUpdate else
-    if aQuery.Check(gtsiDml, gtkwDelete)  then FKeywordStyle := gtlsDmlDelete;
-  end;
+//  if (FKeywordStyle = gtlsKeyword) or not Options[gtstExtQueryKeywordStyle] then begin
+//    if aQuery.Check(gtsiDml, gtkwSelect)  then FKeywordStyle := gtlsDmlSelect else
+//    if aQuery.Check(gtsiDml, gtkwInsert)  then FKeywordStyle := gtlsDmlInsert else
+//    if aQuery.Check(gtsiDml, gtkwUpdate)  then FKeywordStyle := gtlsDmlUpdate else
+//    if aQuery.Check(gtsiDml, gtkwDelete)  then FKeywordStyle := gtlsDmlDelete;
+//  end;
 
   { subquery wrapper }
   if aQuery.IsSubQuery and not(aQuery.Owner.Check(gtsiUnions) or aQuery.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
@@ -3059,7 +3069,7 @@ begin
     lItem := aQuery.Find(gtsiExprList, gtkwOrder_By);
     if Assigned(lItem) then begin
       // odstêp identyczny jak dla UNION
-      if Options[ gtstEmptyLineAroundUnion ] and Assigned(aQuery.Find{ByKind} (gtsiUnions)) then AddEmptyLine;
+//      if Options[ gtstEmptyLineAroundUnion ] and Assigned(aQuery.Find{ByKind} (gtsiUnions)) then AddEmptyLine;
 
       List_Clause_Expr(lItem, aListerOpt, gtkwOrder_By, ClauseAppendCondition);
     end;
