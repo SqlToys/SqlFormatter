@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 312   18-01-28 17:44 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 313   18-02-10 13:20 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -66,7 +66,7 @@ type
                        gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
                        gtstEmptyLineBeforeClauseSkipSubquery, gtstOnCondIntend,
                        gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShort,
-                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQuery
+                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
   );
 
   TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
@@ -944,6 +944,7 @@ begin
   end;
 
   inherited AddCurrLine;
+  LastEmptyLines := 0;
 
   AddSpace(NewLineIntend);
 end;
@@ -3226,9 +3227,10 @@ begin
       end;
       SkipSemicolonAfterThisQuery := False;
 
-      if LinesNoAfterQuery > 0
-        then AddEmptyLine( IntIf(Options[gtstLinesNoAfterQuery], LinesNoAfterQuery, -1) )
-        else AddCurrLine;
+      AddCurrLine;
+//      if LinesNoAfterQuery > 0
+//        then AddEmptyLine( IntIf(Options[gtstLinesNoAfterQuery], LinesNoAfterQuery, -1) )
+//        else AddCurrLine;
 
       SkipNextNewLine := False;
     end;

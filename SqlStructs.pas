@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 290   18-01-28 17:44 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 292   18-02-10 13:20 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -182,6 +182,8 @@ type
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;
     function        IsSubQuery: Boolean;
+    function        IsShortQuery: Boolean;
+    function        IsClauseKeyword: Boolean;
     function        GetExtQuery: TGtSqlNode;
     function        TablesCount: Integer;
 
@@ -690,6 +692,53 @@ begin
             not( (Owner is TGtSqlNode) and (Owner.FKind = gtsiUnions) and (lQuery.Owner.Name = 'Parsed Queries List')) and
             not( lQuery.Check(gtsiDml, gtkwInsert) and (Owner = lQuery) ) and
             not((lQuery.Check(gtsiDDL) and (lQuery.Check(gtsiDDL, gtkwCreate_View))));
+end;
+
+{ returns true if this query is a short query }
+function TGtSqlNode.IsShortQuery: Boolean;
+begin
+  Result := False; // True; // TEST ONLY !!!
+
+  if not Check(gtsiDml) then begin
+    if Assigned(Owner) then Result := Owner.IsShortQuery;
+    Exit;
+  end;
+
+//    lQueryLines := 0;
+
+//  if Check(gtsiDml, gtkwSelect) then CalcClauseLines(gtsiExprList, gtkwSelect,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtssClauseFields, nil {?},      10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect)   then  aQuery.CalcClauseLines(gtsiExprList, gtkwInto,       10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtsiExprList, gtkwValues,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwUpdate) then  aQuery.CalcClauseLines(gtsiSetExprList, nil, 10, True {???},                   lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwDelete) or aQuery.Check(gtsiDml, gtkwUpdate) then  begin
+//      aQuery.CalcClauseLines(gtsiClauseTables, gtkwFrom, 6, True {???}, lLongQuery, lQueryLines);
+//      lItem := aQuery.Find(gtsiClauseTables, gtkwFrom);
+//      if Assigned(lItem) then
+//        for i := 0 to lItem.Count - 1 do
+//          lItem[i].CalcClauseLines(gtsiCondTree, gtkwOn, 6, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    end;
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwWhere,              10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwConnect_By,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwStart_With,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwGroup_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwHaving,             10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwOrder_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//
+//    lLongQuery := lLongQuery or (lQueryLines > MaxShortQueryLines);
+end;
+
+{ returns true if node keyword is an clause keyword }
+function TGtSqlNode.IsClauseKeyword: Boolean;
+begin
+  Result := (Keyword = gtkwSelect) or (Keyword = gtkwFrom) or (Keyword = gtkwWhere) or
+            (Keyword = gtkwGroup_By) or (Keyword = gtkwHaving) or (Keyword = gtkwOrder_By) or
+            (Keyword = gtkwConnect_By) or (Keyword = gtkwStart_With) or
+            (Keyword = gtkwSet) or (Keyword = gtkwValues) ;
 end;
 
 { returns external query for this query, if it is a subquery }
