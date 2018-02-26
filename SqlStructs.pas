@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 292   18-02-10 13:20 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 293   18-02-11 18:42 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -67,7 +67,7 @@ type
   private
     FKind: TGtSqlNodeKind;
     FValues: TStringList;
-    FTokens: array [1..9] of TGtLexTokenDef;
+    FTokens: array [1..10] of TGtLexTokenDef;
 
     function        GetOwner_SqlNode: TGtSqlNode; //virtual;
     procedure       SetOwner_SqlNode(aOwner: TGtSqlNode); //virtual;
@@ -112,15 +112,16 @@ type
     property        Values: TStringList read FValues;
   public // function specific methods
     Nullable: TGtSqlNullableOption;
-    property        LogicOp   : TGtLexTokenDef index 1 read FTokens[1] write SetFTokens;
-    property        ExprOp    : TGtLexTokenDef index 2 read FTokens[2] write SetFTokens;
-    property        CompOp    : TGtLexTokenDef index 3 read FTokens[3] write SetFTokens;
-    property        JoinOp    : TGtLexTokenDef index 4 read FTokens[4] write SetFTokens;
+//  property        LogicOp   : TGtLexTokenDef index 1 read FTokens[1] write SetFTokens;
+//  property        ExprOp    : TGtLexTokenDef index 2 read FTokens[2] write SetFTokens;
+//  property        CompOp    : TGtLexTokenDef index 3 read FTokens[3] write SetFTokens;
+//  property        JoinOp    : TGtLexTokenDef index 4 read FTokens[4] write SetFTokens;
     property        DataType  : TGtLexTokenDef index 5 read FTokens[5] write SetFTokens;
     property        OnDelete  : TGtLexTokenDef index 6 read FTokens[6] write SetFTokens;
     property        OnUpdate  : TGtLexTokenDef index 7 read FTokens[7] write SetFTokens;
     property        SortOrder : TGtLexTokenDef index 8 read FTokens[8] write SetFTokens;
     property        Keyword   : TGtLexTokenDef index 9 read FTokens[9] write SetFTokens;
+    property        Operand   : TGtLexTokenDef index 10 read FTokens[10] write SetFTokens;
 
     property        OldName              : String index 101 read GetValStr write SetValStr;
     property        NewName              : String index 102 read GetValStr write SetValStr;
@@ -354,7 +355,7 @@ begin
 
   Nullable := gtopNullNotSpecified; //True; // TODO: database default value ??
 
-  for i := 1 to 9 do FTokens[i] := gttkNone;
+  for i := 1 to 10 do FTokens[i] := gttkNone;
 end;
 
 { class constructor }
@@ -837,7 +838,22 @@ begin
      (aIndex = 7) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
      (aIndex = 8) and ((aToken = gtkwAsc) or (aToken = gtkwDesc) or
                        (aToken = gtkwAscending) or (aToken = gtkwDescending)) or
-     (aIndex = 9)
+     (aIndex = 9) or
+     (aIndex = 10)and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot) or
+                       (aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
+                       (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent) or
+                       (aToken = gttkEqual) or (aToken = gttkLessThan) or (aToken = gttkGreaterThan) or
+                       (aToken = gttkLessEqual) or (aToken = gttkGreaterEqual) or
+                       (aToken = gttkNotEqual) or (aToken = gttkDiffer) or
+                       (aToken = gtkwBetween) or (aToken = gtkwNot_Between) or
+                       (aToken = gtkwIn) or (aToken = gtkwNot_In) or
+                       (aToken = gtkwLike) or (aToken = gtkwNot_Like) or
+                       (aToken = gtkwIs_Null) or (aToken = gtkwIs_Not_Null) or
+                       (aToken = gtkwExists) or (aToken = gtkwNot_Exists) or
+                       (aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
+                       (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
+                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma))
+
   then begin
     FTokens [aIndex] := aToken;
   end else begin
@@ -874,7 +890,7 @@ begin
   Result := False;
   if aColPrefix = '' then Exit;
   if not Check(gtsiCond) then Exit;
-  if (CompOp = gtkwExists) or (CompOp = gtkwNot_Exists) then Exit;
+  if ({CompOp} Operand = gtkwExists) or ({CompOp} Operand = gtkwNot_Exists) then Exit;
 
   lNode := Find(gtsiNone, nil, '1');
   if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
@@ -884,7 +900,7 @@ begin
   if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
   if Result then Exit;
 
-  if ((CompOp = gtkwBetween) or (CompOp = gtkwNot_Between)) then begin
+  if (({CompOp} Operand = gtkwBetween) or ({CompOp} Operand = gtkwNot_Between)) then begin
     lNode := Find(gtsiNone, nil, '3');
     if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
   end;

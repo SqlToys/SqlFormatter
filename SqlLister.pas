@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 313   18-02-10 13:20 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 315   18-02-11 18:42 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -64,8 +64,8 @@ type
                        gtstSpaceInsideBracketsSkipFun,
                        gtstCreateTable_ColConsNewLineAfter, gtstJoinCondLeftSideOrderCONVERTER,
                        gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
-                       gtstEmptyLineBeforeClauseSkipSubquery, gtstOnCondIntend,
-                       gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShort,
+                       gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntend,
+                       gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
                        gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
   );
 
@@ -1512,10 +1512,10 @@ begin
   for i := 0 to aNode.Count - 1 do
     if (aNode[i].Kind in [gtsiExpr, gtsiExprTree]) or aNode[i].Check(gtsiDml, gtkwSelect) then begin
       if i > 0 then begin
-        if (aNode[i].ExprReverseOp) and (aNode.ExprOp = gttkPlus) then AddStr(gttkMinus) else
-        if (aNode[i].ExprReverseOp) and (aNode.ExprOp = gttkStar) then AddStr(gttkSlash) else
-        if (aNode[i].ExprReverseOp2)and (aNode.ExprOp = gttkStar) then AddStr(gttkPercent)
-        else AddStr(aNode.ExprOp);
+        if (aNode[i].ExprReverseOp) and (aNode.{ExprOp} Operand = gttkPlus) then AddStr(gttkMinus) else
+        if (aNode[i].ExprReverseOp) and (aNode.{ExprOp} Operand = gttkStar) then AddStr(gttkSlash) else
+        if (aNode[i].ExprReverseOp2)and (aNode.{ExprOp} Operand = gttkStar) then AddStr(gttkPercent)
+        else AddStr(aNode.{ExprOp} Operand);
 
         aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
       end;
@@ -1652,14 +1652,14 @@ begin
   if aNode.Negation then AddStr(gtkwNot);
   AddLeftBracket(aNode.BracketsCount);
 
-  if (aNode.CompOp = gtkwExists) or (aNode.CompOp = gtkwNot_Exists) then begin
-    AddStr(aNode.CompOp);
+  if (aNode.{CompOp} Operand = gtkwExists) or (aNode.{CompOp} Operand = gtkwNot_Exists) then begin
+    AddStr(aNode.{CompOp} Operand);
     List(aNode.Find(gtsiDml, gtkwSelect), aListerOpt);
   end else
-  if (aNode.CompOp = gtkwIn) or (aNode.CompOp = gtkwNot_In) then begin
+  if (aNode.{CompOp} Operand = gtkwIn) or (aNode.{CompOp} Operand = gtkwNot_In) then begin
     List( aNode.Find(gtsiNone, nil, '1'), aListerOpt - [ gtloOnRightSideIntend ]);
 
-    AddStr(aNode.CompOp);
+    AddStr(aNode.{CompOp} Operand);
     AddSpace; // independent of space-outside-brackets !!
 
     lExpr := aNode.Find(gtsiNone, nil, '2');
@@ -1674,14 +1674,14 @@ begin
     end;
   end else begin
     { left expression }
-    if (gtloCondEqualSwap in aListerOpt) and (aNode.CompOp = gttkEqual)
+    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
       then lItem := aNode.Find(gtsiNone, nil, '2')
       else lItem := aNode.Find(gtsiNone, nil, '1');
 
     List(lItem, aListerOpt - [ gtloOnRightSideIntend ] );
 
     { operator }
-    if (aNode.CompOp = gttkEqual) then begin
+    if (aNode.{CompOp} Operand = gttkEqual) then begin
       if aNode.OuterMark1Oracle then begin
                            AddStr(gttkBracketPlusBracket);
                            AddStr(gttkEqual);
@@ -1690,27 +1690,27 @@ begin
         then AddStr(gttkStarEqual)
       else                 AddStr(gttkEqual);
     end else
-    if (aNode.CompOp = gtkwBetween) or (aNode.CompOp = gtkwNot_Between) or
-       (aNode.CompOp = gtkwLike) or (aNode.CompOp = gtkwNot_Like) or
-       (aNode.CompOp = gtkwIs_Null) or (aNode.CompOp = gtkwIs_Not_Null)
-      then AddStr(aNode.CompOp)
-      else AddStr(aNode.CompOp);
+    if (aNode.{CompOp} Operand = gtkwBetween) or (aNode.{CompOp} Operand = gtkwNot_Between) or
+       (aNode.{CompOp} Operand = gtkwLike) or (aNode.{CompOp} Operand = gtkwNot_Like) or
+       (aNode.{CompOp} Operand = gtkwIs_Null) or (aNode.{CompOp} Operand = gtkwIs_Not_Null)
+      then AddStr(aNode.{CompOp} Operand)
+      else AddStr(aNode.{CompOp} Operand);
 
     { right expression }
-    if aNode.OuterMark2MSSQL and (aNode.CompOp = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
-    if (gtloCondEqualSwap in aListerOpt) and (aNode.CompOp = gttkEqual)
+    if aNode.OuterMark2MSSQL and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
+    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
       then lItem := aNode.Find(gtsiNone, nil, '1')
       else lItem := aNode.Find(gtsiNone, nil, '2');
 
     List(lItem, aListerOpt - [gtloOnLeftSideIntend]);
-    if aNode.OuterMark2Oracle and (aNode.CompOp = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
+    if aNode.OuterMark2Oracle and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
 
     { additional expression }
-    if (aNode.CompOp = gtkwBetween) or (aNode.CompOp = gtkwNot_Between) then begin
+    if (aNode.{CompOp} Operand = gtkwBetween) or (aNode.{CompOp} Operand = gtkwNot_Between) then begin
       AddStr(gtkwAnd);
       List(aNode.Find(gtsiNone, nil, '3'), aListerOpt - [gtloOnLeftSideIntend, gtloOnRightSideIntend]);
     end else
-    if ((aNode.CompOp = gtkwLike) or (aNode.CompOp = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
+    if ((aNode.{CompOp} Operand = gtkwLike) or (aNode.{CompOp} Operand = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
       AddStr(gtkwEscape);
       AddStr(aNode.CondEscape, gtlsString);
     end;
@@ -1741,8 +1741,8 @@ begin
     if aNode[i].Check(gtsiCond) or aNode[i].Check(gtsiCondTree) then begin
       if b then begin
         if Options[ gtstOneCondOnLine ] and not (gtloSkipOneCondOnLine in aListerOpt)
-          then AddClause(aNode.LogicOp)
-          else AddStr(aNode.LogicOp);
+          then AddClause(aNode.{LogicOp} Operand)
+          else AddStr(aNode.{LogicOp} Operand);
       end;
 
 //      if not b then begin
@@ -2032,15 +2032,15 @@ var lSubQuery: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.JoinOp = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
+  if (aNode.{JoinOp} Operand = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
     then AddClause(gtkwUpdate, ClauseAppendCondition)
     else
-  if (aNode.JoinOp = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
+  if (aNode.{JoinOp} Operand = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
     if aNode.GetQuery.OrReplace
       then AddClause( gtkwInsert_Or_Replace_Into, ClauseAppendCondition )
       else AddClause( gtkwInsert_Into, ClauseAppendCondition);
   end else
-  if (aNode.JoinOp = gttkComma) then begin
+  if (aNode.{JoinOp} Operand = gttkComma) then begin
     if not Options[ gtstCommaAtNewLine ] then begin
       AddComma;
       AddClause(nil, ClauseAppendCondition);
@@ -2048,9 +2048,9 @@ begin
       AddClause(gttkComma, ClauseAppendCondition);
     end;
   end else
-  if (aNode.JoinOp = gtkwFrom) and (gtloSkipFrom in aListerOpt)
+  if (aNode.{JoinOp} Operand = gtkwFrom) and (gtloSkipFrom in aListerOpt)
     then
-    else AddClause( JoinOperatorToToken( aNode.JoinOp , aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ),
+    else AddClause( JoinOperatorToToken( aNode.{JoinOp} Operand , aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ),
                     ClauseAppendCondition );
 
   { table name or query }
@@ -2101,8 +2101,8 @@ begin
   end;
 
   { join condition }
-  if (aNode.JoinOp = gtkwInner) or (aNode.JoinOp = gtkwLeft) or
-     (aNode.JoinOp = gtkwRight) or (aNode.JoinOp = gtkwFull) then begin
+  if (aNode.{JoinOp} Operand = gtkwInner) or (aNode.{JoinOp} Operand = gtkwLeft) or
+     (aNode.{JoinOp} Operand = gtkwRight) or (aNode.{JoinOp} Operand = gtkwFull) then begin
 
     List(aNode.Find(gtsiCondTree, gtkwOn), {lTreeNode,} aListerOpt);
     List(aNode.Find(gtsiCondTree, gtkwUsing), {lTreeNode,} aListerOpt);
@@ -2949,8 +2949,8 @@ end;
 
 { lists DML statement }
 procedure TGtSqlFormatLister.List_DML;
-var i, lIntend, lQueryLines: Integer;
-    lSkipClauseNewLine, lLongQuery: Boolean;
+var lIntend{, i, lQueryLines}: Integer;
+    lSkipClauseNewLine{, lLongQuery}: Boolean;
     lKeywordStyle: TGtLexTokenStyle;
     lItem: TGtSqlNode;
 begin
@@ -2972,8 +2972,8 @@ begin
   { subquery wrapper }
   if aQuery.IsSubQuery and not(aQuery.Owner.Check(gtsiUnions) or aQuery.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
-    if (aQuery.JoinOp = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
-      AddClause( JoinOperatorToToken( aQuery.JoinOp ),
+    if (aQuery.{JoinOp} Operand = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
+      AddClause( JoinOperatorToToken( aQuery.{JoinOp} Operand ),
                  gttkLeftBracket,
                  ClauseAppendCondition,
                  aQuery.Owner.Check(gtsiExprTree) or aQuery.Owner.Check(gtsiCond) or aQuery.Owner.Check(gtsiCondTree));
@@ -2989,44 +2989,46 @@ begin
 
     AddSpace;
     if SubQueryIntendSpace > 0 then AddSpace(SubQueryIntendSpace);
-    SkipNextNewLine := True; //not SubQueryNewLine;
+    SkipNextNewLine := False; { chyba tak ju¿ ma teraz byæ }
+//  SkipNextNewLine := True; //not SubQueryNewLine;
     if SubQueryIntend then NewLineIntend := Length(RawText);
 
-    SkipClauseNewLine := Options [ gtstEmptyLineBeforeClauseSkipSubquery ];
+    SkipClauseNewLine := False;
+//  SkipClauseNewLine := Options [ gtstEmptyLineBeforeClauseSkipSubquery ];
   end;
   aListerOpt := aListerOpt - [gtloSkipFrom];
 
   { calculate query lines no }
-  if Options [ gtstEmptyLineBeforeClauseSkipShort ] {and not SkipClauseNewLine} then begin
-    lLongQuery := False;
-    lQueryLines := 0;
-
-    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwSelect,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtssClauseFields, nil {?},      10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect)   then  aQuery.CalcClauseLines(gtsiExprList, gtkwInto,       10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtsiExprList, gtkwValues,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwUpdate) then  aQuery.CalcClauseLines(gtsiSetExprList, nil, 10, True {???},                   lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwDelete) or aQuery.Check(gtsiDml, gtkwUpdate) then  begin
-      aQuery.CalcClauseLines(gtsiClauseTables, gtkwFrom, 6, True {???}, lLongQuery, lQueryLines);
-      lItem := aQuery.Find(gtsiClauseTables, gtkwFrom);
-      if Assigned(lItem) then
-        for i := 0 to lItem.Count - 1 do
-          lItem[i].CalcClauseLines(gtsiCondTree, gtkwOn, 6, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-    end;
-    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwWhere,              10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwConnect_By,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwStart_With,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwGroup_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwHaving,             10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwOrder_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-
-    lLongQuery := lLongQuery or (lQueryLines > MaxShortQueryLines);
-    SkipClauseNewLine := not lLongQuery;
-  end;
+//  if Options [ gtstEmptyLineBeforeClauseSkipShort ] {and not SkipClauseNewLine} then begin
+//    lLongQuery := False;
+//    lQueryLines := 0;
+//
+//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwSelect,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtssClauseFields, nil {?},      10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect)   then  aQuery.CalcClauseLines(gtsiExprList, gtkwInto,       10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtsiExprList, gtkwValues,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwUpdate) then  aQuery.CalcClauseLines(gtsiSetExprList, nil, 10, True {???},                   lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwDelete) or aQuery.Check(gtsiDml, gtkwUpdate) then  begin
+//      aQuery.CalcClauseLines(gtsiClauseTables, gtkwFrom, 6, True {???}, lLongQuery, lQueryLines);
+//      lItem := aQuery.Find(gtsiClauseTables, gtkwFrom);
+//      if Assigned(lItem) then
+//        for i := 0 to lItem.Count - 1 do
+//          lItem[i].CalcClauseLines(gtsiCondTree, gtkwOn, 6, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    end;
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwWhere,              10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwConnect_By,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwStart_With,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwGroup_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwHaving,             10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwOrder_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//
+//    lLongQuery := lLongQuery or (lQueryLines > MaxShortQueryLines);
+//    SkipClauseNewLine := not lLongQuery;
+//  end;
 
   { DML essential }
   if aQuery.Check(gtsiDml, gtkwSelect) then  List_Select     (aQuery.Find(gtsiExprList, gtkwSelect),     aListerOpt);
@@ -3133,16 +3135,16 @@ begin
 
     { INSERT INTO }
     if aNode[i].Check(gtsiTableRef) then
-      if Assigned(aNode[i].JoinOp) then begin
-        l := Length(JoinOperatorToToken( aNode[i].JoinOp , aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).Text);
+      if Assigned(aNode[i].{JoinOp} Operand) then begin
+        l := Length(JoinOperatorToToken( aNode[i].{JoinOp} Operand , aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).Text);
         if l > Result then Result := l;
       end;
 
     { JOIN clauses }
     if aNode[i].Check(gtsiClauseTables, gtkwFrom) then begin
       for j := 0 to aNode[i].Count - 1 do begin
-        if Assigned(aNode[i][j].JoinOp) then begin
-          l := Length(JoinOperatorToToken( aNode[i][j].JoinOp , aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).Text);
+        if Assigned(aNode[i][j].{JoinOp} Operand) then begin
+          l := Length(JoinOperatorToToken( aNode[i][j].{JoinOp} Operand , aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).Text);
           if l > Result then Result := l;
         end;
 

@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlXmlTree/SqlXmlTree.pas 5     17-12-26 19:24 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 6     18-02-11 18:43 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -60,13 +60,14 @@ var lSL: TStringList;
         gtopNotNull          : s := s + ' Nullable="NOT NULL"';
       end;
 
-      if(aNode.LogicOp       <> gttkNone)and(aNode.Count > 1)
-                                         then s := s + ' LogicOp="'       + XmlQuote(aNode.LogicOp.Text)   + '"';
-      if(aNode.ExprOp        <> gttkNone)and(aNode.Count > 1)
-                                         then s := s + ' ExprOp="'        + XmlQuote(aNode.ExprOp.Text)    + '"';
-      if(aNode.CompOp        <> gttkNone)and(aNode.Count > 1)
-                                         then s := s + ' CompOp="'        + XmlQuote(aNode.CompOp.Text)    + '"';
-      if aNode.JoinOp        <> gttkNone then s := s + ' JoinOp="'        + XmlQuote(aNode.JoinOp.Text)    + '"';
+//    if(aNode.LogicOp       <> gttkNone)and(aNode.Count > 1)
+//                                       then s := s + ' LogicOp="'       + XmlQuote(aNode.LogicOp.Text)   + '"';
+//    if(aNode.ExprOp        <> gttkNone)and(aNode.Count > 1)
+//                                       then s := s + ' ExprOp="'        + XmlQuote(aNode.ExprOp.Text)    + '"';
+//    if(aNode.CompOp        <> gttkNone)and(aNode.Count > 1)
+//                                       then s := s + ' CompOp="'        + XmlQuote(aNode.CompOp.Text)    + '"';
+//    if aNode.JoinOp        <> gttkNone then s := s + ' JoinOp="'        + XmlQuote(aNode.JoinOp.Text)    + '"';
+      if(aNode.Operand       <> gttkNone)then s := s + ' Operand="'       + XmlQuote(aNode.Operand.Text)   + '"';
       if aNode.DataType      <> gttkNone then s := s + ' DataType="'      + XmlQuote(aNode.DataType.Text)  + '"';
       if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.Text)  + '"';
       if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.Text)  + '"';
@@ -127,10 +128,11 @@ procedure XmlToParseTree (aFileName: String; aTopNode: TGtSqlNode);
             if aXmlNode.AttributeNodes[i].NodeValue = 'NOT NULL' then Result.Nullable := gtopNotNull
                                                                  else Result.Nullable := gtopNullNotSpecified;
           end else
-          if aXmlNode.AttributeNodes[i].NodeName = 'LogicOp'   then Result.LogicOp  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'ExprOp'    then Result.ExprOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'CompOp'    then Result.CompOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'JoinOp'    then Result.JoinOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//        if aXmlNode.AttributeNodes[i].NodeName = 'LogicOp'   then Result.LogicOp  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//        if aXmlNode.AttributeNodes[i].NodeName = 'ExprOp'    then Result.ExprOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//        if aXmlNode.AttributeNodes[i].NodeName = 'CompOp'    then Result.CompOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//        if aXmlNode.AttributeNodes[i].NodeName = 'JoinOp'    then Result.JoinOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'Operand'   then Result.Operand  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'DataType'  then Result.DataType := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'OnDelete'  then Result.OnDelete := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'OnUpdate'  then Result.OnUpdate := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
