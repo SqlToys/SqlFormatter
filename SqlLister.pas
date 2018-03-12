@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 315   18-02-11 18:42 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 316   18-03-11 14:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -31,7 +31,7 @@ type
 
   TGtSqlCaseOption         =( gtcoNoChange, gtcoUpperCase, gtcoLowerCase, gtcoFirstCharUpper, gtcoFirstUseCase );
 
-  TGtSqlListerOptions      =( gtloTextOnly, gtloSkipOneExprOnLine, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine,
+  TGtSqlListerOptions      =( gtloTextOnly, gtloSkipOneExprOnLine, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLine,
                               gtloTableConstraint, gtloAlterTableConstraint,
                               gtloSameAsPrevClause, gtloCondLeftSideOrderREMOVED, gtloCondEqualSwap,
                               gtloSingleColumn, gtloOnLeftSideIntend, gtloOnRightSideIntend, gtloExprAliasIntend,
@@ -55,9 +55,9 @@ type
                        gtstEmptyLineAroundUnionREMOVED,
                        gtstSpaceOutsideBrackets, gtstSpaceInsideBrackets,
                        gtstSpaceAroundOperator, gtstSpaceAfterComma, gtstCommaAtNewLine,
-                       gtstCaseAtNewLine,
-                       gtstCaseWhenAtNewLine, gtstCaseThenAtNewLine,
-                       gtstCaseElseAtNewLine, gtstCaseEndAtNewLine,
+                       gtstCaseAtNewLineREMOVED,
+                       gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
+                       gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
                        gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLine,
                        gtstNoSemicolonOnSingleQuery, gtstInnerJoinCONVERTER,
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
@@ -1293,14 +1293,16 @@ end;
 
 { lists expression CASE }
 procedure TGtSqlFormatLister.List_ExprCase;
-var lSkipSubCaseFormat: Boolean;
-    lCaseExpr, lElseExpr: TGtSqlNode;
+var //lSkipSubCaseFormat: Boolean;
+    lCaseExpr, lElseExpr, lNode: TGtSqlNode;
     i: Integer;
 begin
-  lSkipSubCaseFormat := gtloSkipSubCaseFormat in aListerOpt;
-  aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine ];
+  lNode := nil;
+//lSkipSubCaseFormat := gtloSkipSubCaseFormat in aListerOpt;
+  aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine, {gtloSkipSubCaseFormat,} gtloSkipOneCondOnLine ];
 
-  if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+//if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+  if aNode.EmptyLineBefore then AddClause;
   AddStr(gtkwCase);
 
   { [expression] }
@@ -1310,28 +1312,42 @@ begin
   { WHEN [expression | condition] THEN expression }
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Kind = gtssWhenThenCondExpr then begin
-      if Options[ gtstCaseWhenAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-      AddStr(gtkwWhen);
+    //if Options[ gtstCaseWhenAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+    //AddStr(gtkwWhen);
 
-      if Assigned(lCaseExpr)
-        then List_ExprTree(aNode[i].Find(gtsiExprTree, gtkwWhen), aListerOpt)
-        else List_CondTree(aNode[i].Find(gtsiCondTree, gtkwWhen), aListerOpt);
+      if Assigned(lCaseExpr) then begin
+        lNode := aNode[i].Find(gtsiExprTree, gtkwWhen);
+        if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
+        AddStr(gtkwWhen);
+        List_ExprTree(lNode, aListerOpt);
+      end else begin
+        lNode := aNode[i].Find(gtsiCondTree, gtkwWhen);
+        if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
+        AddStr(gtkwWhen);
+        List_CondTree(lNode, aListerOpt);
+      end;
 
-      if Options[ gtstCaseThenAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+//    if Options[ gtstCaseThenAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+//    AddStr(gtkwThen);
+
+      lNode := aNode[i].Find(gtsiExprTree, gtkwThen);
+      if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
       AddStr(gtkwThen);
-
-      List_ExprTree(aNode[i].Find(gtsiExprTree, gtkwThen), aListerOpt);
+      List_ExprTree(lNode, aListerOpt);
     end;
 
   { BNF: ELSE expression }
   lElseExpr := aNode.Find(gtsiExprTree, gtkwElse);
   if Assigned(lElseExpr) then begin
-    if Options[ gtstCaseElseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+  //if Options[ gtstCaseElseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+    if lElseExpr.EmptyLineBefore then AddClause;
     AddStr(gtkwElse);
     List_ExprTree(lElseExpr, aListerOpt);
   end;
 
-  if Options[ gtstCaseEndAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+//if Options[ gtstCaseEndAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
+  if Assigned(lNode) and lNode.EmptyLineBefore or
+     Assigned(lElseExpr) and lElseExpr.EmptyLineBefore then AddClause;
   AddStr(gtkwEnd);
 end;
 
