@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 316   18-03-11 14:30 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 317   18-03-11 15:54 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -59,7 +59,7 @@ type
                        gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
                        gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
                        gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLine,
-                       gtstNoSemicolonOnSingleQuery, gtstInnerJoinCONVERTER,
+                       gtstNoSemicolonOnSingleQueryREMOVED, gtstInnerJoinCONVERTER,
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
                        gtstSpaceInsideBracketsSkipFun,
                        gtstCreateTable_ColConsNewLineAfter, gtstJoinCondLeftSideOrderCONVERTER,
@@ -3237,12 +3237,12 @@ begin
       List( aNode.QueryList[ i ], [] );
       SkipNextNewLine := False;
 
-      if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
+//    if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
         if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
           if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
           AddStr( gttkSemicolon, False );
         end;
-      end;
+//    end;
       SkipSemicolonAfterThisQuery := False;
 
       AddCurrLine;
