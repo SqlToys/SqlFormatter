@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 26    18-03-11 15:54 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 27    18-03-11 17:43 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -28,15 +28,15 @@ const
   YA_VERSION_KEY = YA_COMMON_KEY + 'Version';
 
   { editor }
-  YA_SET_KEY_TAB_MAX_LEN            : String = YA_SETTINGS_KEY + 'TableMaxLen';
-  YA_SET_KEY_ALIAS_MAX_LEN          : String = YA_SETTINGS_KEY + 'AliasMaxLen';
+//YA_SET_KEY_TAB_MAX_LEN            : String = YA_SETTINGS_KEY + 'TableMaxLen';
+//YA_SET_KEY_ALIAS_MAX_LEN          : String = YA_SETTINGS_KEY + 'AliasMaxLen';
 //YA_SET_KEY_SET_MAX_LEN            : String = YA_SETTINGS_KEY + 'SetMaxLen';
-  YA_SET_KEY_COL_MAX_LEN            : String = YA_SETTINGS_KEY + 'ColumnMaxLen';
-  YA_SET_KEY_TYPE_MAX_LEN           : String = YA_SETTINGS_KEY + 'DatatypeMaxLen';
-  YA_SET_KEY_SHORT_QUERY            : String = YA_SETTINGS_KEY + 'ShortQuery';
-  YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT : String = YA_SETTINGS_KEY + 'MaxClauseKeywordIntend';
-  YA_SET_KEY_MAX_IDENTIFIER_LEN     : String = YA_SETTINGS_KEY + 'MaxIdentifierLen';
-  YA_SET_KEY_LINES_AFTER_QUERY      : String = YA_SETTINGS_KEY + 'MoreLinesAfterQuery';
+//YA_SET_KEY_COL_MAX_LEN            : String = YA_SETTINGS_KEY + 'ColumnMaxLen';
+//YA_SET_KEY_TYPE_MAX_LEN           : String = YA_SETTINGS_KEY + 'DatatypeMaxLen';
+//YA_SET_KEY_SHORT_QUERY            : String = YA_SETTINGS_KEY + 'ShortQuery';
+//YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT : String = YA_SETTINGS_KEY + 'MaxClauseKeywordIntend';
+//YA_SET_KEY_MAX_IDENTIFIER_LEN     : String = YA_SETTINGS_KEY + 'MaxIdentifierLen';
+//YA_SET_KEY_LINES_AFTER_QUERY      : String = YA_SETTINGS_KEY + 'MoreLinesAfterQuery';
 
 {------------------------------- Registry Keys --------------------------------}
 
@@ -453,19 +453,19 @@ begin
     aScriptFormater.SubQueryIntend             := True;
     aScriptFormater.SubQueryIntendSpace        := 0; //2;
 
-    aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
-    aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
+  //aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
+  //aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
 
   //aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
 
-    aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
-    aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));
+  //aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
+  //aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));
 
-    aScriptFormater.MaxShortQueryLines    := StrToInt(rguGetStr(YA_SET_KEY_SHORT_QUERY,  '20'));
-    aScriptFormater.MaxClauseToIntend     := StrToInt(rguGetStr(YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT,  '15'));
-    aScriptFormater.MaxIdentifierLen      := StrToInt(rguGetStr(YA_SET_KEY_MAX_IDENTIFIER_LEN,  '30'));
+  //aScriptFormater.MaxShortQueryLines    := StrToInt(rguGetStr(YA_SET_KEY_SHORT_QUERY,  '20'));
+  //aScriptFormater.MaxClauseToIntend     := StrToInt(rguGetStr(YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT,  '15'));
+  //aScriptFormater.MaxIdentifierLen      := StrToInt(rguGetStr(YA_SET_KEY_MAX_IDENTIFIER_LEN,  '30'));
 
-    aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
+  //aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
   end else begin { Compact }
     aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
   //aScriptFormater.Options [ gtstNoSemicolonOnSingleQuery ] := GtRegistryGetBool (gtstNoSemicolonOnSingleQuery);

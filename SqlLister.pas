@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 317   18-03-11 15:54 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 318   18-03-11 17:43 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -58,11 +58,11 @@ type
                        gtstCaseAtNewLineREMOVED,
                        gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
                        gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
-                       gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLine,
+                       gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLineREMOVED,
                        gtstNoSemicolonOnSingleQueryREMOVED, gtstInnerJoinCONVERTER,
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
                        gtstSpaceInsideBracketsSkipFun,
-                       gtstCreateTable_ColConsNewLineAfter, gtstJoinCondLeftSideOrderCONVERTER,
+                       gtstCreateTable_ColConsNewLineAfterREMOVED, gtstJoinCondLeftSideOrderCONVERTER,
                        gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
                        gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntend,
                        gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
@@ -134,7 +134,7 @@ type
   public
     SL: TStringList;
     FormattingMode: TGtSqlFormattingOption;
-    MaxIdentifierLen: Integer;        // max length of any identifier
+  //MaxIdentifierLen: Integer;        // max length of any identifier
 
     Options: TGtListerSettingsArray;
     CaseOpt: TGtListerCaseSettingsArray;
@@ -184,13 +184,13 @@ type
     SubQueryIntendSpace: Integer;     // >0 -> yes | =0 -> no
 
 //  MaxSetLeftExprToIntend,           // max length of set expr left side to be intended
-    MaxTableNameToIntend,             // max length of table name to be intended
-    MaxAliasNameToIntend,             // max length of table alias to be intended
-    MaxColumnNameToIntend,            // max length of column name to be intended
-    MaxDatatypeToIntend,              // max length of datatype to be intended
-    MaxShortQueryLines,               // max lines no for short query
-    MaxClauseToIntend,                // max length of clause keyword to be intended
-    LinesNoAfterQuery: Integer;       // no of lines after query
+//  MaxTableNameToIntend,             // max length of table name to be intended
+//  MaxAliasNameToIntend,             // max length of table alias to be intended
+//  MaxColumnNameToIntend,            // max length of column name to be intended
+//  MaxDatatypeToIntend,              // max length of datatype to be intended
+//  MaxShortQueryLines: Integer;      // max lines no for short query
+  //MaxClauseToIntend: Integer;       // max length of clause keyword to be intended
+  //LinesNoAfterQuery: Integer;       // no of lines after query
   private
     ClauseBodySpace: Integer;         // between intended clause and its body
 
@@ -363,7 +363,7 @@ begin
   Options[ gtstSortShortCONVERTER ] := True;
   Options[ gtstSkipAscendingCONVERTER ] := True;
 
-  MaxIdentifierLen := 30;
+//MaxIdentifierLen := 30;
 end;
 
 { class destructor }
@@ -690,15 +690,15 @@ begin
   if aAddClearSpace then AddSpace;
 
   { too long identifier list as error !!  -  only chars abowe limit }
-  if (Length(aStr) > MaxIdentifierLen) and
-     (aStyle in [gtlsTable, gtlsColumn, gtlsTableAlias, gtlsColumnAlias,
-                 gtlsFunction, gtlsAggrFunction, gtlsConstraint,
-                 gtlsSynonym, gtlsTransaction, gtlsIdentifier]) then begin
-    Add(aStr, LocalFormatStr(Copy(aStr, 1, MaxIdentifierLen), aStyle) +
-              LocalFormatStr(Copy(aStr, MaxIdentifierLen+1, 999999), gtlsError));
-  end else begin
+//  if (Length(aStr) > MaxIdentifierLen) and
+//     (aStyle in [gtlsTable, gtlsColumn, gtlsTableAlias, gtlsColumnAlias,
+//                 gtlsFunction, gtlsAggrFunction, gtlsConstraint,
+//                 gtlsSynonym, gtlsTransaction, gtlsIdentifier]) then begin
+//    Add(aStr, LocalFormatStr(Copy(aStr, 1, MaxIdentifierLen), aStyle) +
+//              LocalFormatStr(Copy(aStr, MaxIdentifierLen+1, 999999), gtlsError));
+//  end else begin
     Add(aStr, LocalFormatStr(aStr, aStyle));
-  end;
+//  end;
 
   if (aStyle = gtlsOperator) and Options[ gtstSpaceAroundOperator ] then AddSpace;
 end;
@@ -919,12 +919,12 @@ begin
   ML_ExprAlias := 0;
 
 //MaxSetLeftExprToIntend := 20;
-  MaxTableNameToIntend := 30;
-  MaxAliasNameToIntend := 10;
-  MaxColumnNameToIntend := 20;
-  MaxDatatypeToIntend := 20;
-  MaxShortQueryLines := 20;
-  LinesNoAfterQuery := 1;
+//MaxTableNameToIntend := 30;
+//MaxAliasNameToIntend := 10;
+//MaxColumnNameToIntend := 20;
+//MaxDatatypeToIntend := 20;
+//MaxShortQueryLines := 20;
+//LinesNoAfterQuery := 1;
 end;
 
 { adds HTML EOL }
@@ -1638,7 +1638,7 @@ begin
 
     for i := 0 to aNode.Count - 1 do begin
       lCol := aNode[i].Find(gtsiExpr, gttkColumnName);
-      if Assigned(lCol) and (Length(lCol.Name) < MaxColumnNameToIntend) //MaxSetLeftExprToIntend)
+      if Assigned(lCol) //and (Length(lCol.Name) < MaxColumnNameToIntend) //MaxSetLeftExprToIntend)
                         and (Length(lCol.Name) > ML_SetExpr_LeftSide)
         then ML_SetExpr_LeftSide := Length(lCol.Name);
     end;
@@ -1847,8 +1847,10 @@ begin
 
   for i := 0 to aNode.Count - 1 do begin
     if (aNode[i].Kind = gtsiConstraint) then begin
-      if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
+    //if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
+      if aNode[i].EmptyLineBefore then AddClause;
       List_Constraint(aNode[i], aListerOpt + [gtloSingleColumn]);
+      if aNode[i].EmptyLineAfter then AddCurrLine;
     end;
   end;
 end;
@@ -2085,9 +2087,9 @@ begin
     { table name }
     AddStr(aNode.Name, gtlsTable);
 
-    lDoIntend := Options[ gtstTableAndAliasIntend ]
-             and (Length(aNode.Name) < MaxTableNameToIntend)
-             and (Length(aNode.AliasName) < MaxAliasNameToIntend);
+    lDoIntend := Options[ gtstTableAndAliasIntend ];
+    //       and (Length(aNode.Name) < MaxTableNameToIntend)
+    //       and (Length(aNode.AliasName) < MaxAliasNameToIntend);
 
     { table alias, +1 because of identifier extra space }
     if not lDoIntend then begin
@@ -2129,7 +2131,7 @@ end;
 procedure TGtSqlFormatLister.List_CreateTable;
 var lItem: TGtSqlNode;
     i, j, cnt, cnt2, lIntend, lDataTypeLen: Integer;
-    lNewLine: Boolean;
+  //lNewLine: Boolean;
 begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreate;
@@ -2168,7 +2170,7 @@ begin
     for j := 0 to aNode.Count - 1 do
       if aNode[j].Kind = gtssOtherColumnDef then begin
         { column name }
-        if (Length(aNode[j].Name) > ML_ColumnName) and (Length(aNode[j].Name) <= MaxColumnNameToIntend)
+        if (Length(aNode[j].Name) > ML_ColumnName) //and (Length(aNode[j].Name) <= MaxColumnNameToIntend)
           then ML_ColumnName := Length(aNode[j].Name);
 
         { data type }
@@ -2184,7 +2186,7 @@ begin
             Inc(lDataTypeLen,2); // gttkRightBracket
           end;
         end;
-        if (lDataTypeLen > ML_DataType) and (lDataTypeLen <= MaxDatatypeToIntend)
+        if (lDataTypeLen > ML_DataType) //and (lDataTypeLen <= MaxDatatypeToIntend)
           then ML_DataType := lDataTypeLen;
 
         { constraint at new line }
@@ -2193,9 +2195,9 @@ begin
             lItem := aNode[i];
             if (lItem.Kind = gtsiConstraint) and lItem.SingleColumnConstraint
             and (lItem.Find(gtsiExpr, gttkColumnName).Name = aNode[j].Name) then begin
-              if (Length(gtkwConstraint.Text) > ML_ColumnName) and (Length(gtkwConstraint.Text) <= MaxColumnNameToIntend)
+              if (Length(gtkwConstraint.Text) > ML_ColumnName) //and (Length(gtkwConstraint.Text) <= MaxColumnNameToIntend)
                 then ML_ColumnName := Length(gtkwConstraint.Text);
-              if (Length(lItem.Name) > ML_DataType) and (Length(lItem.Name) <= MaxDatatypeToIntend)
+              if (Length(lItem.Name) > ML_DataType) //and (Length(lItem.Name) <= MaxDatatypeToIntend)
                 then ML_DataType := Length(lItem.Name);
             end;
           end;
@@ -2209,7 +2211,7 @@ begin
   for j := 0 to aNode.Count - 1 do
     case aNode[j].Kind of
       gtssOtherColumnDef : begin
-      lNewLine := False;
+    //lNewLine := False;
 
       if cnt > 0 then begin
         if Options[ gtstCommaAtNewLine ] then begin
@@ -2235,7 +2237,7 @@ begin
 //          end;
 //        end;
 
-      if lNewLine and Options[gtstCreateTable_ColConsNewLineAfter] then AddCurrLine;
+//      if lNewLine and Options[gtstCreateTable_ColConsNewLineAfter] then AddCurrLine;
 
       Inc(cnt);
     end;
@@ -2925,9 +2927,9 @@ begin
     ML_TableAndAliasName := 0;
 
     for i := 0 to aNode.Count - 1 do
-      if aNode[i].Check(gtsiTableRef)
-      and (Length(aNode[i].Name) < MaxTableNameToIntend)
-      and (Length(aNode[i].AliasName) < MaxAliasNameToIntend) then begin
+      if aNode[i].Check(gtsiTableRef) then begin
+    //and (Length(aNode[i].Name) < MaxTableNameToIntend)
+    //and (Length(aNode[i].AliasName) < MaxAliasNameToIntend) then begin
         if Length(aNode[i].Name) > ML_TableName then ML_TableName := Length(aNode[i].Name);
         if Length(aNode[i].AliasName) > ML_AliasName then ML_AliasName := Length(aNode[i].AliasName);
         if Length(aNode[i].Name + aNode[i].AliasName) > ML_TableAndAliasName then ML_TableAndAliasName := Length(aNode[i].Name + aNode[i].AliasName);
@@ -3141,7 +3143,7 @@ begin
 
   { klauzula wiodaca }
   if ((aNode.Kind = gtsiDml) or (aNode.Kind = gtsiDdl)) and Assigned(aNode.Keyword) and
-      (Length(aNode.Keyword.Text) > Result) and (Length(aNode.Keyword.Text) <= MaxClauseToIntend)
+      (Length(aNode.Keyword.Text) > Result) //and (Length(aNode.Keyword.Text) <= MaxClauseToIntend)
     then Result := Length(aNode.Keyword.Text);
 
   for i := 0 to aNode.Count - 1 do begin
