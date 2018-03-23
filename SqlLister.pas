@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 318   18-03-11 17:43 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 319   18-03-11 21:49 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -63,7 +63,7 @@ type
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
                        gtstSpaceInsideBracketsSkipFun,
                        gtstCreateTable_ColConsNewLineAfterREMOVED, gtstJoinCondLeftSideOrderCONVERTER,
-                       gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstr,
+                       gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstrREMOVED,
                        gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntend,
                        gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
                        gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
@@ -1317,12 +1317,12 @@ begin
 
       if Assigned(lCaseExpr) then begin
         lNode := aNode[i].Find(gtsiExprTree, gtkwWhen);
-        if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
+        if Assigned(lNode) and lNode.NewLineBefore then AddClause;
         AddStr(gtkwWhen);
         List_ExprTree(lNode, aListerOpt);
       end else begin
         lNode := aNode[i].Find(gtsiCondTree, gtkwWhen);
-        if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
+        if Assigned(lNode) and lNode.NewLineBefore then AddClause;
         AddStr(gtkwWhen);
         List_CondTree(lNode, aListerOpt);
       end;
@@ -1331,7 +1331,7 @@ begin
 //    AddStr(gtkwThen);
 
       lNode := aNode[i].Find(gtsiExprTree, gtkwThen);
-      if Assigned(lNode) and lNode.EmptyLineBefore then AddClause;
+      if Assigned(lNode) and lNode.NewLineBefore then AddClause;
       AddStr(gtkwThen);
       List_ExprTree(lNode, aListerOpt);
     end;
@@ -1340,14 +1340,14 @@ begin
   lElseExpr := aNode.Find(gtsiExprTree, gtkwElse);
   if Assigned(lElseExpr) then begin
   //if Options[ gtstCaseElseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-    if lElseExpr.EmptyLineBefore then AddClause;
+    if lElseExpr.NewLineBefore then AddClause;
     AddStr(gtkwElse);
     List_ExprTree(lElseExpr, aListerOpt);
   end;
 
 //if Options[ gtstCaseEndAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-  if Assigned(lNode) and lNode.EmptyLineBefore or
-     Assigned(lElseExpr) and lElseExpr.EmptyLineBefore then AddClause;
+  if Assigned(lNode) and lNode.NewLineBefore or
+     Assigned(lElseExpr) and lElseExpr.NewLineBefore then AddClause;
   AddStr(gtkwEnd);
 end;
 
@@ -1848,9 +1848,9 @@ begin
   for i := 0 to aNode.Count - 1 do begin
     if (aNode[i].Kind = gtsiConstraint) then begin
     //if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
-      if aNode[i].EmptyLineBefore then AddClause;
+      if aNode[i].NewLineBefore then AddClause;
       List_Constraint(aNode[i], aListerOpt + [gtloSingleColumn]);
-      if aNode[i].EmptyLineAfter then AddCurrLine;
+      if aNode[i].NewLineAfter then AddCurrLine;
     end;
   end;
 end;
@@ -2243,8 +2243,10 @@ begin
     end;
       gtsiConstraint : begin
       //if not Options[ gtstColumnConstraint ] or not aNode[j].SingleColumnConstraint then begin
-        if (cnt2 = 0) and Options [ gtstCreateTable_EmptyLineBefComplexConstr ]
-          then AddCurrLine;
+//      if (cnt2 = 0) and Options [ gtstCreateTable_EmptyLineBefComplexConstr ]
+//          then AddCurrLine;
+        if (cnt2 = 0) and aNode[j].EmptyLineBefore
+            then AddEmptyLine;
 
         if cnt > 0 then begin
           if Options[ gtstCommaAtNewLine ] then begin

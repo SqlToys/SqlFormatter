@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 293   18-02-11 18:42 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 294   18-03-11 21:49 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -170,8 +170,10 @@ type
     property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
     property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
 
-    property        EmptyLineBefore      : Boolean index 236 read GetValBool write SetValBool;
-    property        EmptyLineAfter       : Boolean index 237 read GetValBool write SetValBool;
+    property        NewLineBefore        : Boolean index 236 read GetValBool write SetValBool;
+    property        NewLineAfter         : Boolean index 237 read GetValBool write SetValBool;
+    property        EmptyLineBefore      : Boolean index 238 read GetValBool write SetValBool;
+    property        EmptyLineAfter       : Boolean index 239 read GetValBool write SetValBool;
 
     property        ColSize              : Integer index 301 read GetValInt  write SetValInt;
     property        ColIdentitySeed      : Integer index 302 read GetValInt  write SetValInt;
@@ -531,8 +533,10 @@ begin
     233: Result := 'AliasAsToken';
     234: Result := 'JoinOuterKeyword';
     235: Result := 'JoinInnerKeyword';
-    236: Result := 'EmptyLineBefore';
-    237: Result := 'EmptyLineAfter';
+    236: Result := 'NewLineBefore';
+    237: Result := 'NewLineAfter';
+    238: Result := 'EmptyLineBefore';
+    239: Result := 'EmptyLineAfter';
 
     301: Result := 'ColSize';
     302: Result := 'ColIdentitySeed';
