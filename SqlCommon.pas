@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 27    18-03-11 17:43 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 28    18-03-19 20:12 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -467,7 +467,7 @@ begin
 
   //aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
   end else begin { Compact }
-    aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
+  //aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
   //aScriptFormater.Options [ gtstNoSemicolonOnSingleQuery ] := GtRegistryGetBool (gtstNoSemicolonOnSingleQuery);
 
     aScriptFormater.SubQueryIntend             := False;

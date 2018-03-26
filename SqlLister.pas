@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 319   18-03-11 21:49 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 320   18-03-19 20:12 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -33,8 +33,8 @@ type
 
   TGtSqlListerOptions      =( gtloTextOnly, gtloSkipOneExprOnLine, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLine,
                               gtloTableConstraint, gtloAlterTableConstraint,
-                              gtloSameAsPrevClause, gtloCondLeftSideOrderREMOVED, gtloCondEqualSwap,
-                              gtloSingleColumn, gtloOnLeftSideIntend, gtloOnRightSideIntend, gtloExprAliasIntend,
+                              gtloSameAsPrevClause, gtloCondLeftSideOrderREMOVED, gtloCondEqualSwapREMOVED,
+                              gtloSingleColumn, gtloOnLeftSideIntendREMOVED, gtloOnRightSideIntendREMOVED, gtloExprAliasIntendREMOVED,
                               gtloSkipFrom
                             );
   TGtSqlListerOptionsSet   =set of TGtSqlListerOptions;
@@ -46,10 +46,10 @@ type
                          , gtlcIdentifierCONVERTER, gtlcKeyword
                          , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
 
-  TGtListerSettings = (gtstRightIntend, gtstLineAfterQueryREMOVED,
+  TGtListerSettings = (gtstRightIntendREMOVED, gtstLineAfterQueryREMOVED,
                        gtstSpaceBeforeComma, gtstSpaceBeforeSemicolon,
                        gtstEmptyLineBeforeClauseREMOVED, gtstUpperKeywordsREMOVED,
-                       gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraint,
+                       gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraintREMOVED,
                        gtstOuterJoinCONVERTER, gtstSortShortCONVERTER, gtstSkipAscendingCONVERTER,
                        gtstOneExprOnLine, gtstOneCondOnLine,
                        gtstEmptyLineAroundUnionREMOVED,
@@ -58,14 +58,14 @@ type
                        gtstCaseAtNewLineREMOVED,
                        gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
                        gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
-                       gtstTableAndAliasIntend, gtstSetExprIntend, gtstCreateTable_ColConsBreakLineREMOVED,
+                       gtstTableAndAliasIntendREMOVED, gtstSetExprIntendREMOVED, gtstCreateTable_ColConsBreakLineREMOVED,
                        gtstNoSemicolonOnSingleQueryREMOVED, gtstInnerJoinCONVERTER,
                        gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
                        gtstSpaceInsideBracketsSkipFun,
                        gtstCreateTable_ColConsNewLineAfterREMOVED, gtstJoinCondLeftSideOrderCONVERTER,
-                       gtstCreateTable_Intend, gtstCreateTable_EmptyLineBefComplexConstrREMOVED,
-                       gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntend,
-                       gtstSelectAliasIntend, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
+                       gtstCreateTable_IntendREMOVED, gtstCreateTable_EmptyLineBefComplexConstrREMOVED,
+                       gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntendREMOVED,
+                       gtstSelectAliasIntendREMOVED, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
                        gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
   );
 
@@ -203,18 +203,18 @@ type
     SubQueryLevel: Integer;
 
     // ML_xxx ==>> Max Length of xxx
-    ML_ClauseKeyword,                 // Max Length of Clause Keyword
-    ML_SetExpr_LeftSide,              // Max Length of left side of set expr (column name)
-    ML_ColumnName,                    // Max Length of column name for column def, PK, FK, UK, Check, CREATE TABLE.
-    ML_DataType,                      // Max Length of data type for column def, PK, FK, UK, Check, CREATE TABLE.
-    ML_TableName,                     // Max Length of table name for table_ref, list_tables.
-    ML_AliasName,                     // Max Length of alias name for table_ref, list_tables.
-    ML_TableAndAliasName,             // Max Length of table and alias for table_ref, list_tables.
-    ML_LeftOnExprPrefix,              // Max Length of ON condition left side column prefix.
-    ML_LeftOnExprColumn,              // Max Length of ON condition left side column name.
-    ML_RightOnExprPrefix,             // Max Length of ON condition right side column prefix.
-    ML_RightOnExprColumn,             // Max Length of ON condition right side column name.
-    ML_ExprAlias: Integer;            // Max Length of expression alias for List_SELECT.
+    ML_ClauseKeyword: Integer;        // Max Length of Clause Keyword
+  //ML_SetExpr_LeftSide,              // Max Length of left side of set expr (column name)
+  //ML_ColumnName,                    // Max Length of column name for column def, PK, FK, UK, Check, CREATE TABLE.
+  //ML_DataType,                      // Max Length of data type for column def, PK, FK, UK, Check, CREATE TABLE.
+  //ML_TableName,                     // Max Length of table name for table_ref, list_tables.
+  //ML_AliasName,                     // Max Length of alias name for table_ref, list_tables.
+  //ML_TableAndAliasName,             // Max Length of table and alias for table_ref, list_tables.
+  //ML_LeftOnExprPrefix,              // Max Length of ON condition left side column prefix.
+  //ML_LeftOnExprColumn,              // Max Length of ON condition left side column name.
+  //ML_RightOnExprPrefix,             // Max Length of ON condition right side column prefix.
+  //ML_RightOnExprColumn,             // Max Length of ON condition right side column name.
+  //ML_ExprAlias: Integer;            // Max Length of expression alias for List_SELECT.
   public
     constructor Create; override;
 
@@ -359,7 +359,7 @@ begin
   // defaults for Compact.
   CaseOpt[ gtlcKeyword ] := gtcoUpperCase;
   // Options[ gtstUpperKeywords    ] := True;
-  Options[ gtstColumnConstraint ] := True;
+  // Options[ gtstColumnConstraint ] := True;
   Options[ gtstSortShortCONVERTER ] := True;
   Options[ gtstSkipAscendingCONVERTER ] := True;
 
@@ -906,17 +906,17 @@ begin
 
   SubQueryLevel := 0;
 
-  ML_SetExpr_LeftSide := 0;
-  ML_ColumnName := 0;
-  ML_DataType   := 0;
-  ML_TableName := 0;
-  ML_AliasName := 0;
-  ML_TableAndAliasName := 0;
-  ML_LeftOnExprPrefix := 0;
-  ML_LeftOnExprColumn := 0;
-  ML_RightOnExprPrefix := 0;
-  ML_RightOnExprColumn := 0;
-  ML_ExprAlias := 0;
+//ML_SetExpr_LeftSide := 0;
+//ML_ColumnName := 0;
+//ML_DataType   := 0;
+//ML_TableName := 0;
+//ML_AliasName := 0;
+//ML_TableAndAliasName := 0;
+//ML_LeftOnExprPrefix := 0;
+//ML_LeftOnExprColumn := 0;
+//ML_RightOnExprPrefix := 0;
+//ML_RightOnExprColumn := 0;
+//ML_ExprAlias := 0;
 
 //MaxSetLeftExprToIntend := 20;
 //MaxTableNameToIntend := 30;
@@ -1009,7 +1009,7 @@ begin
   FirstClause := False;
 
   { right intend clause spaces }
-  if lDoIntend and Options[ gtstRightIntend ] and (ML_ClauseKeyword - lLength > 0) then AddSpace(ML_ClauseKeyword - lLength);
+//if lDoIntend and Options[ gtstRightIntend ] and (ML_ClauseKeyword - lLength > 0) then AddSpace(ML_ClauseKeyword - lLength);
 
   { clause }
   if (aClause = gttkComma) and not lDoIntend
@@ -1022,7 +1022,7 @@ begin
   end;
 
   { left intend clause spaces }
-  if not Options[ gtstRightIntend ] then AddSpace(ML_ClauseKeyword - lLength);
+//if not Options[ gtstRightIntend ] then AddSpace(ML_ClauseKeyword - lLength);
 
   { intend token or clause body space }
   AddIntendToken;
@@ -1285,10 +1285,10 @@ begin
   AddRightBracket(aNode.BracketsCount);
 
   { wrong ON COND intend.sql, breakpoint condition: gtloOnRightSideIntend in aListerOpt }
-  if (gtloOnLeftSideIntend in aListerOpt) and (Length(s) < ML_LeftOnExprPrefix + ML_LeftOnExprColumn + 1) // +1 due to dot
-    then AddSpace(ML_LeftOnExprPrefix + ML_LeftOnExprColumn + 1 - Length(s) + 1); // +1 due to ON keyword
-  if (gtloOnRightSideIntend in aListerOpt) and (Length(s) < ML_RightOnExprPrefix + ML_RightOnExprColumn + 1 + 1) // +1 due to dot
-    then AddSpace(ML_RightOnExprPrefix + ML_RightOnExprColumn + 1 + 1 - Length(s)); // +1 due to dot, +1 due to space after
+//  if (gtloOnLeftSideIntend in aListerOpt) and (Length(s) < ML_LeftOnExprPrefix + ML_LeftOnExprColumn + 1) // +1 due to dot
+//    then AddSpace(ML_LeftOnExprPrefix + ML_LeftOnExprColumn + 1 - Length(s) + 1); // +1 due to ON keyword
+//  if (gtloOnRightSideIntend in aListerOpt) and (Length(s) < ML_RightOnExprPrefix + ML_RightOnExprColumn + 1 + 1) // +1 due to dot
+//    then AddSpace(ML_RightOnExprPrefix + ML_RightOnExprColumn + 1 + 1 - Length(s)); // +1 due to dot, +1 due to space after
 end;
 
 { lists expression CASE }
@@ -1465,15 +1465,15 @@ procedure TGtSqlFormatLister.List_ExprColumn;
     end;
 
 var lColumnPrefix, lColumnName: String;
-    cnt: Integer;
+//  cnt: Integer;
 begin
   strBreakOnLast('.', aNode.Name, lColumnPrefix, lColumnName);
-  if lColumnPrefix = '' then cnt := 0 else cnt := 1 + strCountChars('.', lColumnPrefix);
+//if lColumnPrefix = '' then cnt := 0 else cnt := 1 + strCountChars('.', lColumnPrefix);
 
-  if (gtloOnLeftSideIntend in aListerOpt) and (Length(lColumnPrefix) < ML_LeftOnExprPrefix)
-    then AddSpace(ML_LeftOnExprPrefix - Length(lColumnPrefix) + 1); // +1 due to ON keyword
-  if (gtloOnRightSideIntend in aListerOpt) and (Length(lColumnPrefix) < ML_RightOnExprPrefix)
-    then AddSpace(ML_RightOnExprPrefix - Length(lColumnPrefix));
+//  if (gtloOnLeftSideIntend in aListerOpt) and (Length(lColumnPrefix) < ML_LeftOnExprPrefix)
+//    then AddSpace(ML_LeftOnExprPrefix - Length(lColumnPrefix) + 1); // +1 due to ON keyword
+//  if (gtloOnRightSideIntend in aListerOpt) and (Length(lColumnPrefix) < ML_RightOnExprPrefix)
+//    then AddSpace(ML_RightOnExprPrefix - Length(lColumnPrefix));
 
   if lColumnPrefix <> '' then begin
     AddStr(lColumnPrefix, FindStyleForColumnPrefix(lColumnPrefix), CheckSpaceNeedBeforeExpression);
@@ -1483,14 +1483,14 @@ begin
     AddStr(lColumnName, gtlsColumn, CheckSpaceNeedBeforeExpression);
   end;
 
-  if (gtloOnLeftSideIntend in aListerOpt) and (ML_LeftOnExprColumn - Length(lColumnName) > 0) then begin
-    if cnt=0 then AddSpace(1); // +1 due to no dot
-    AddSpace(ML_LeftOnExprColumn - Length(lColumnName) + 1); // +1 due to operator
-  end;
-  if (gtloOnRightSideIntend in aListerOpt) and (ML_RightOnExprColumn - Length(lColumnName) > 0) then begin
-    if cnt=0 then AddSpace(1); // +1 due to no dot
-    AddSpace(ML_RightOnExprColumn - Length(lColumnName) + 1); // +1 due to space after
-  end;
+//  if (gtloOnLeftSideIntend in aListerOpt) and (ML_LeftOnExprColumn - Length(lColumnName) > 0) then begin
+//    if cnt=0 then AddSpace(1); // +1 due to no dot
+//    AddSpace(ML_LeftOnExprColumn - Length(lColumnName) + 1); // +1 due to operator
+//  end;
+//  if (gtloOnRightSideIntend in aListerOpt) and (ML_RightOnExprColumn - Length(lColumnName) > 0) then begin
+//    if cnt=0 then AddSpace(1); // +1 due to no dot
+//    AddSpace(ML_RightOnExprColumn - Length(lColumnName) + 1); // +1 due to space after
+//  end;
 end;
 
 { lists expressions list }
@@ -1533,7 +1533,7 @@ begin
         if (aNode[i].ExprReverseOp2)and (aNode.{ExprOp} Operand = gttkStar) then AddStr(gttkPercent)
         else AddStr(aNode.{ExprOp} Operand);
 
-        aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
+//      aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
       end;
 
       if aNode[i].Check(gtsiExprTree) or
@@ -1541,7 +1541,7 @@ begin
          aNode[i].Check(gtsiExpr, gttkIdentifier) or aNode[i].Check(gtsiExpr, gttkParameterName) or
          aNode[i].Check(gtsiExpr, gttkColumnName) or aNode[i].Check(gtsiExpr, gttkStar)
         then List(aNode[i], aListerOpt)
-        else List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED, gtloOnRightSideIntend]);
+        else List(aNode[i], aListerOpt - [{gtloOnLeftSideIntend,} gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
     end;
 
   AddRightBracket(aNode.BracketsCount);
@@ -1550,14 +1550,14 @@ begin
   { WARN: SkipOutput was prepared to check max expressions length }
   if (aNode.AliasName <> '') and not SkipOutput and
     ((Length(RawText) = 0) or (RawText[Length(RawText)] <> '*')) {skip alias after star expr.} then begin
-    if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
-      then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
+//    if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
+//      then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
 
 //    if Options[ gtstExprAsKeyword ] then AddStr(gtkwAs) else AddSpace;
     if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
 
-    if gtloExprAliasIntend in aListerOpt
-      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
+//    if gtloExprAliasIntend in aListerOpt
+//      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
 
     AddStr(aNode.AliasName, gtlsColumnAlias);
   end;
@@ -1595,14 +1595,14 @@ begin
 
   if Assigned(lCol) then begin
     List_ExprColumn(lCol, aListerOpt);
-    if Options[ gtstSetExprIntend ] then AddSpace(ML_SetExpr_LeftSide + 1 - Length(lCol.Name));
+  //if Options[ gtstSetExprIntend ] then AddSpace(ML_SetExpr_LeftSide + 1 - Length(lCol.Name));
   end else begin
     { TODO: check formatting }
     lVect := aNode.Find(gtsiExprList, gtkwSet);
     if Assigned(lVect) then begin
       List(lVect, aListerOpt);
-    end else begin
-      if Options[ gtstSetExprIntend ] then AddSpace(ML_SetExpr_LeftSide + 1 );
+//    end else begin
+//      if Options[ gtstSetExprIntend ] then AddSpace(ML_SetExpr_LeftSide + 1 );
     end;
   end;
 
@@ -1624,25 +1624,25 @@ end;
 
 { lists set expressions list }
 procedure TGtSqlFormatLister.List_SetExprList;
-var i, lML_SetExpr_LeftSide: Integer;
+var i {, lML_SetExpr_LeftSide}: Integer;
     b: Boolean;
-    lCol: TGtSqlNode;
+//  lCol: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
   { max left size to intend }
-  lML_SetExpr_LeftSide := ML_SetExpr_LeftSide;
+//lML_SetExpr_LeftSide := ML_SetExpr_LeftSide;
 
-  if Options[ gtstSetExprIntend ] then begin
-    ML_SetExpr_LeftSide := 0;
-
-    for i := 0 to aNode.Count - 1 do begin
-      lCol := aNode[i].Find(gtsiExpr, gttkColumnName);
-      if Assigned(lCol) //and (Length(lCol.Name) < MaxColumnNameToIntend) //MaxSetLeftExprToIntend)
-                        and (Length(lCol.Name) > ML_SetExpr_LeftSide)
-        then ML_SetExpr_LeftSide := Length(lCol.Name);
-    end;
-  end;
+//  if Options[ gtstSetExprIntend ] then begin
+//    ML_SetExpr_LeftSide := 0;
+//
+//    for i := 0 to aNode.Count - 1 do begin
+//      lCol := aNode[i].Find(gtsiExpr, gttkColumnName);
+//      if Assigned(lCol) //and (Length(lCol.Name) < MaxColumnNameToIntend) //MaxSetLeftExprToIntend)
+//                        and (Length(lCol.Name) > ML_SetExpr_LeftSide)
+//        then ML_SetExpr_LeftSide := Length(lCol.Name);
+//    end;
+//  end;
 
   { SET }
   AddClause(gtkwSet);
@@ -1656,7 +1656,7 @@ begin
       b := True;
     end;
 
-  ML_SetExpr_LeftSide := lML_SetExpr_LeftSide;
+//ML_SetExpr_LeftSide := lML_SetExpr_LeftSide;
 end;
 
 { lists condition }
@@ -1673,7 +1673,7 @@ begin
     List(aNode.Find(gtsiDml, gtkwSelect), aListerOpt);
   end else
   if (aNode.{CompOp} Operand = gtkwIn) or (aNode.{CompOp} Operand = gtkwNot_In) then begin
-    List( aNode.Find(gtsiNone, nil, '1'), aListerOpt - [ gtloOnRightSideIntend ]);
+    List( aNode.Find(gtsiNone, nil, '1'), aListerOpt {- [ gtloOnRightSideIntend ]});
 
     AddStr(aNode.{CompOp} Operand);
     AddSpace; // independent of space-outside-brackets !!
@@ -1682,7 +1682,7 @@ begin
     if Assigned(lExpr) and lExpr.Check(gtsiExprList, gtkwIn) then begin
       AddStr(gttkLeftBracket);
 
-      List(lExpr, aListerOpt + [gtloSkipOneExprOnLine] - [gtloOnLeftSideIntend, gtloOnRightSideIntend]);
+      List(lExpr, aListerOpt + [gtloSkipOneExprOnLine] {- [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
 
       AddStr(gttkRightBracket);
     end else begin
@@ -1690,11 +1690,12 @@ begin
     end;
   end else begin
     { left expression }
-    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
-      then lItem := aNode.Find(gtsiNone, nil, '2')
-      else lItem := aNode.Find(gtsiNone, nil, '1');
+//    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
+//      then lItem := aNode.Find(gtsiNone, nil, '2')
+//      else
+    lItem := aNode.Find(gtsiNone, nil, '1');
 
-    List(lItem, aListerOpt - [ gtloOnRightSideIntend ] );
+    List(lItem, aListerOpt {- [ gtloOnRightSideIntend ]} );
 
     { operator }
     if (aNode.{CompOp} Operand = gttkEqual) then begin
@@ -1714,17 +1715,18 @@ begin
 
     { right expression }
     if aNode.OuterMark2MSSQL and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
-    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
-      then lItem := aNode.Find(gtsiNone, nil, '1')
-      else lItem := aNode.Find(gtsiNone, nil, '2');
+//    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
+//      then lItem := aNode.Find(gtsiNone, nil, '1')
+//      else
+    lItem := aNode.Find(gtsiNone, nil, '2');
 
-    List(lItem, aListerOpt - [gtloOnLeftSideIntend]);
+    List(lItem, aListerOpt {- [gtloOnLeftSideIntend]});
     if aNode.OuterMark2Oracle and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
 
     { additional expression }
     if (aNode.{CompOp} Operand = gtkwBetween) or (aNode.{CompOp} Operand = gtkwNot_Between) then begin
       AddStr(gtkwAnd);
-      List(aNode.Find(gtsiNone, nil, '3'), aListerOpt - [gtloOnLeftSideIntend, gtloOnRightSideIntend]);
+      List(aNode.Find(gtsiNone, nil, '3'), aListerOpt {- [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
     end else
     if ((aNode.{CompOp} Operand = gtkwLike) or (aNode.{CompOp} Operand = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
       AddStr(gtkwEscape);
@@ -1770,7 +1772,7 @@ begin
 //          else List(aNode[i], aListerOpt - [gtloCondEqualSwap]);
 //      end else begin
 //        { next conditions }
-        List(aNode[i], aListerOpt - [gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED, gtloOnRightSideIntend]);
+        List(aNode[i], aListerOpt {- [gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED, gtloOnRightSideIntend]});
 //      end;
 
       b := True;
@@ -1782,24 +1784,24 @@ end;
 { lists column }
 procedure TGtSqlFormatLister.List_ColumnDef;
 var lUnique, lDefault: TGtSqlNode;
-    lLen, i: Integer;
-    lIntend: Boolean;
+    {lLen,} i: Integer;
+//  lIntend: Boolean;
 begin
   if not Assigned(aNode) then Exit;
 
   AddStr(aNode.Name, gtlsColumn);
 
-  lLen := 0;
-  lIntend := Options [ gtstCreateTable_Intend ];
-  if lIntend then begin
-    lIntend := ML_ColumnName - Length(aNode.Name) >= 0;
-
-    if ML_ColumnName - Length(aNode.Name) > 0
-      then AddSpace(ML_ColumnName - Length(aNode.Name) + 1);
-
-    lLen := Length(RawText);
-    if (Copy(RawText, Length(RawText) - 1 + 1, 1) <> ' ') then Inc(lLen); // AddClearSpace will add a space
-  end;
+//  lLen := 0;
+//  lIntend := Options [ gtstCreateTable_Intend ];
+//  if lIntend then begin
+//    lIntend := ML_ColumnName - Length(aNode.Name) >= 0;
+//
+//    if ML_ColumnName - Length(aNode.Name) > 0
+//      then AddSpace(ML_ColumnName - Length(aNode.Name) + 1);
+//
+//    lLen := Length(RawText);
+//    if (Copy(RawText, Length(RawText) - 1 + 1, 1) <> ' ') then Inc(lLen); // AddClearSpace will add a space
+//  end;
 
   if aNode.DataType = gtkwType then begin
     AddStr(aNode.TableName, gtlsTable);
@@ -1811,8 +1813,8 @@ begin
     List_DataType(aNode, aListerOpt);
   end;
 
-  if lIntend and (ML_DataType - Length(RawText) + lLen > 0)
-    then AddSpace(ML_DataType - Length(RawText) + lLen + 1);
+//  if lIntend and (ML_DataType - Length(RawText) + lLen > 0)
+//    then AddSpace(ML_DataType - Length(RawText) + lLen + 1);
 
   if aNode.Identity then begin
     AddStr(gtkwIdentity);
@@ -1882,11 +1884,11 @@ begin
   end else begin
     if aNode.Name <> '' then begin
       AddStr(gtkwConstraint);
-      if Options [ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
-        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
+//      if Options [ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
+//        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
       AddStr(aNode.Name, gtlsConstraint);
-      if Options [ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) >= 0)
-        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
+//      if Options [ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) >= 0)
+//        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
     end;
 
     AddStr(gtkwPrimary_Key);
@@ -1929,13 +1931,13 @@ begin
     if aNode.Name <> '' then begin
       AddStr(gtkwConstraint);
 
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
-        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
+//        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
 
       AddStr(aNode.Name, gtlsConstraint);
 
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
-        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
+//        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
     end;
 
     if not (gtloSingleColumn in aListerOpt) then begin
@@ -1994,11 +1996,11 @@ begin
   end else begin
     if aNode.Name <> '' then begin
       AddStr(gtkwConstraint);
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
-        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
+//        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
       AddStr(aNode.Name, gtlsConstraint);
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
-        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
+//        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
     end;
 
     AddStr(gtkwUnique);
@@ -2028,11 +2030,11 @@ begin
   end else begin
     if aNode.Name <> '' then begin
       AddStr(gtkwConstraint);
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
-        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_ColumnName - Length(gtkwConstraint.Text) > 0)
+//        then AddSpace(ML_ColumnName - Length(gtkwConstraint.Text) + 1);
       AddStr(aNode.Name, gtlsConstraint);
-      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
-        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
+//      if Options[ gtstColumnConstraint ] and Options [ gtstCreateTable_Intend ] and (ML_DataType - Length(aNode.Name) > 0)
+//        then AddSpace(ML_DataType - Length(aNode.Name) + 1);
     end;
 
     AddStr(gtkwCheck);
@@ -2046,7 +2048,7 @@ end;
 { lists table reference }
 procedure TGtSqlFormatLister.List_TabRef;
 var lSubQuery: TGtSqlNode;
-    lDoIntend: Boolean;
+//  lDoIntend: Boolean;
 begin
   if not Assigned(aNode) then Exit;
 
@@ -2087,35 +2089,35 @@ begin
     { table name }
     AddStr(aNode.Name, gtlsTable);
 
-    lDoIntend := Options[ gtstTableAndAliasIntend ];
+    //lDoIntend := Options[ gtstTableAndAliasIntend ];
     //       and (Length(aNode.Name) < MaxTableNameToIntend)
     //       and (Length(aNode.AliasName) < MaxAliasNameToIntend);
 
     { table alias, +1 because of identifier extra space }
-    if not lDoIntend then begin
+//  if not lDoIntend then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
       if aNode.AliasAsToken then AddStr(gtkwAs);
       AddStr(aNode.AliasName, gtlsTableAlias);
-    end else begin
-    //if Options[ gtstTableAsKeyword ] then begin
-      if aNode.AliasAsToken then begin
-        AddSpace(ML_TableName + 1 - Length(aNode.Name));
-        if aNode.AliasName = '' then AddSpace(3) else AddStr(gtkwAs);
-        AddSpace(ML_AliasName + 1 - Length(aNode.AliasName));
-        AddStr(aNode.AliasName, gtlsTableAlias);
-      end else
-      if ML_AliasName > 0 then begin
-        AddSpace(ML_TableAndAliasName + 1 - Length(aNode.Name) - Length(aNode.AliasName));
-        if aNode.AliasName = '' then begin
-          AddSpace(2);
-        end else begin
-          AddSpace(1);
-          AddStr(aNode.AliasName, gtlsTableAlias);
-        end;
-      end else begin
-        AddSpace(ML_TableAndAliasName - Length(aNode.Name) - Length(aNode.AliasName));
-      end;
-    end;
+//    end else begin
+//    //if Options[ gtstTableAsKeyword ] then begin
+//      if aNode.AliasAsToken then begin
+//        AddSpace(ML_TableName + 1 - Length(aNode.Name));
+//        if aNode.AliasName = '' then AddSpace(3) else AddStr(gtkwAs);
+//        AddSpace(ML_AliasName + 1 - Length(aNode.AliasName));
+//        AddStr(aNode.AliasName, gtlsTableAlias);
+//      end else
+//      if ML_AliasName > 0 then begin
+//        AddSpace(ML_TableAndAliasName + 1 - Length(aNode.Name) - Length(aNode.AliasName));
+//        if aNode.AliasName = '' then begin
+//          AddSpace(2);
+//        end else begin
+//          AddSpace(1);
+//          AddStr(aNode.AliasName, gtlsTableAlias);
+//        end;
+//      end else begin
+//        AddSpace(ML_TableAndAliasName - Length(aNode.Name) - Length(aNode.AliasName));
+//      end;
+//    end;
   end;
 
   { join condition }
@@ -2130,7 +2132,7 @@ end;
 { lists CREATE TABLE }
 procedure TGtSqlFormatLister.List_CreateTable;
 var lItem: TGtSqlNode;
-    i, j, cnt, cnt2, lIntend, lDataTypeLen: Integer;
+    {i,} j, cnt, cnt2, lIntend{, lDataTypeLen}: Integer;
   //lNewLine: Boolean;
 begin
   if not Assigned(aNode) then Exit;
@@ -2164,46 +2166,46 @@ begin
   if ClauseIntend then NewLineIntend := Length( RawText ) - ML_ClauseKeyword - ClauseBodySpace;
 
   { check max column name and datatype length }
-  ML_ColumnName := 0;
-  ML_DataType := 0;
-  if Options [ gtstCreateTable_Intend ] then begin
-    for j := 0 to aNode.Count - 1 do
-      if aNode[j].Kind = gtssOtherColumnDef then begin
-        { column name }
-        if (Length(aNode[j].Name) > ML_ColumnName) //and (Length(aNode[j].Name) <= MaxColumnNameToIntend)
-          then ML_ColumnName := Length(aNode[j].Name);
-
-        { data type }
-        if aNode[j].DataType = gtkwType then begin
-          lDataTypeLen := Length(aNode[j].TableName + '.' + aNode[j].ColumnName + '%' + aNode[j].DataType.Text);
-        end else begin
-          lDataTypeLen := Length(aNode[j].DataType.Text);
-          if aNode[j].ColSize <> gtsqlSizeOrPrecNotSpecified then begin
-            Inc(lDataTypeLen,2); // gttkLeftBracket
-            Inc(lDataTypeLen, Length(IntToStr(aNode[j].ColSize)));
-            if aNode[j].ColPrec <> gtsqlSizeOrPrecNotSpecified then Inc(lDataTypeLen,2); // AddComma
-            if aNode[j].ColPrec <> gtsqlSizeOrPrecNotSpecified then Inc(lDataTypeLen, Length(IntToStr(aNode[j].ColPrec)));
-            Inc(lDataTypeLen,2); // gttkRightBracket
-          end;
-        end;
-        if (lDataTypeLen > ML_DataType) //and (lDataTypeLen <= MaxDatatypeToIntend)
-          then ML_DataType := lDataTypeLen;
-
-        { constraint at new line }
-        if Options[ gtstColumnConstraint ] then begin
-          for i := 0 to aNode.Count - 1 do begin
-            lItem := aNode[i];
-            if (lItem.Kind = gtsiConstraint) and lItem.SingleColumnConstraint
-            and (lItem.Find(gtsiExpr, gttkColumnName).Name = aNode[j].Name) then begin
-              if (Length(gtkwConstraint.Text) > ML_ColumnName) //and (Length(gtkwConstraint.Text) <= MaxColumnNameToIntend)
-                then ML_ColumnName := Length(gtkwConstraint.Text);
-              if (Length(lItem.Name) > ML_DataType) //and (Length(lItem.Name) <= MaxDatatypeToIntend)
-                then ML_DataType := Length(lItem.Name);
-            end;
-          end;
-        end;
-      end;
-  end;
+//ML_ColumnName := 0;
+//ML_DataType := 0;
+//  if Options [ gtstCreateTable_Intend ] then begin
+//    for j := 0 to aNode.Count - 1 do
+//      if aNode[j].Kind = gtssOtherColumnDef then begin
+//        { column name }
+//        if (Length(aNode[j].Name) > ML_ColumnName) //and (Length(aNode[j].Name) <= MaxColumnNameToIntend)
+//          then ML_ColumnName := Length(aNode[j].Name);
+//
+//        { data type }
+//        if aNode[j].DataType = gtkwType then begin
+//          lDataTypeLen := Length(aNode[j].TableName + '.' + aNode[j].ColumnName + '%' + aNode[j].DataType.Text);
+//        end else begin
+//          lDataTypeLen := Length(aNode[j].DataType.Text);
+//          if aNode[j].ColSize <> gtsqlSizeOrPrecNotSpecified then begin
+//            Inc(lDataTypeLen,2); // gttkLeftBracket
+//            Inc(lDataTypeLen, Length(IntToStr(aNode[j].ColSize)));
+//            if aNode[j].ColPrec <> gtsqlSizeOrPrecNotSpecified then Inc(lDataTypeLen,2); // AddComma
+//            if aNode[j].ColPrec <> gtsqlSizeOrPrecNotSpecified then Inc(lDataTypeLen, Length(IntToStr(aNode[j].ColPrec)));
+//            Inc(lDataTypeLen,2); // gttkRightBracket
+//          end;
+//        end;
+//        if (lDataTypeLen > ML_DataType) //and (lDataTypeLen <= MaxDatatypeToIntend)
+//          then ML_DataType := lDataTypeLen;
+//
+//        { constraint at new line }
+////        if Options[ gtstColumnConstraint ] then begin
+////          for i := 0 to aNode.Count - 1 do begin
+////            lItem := aNode[i];
+////            if (lItem.Kind = gtsiConstraint) and lItem.SingleColumnConstraint
+////            and (lItem.Find(gtsiExpr, gttkColumnName).Name = aNode[j].Name) then begin
+////              if (Length(gtkwConstraint.Text) > ML_ColumnName) //and (Length(gtkwConstraint.Text) <= MaxColumnNameToIntend)
+////                then ML_ColumnName := Length(gtkwConstraint.Text);
+////              if (Length(lItem.Name) > ML_DataType) //and (Length(lItem.Name) <= MaxDatatypeToIntend)
+////                then ML_DataType := Length(lItem.Name);
+////            end;
+////          end;
+////        end;
+//      end;
+//  end;
 
   { list columns }
   cnt := 0;
@@ -2302,8 +2304,8 @@ begin
   end;
 
   NewLineIntend := lIntend;
-  ML_ColumnName := 0;
-  ML_DataType   := 0;
+//ML_ColumnName := 0;
+//ML_DataType   := 0;
 end;
 
 { lists DROP TABLE statement }
@@ -2722,38 +2724,38 @@ procedure TGtSqlFormatLister.List_Select;
 var lMaxLineLength: Integer;
 
   { calculates }
-  procedure CalcExprAlias(aNode: TGtSqlNode);
-  var i, lMaxLineLength: Integer;
-      lItem, lItem2: TGtSqlNode;
-      lState: TGtSqlListerState;
-  begin
-    aListerOpt := aListerOpt + [gtloExprAliasIntend];
-
-    for i := 0 to aNode.Count - 1 do
-      if (aNode[i].Kind = gtsiExprTree) and (Length(aNode[i].AliasName) > ML_ExprAlias)
-        then ML_ExprAlias := Length(aNode[i].AliasName);
-
-    { are there set-ops like UNION, MINUS etc }
-    lItem := aNode.GetQuery.Find{ByKind}(gtsiUnions);
-    while Assigned(lItem) do begin
-      lItem2 := lItem.Find(gtsiDml, gtkwSelect);
-      if Assigned(lItem2) then lItem2 := lItem2.Find(gtsiExprList, gtkwSelect);
-      if Assigned(lItem2) then begin
-        // this line takes so much time - each union twice the amount of time
-        // because of ... aNode.GetQuery before while loop
-        // CalcExprAlias(lItem2);
-
-        lState := GetState;
-        SkipOutput := True;
-        List_Select(lItem2, aListerOpt);
-        lMaxLineLength := SkipOutput_MaxLineLength;
-        SetState(lState);
-        SkipOutput_MaxLineLength := lMaxLineLength;
-      end;
-
-      lItem := aNode.GetQuery.Find{ByKind}(gtsiUnions, nil, '', lItem);
-    end;
-  end;
+//  procedure CalcExprAlias(aNode: TGtSqlNode);
+//  var i, lMaxLineLength: Integer;
+//      lItem, lItem2: TGtSqlNode;
+//      lState: TGtSqlListerState;
+//  begin
+//    aListerOpt := aListerOpt + [gtloExprAliasIntend];
+//
+//    for i := 0 to aNode.Count - 1 do
+//      if (aNode[i].Kind = gtsiExprTree) and (Length(aNode[i].AliasName) > ML_ExprAlias)
+//        then ML_ExprAlias := Length(aNode[i].AliasName);
+//
+//    { are there set-ops like UNION, MINUS etc }
+//    lItem := aNode.GetQuery.Find{ByKind}(gtsiUnions);
+//    while Assigned(lItem) do begin
+//      lItem2 := lItem.Find(gtsiDml, gtkwSelect);
+//      if Assigned(lItem2) then lItem2 := lItem2.Find(gtsiExprList, gtkwSelect);
+//      if Assigned(lItem2) then begin
+//        // this line takes so much time - each union twice the amount of time
+//        // because of ... aNode.GetQuery before while loop
+//        // CalcExprAlias(lItem2);
+//
+//        lState := GetState;
+//        SkipOutput := True;
+//        List_Select(lItem2, aListerOpt);
+//        lMaxLineLength := SkipOutput_MaxLineLength;
+//        SetState(lState);
+//        SkipOutput_MaxLineLength := lMaxLineLength;
+//      end;
+//
+//      lItem := aNode.GetQuery.Find{ByKind}(gtsiUnions, nil, '', lItem);
+//    end;
+//  end;
 
 begin
   if not Assigned(aNode) then Exit;
@@ -2765,7 +2767,7 @@ begin
     SkipOutput_MaxLineLength := 0;
   end;
   // lMaxExprAlias := ML_ExprAlias;
-  ML_ExprAlias  := 0;
+  // ML_ExprAlias  := 0;
 
   { commit not commited text }
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
@@ -2792,17 +2794,17 @@ begin
     AddStr( IntToStr(aNode.Top), gtlsNumber );
   end;
 
-  if Options [ gtstSelectAliasIntend ] then CalcExprAlias(aNode);
+//if Options [ gtstSelectAliasIntend ] then CalcExprAlias(aNode);
 
   { counts max expr line length }
-  if gtloExprAliasIntend in aListerOpt then begin
-    aNode.Keyword := nil;
-
-    List_NoOutput(aNode, aListerOpt);
-
-    aNode.Kind := gtsiExprList;
-    aNode.Keyword := gtkwSelect;
-  end;
+//  if gtloExprAliasIntend in aListerOpt then begin
+//    aNode.Keyword := nil;
+//
+//    List_NoOutput(aNode, aListerOpt);
+//
+//    aNode.Kind := gtsiExprList;
+//    aNode.Keyword := gtkwSelect;
+//  end;
 
   { list }
   List_ExprList(aNode, aListerOpt);
@@ -2871,7 +2873,7 @@ begin
   if aNode.Check(gtsiCondTree, gtkwOn) then AddStr(gtkwOn) else AddStr(gtkwUsing);
 
 //  if Options[gtstJoinCondLeftSideOrder] then aListerOpt := aListerOpt + [gtloCondLeftSideOrder];
-  if Options[gtstOnCondIntend] then aListerOpt := aListerOpt + [gtloOnLeftSideIntend, gtloOnRightSideIntend];
+//  if Options[gtstOnCondIntend] then aListerOpt := aListerOpt + [gtloOnLeftSideIntend, gtloOnRightSideIntend];
 
 //  if Options[gtstOnCondRefsFirst] then begin
 //    if aNode.Owner.AliasName <> ''
@@ -2907,64 +2909,65 @@ end;
 
 { lists FROM/INTO clause }
 procedure TGtSqlFormatLister.List_Tables;
-var i, lMaxTableName, lMaxAliasName, lMaxTableAndAliasName,
-    lMaxLeftOnExprAlias, lMaxLeftOnExprColumn, lMaxRightOnExprAlias, lMaxRightOnExprColumn: Integer;
-    lItem: TGtSqlNode;
+var i: Integer;
+//  lMaxTableName, lMaxAliasName, lMaxTableAndAliasName,
+//  lMaxLeftOnExprAlias, lMaxLeftOnExprColumn, lMaxRightOnExprAlias, lMaxRightOnExprColumn: Integer;
+//  lItem: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
   if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
 
-  lMaxTableName         := ML_TableName;
-  lMaxAliasName         := ML_AliasName;
-  lMaxTableAndAliasName := ML_TableAndAliasName;
-  lMaxLeftOnExprAlias   := ML_LeftOnExprPrefix;
-  lMaxLeftOnExprColumn  := ML_LeftOnExprColumn;
-  lMaxRightOnExprAlias  := ML_RightOnExprPrefix;
-  lMaxRightOnExprColumn := ML_RightOnExprColumn;
+//lMaxTableName         := ML_TableName;
+//lMaxAliasName         := ML_AliasName;
+//lMaxTableAndAliasName := ML_TableAndAliasName;
+//lMaxLeftOnExprAlias   := ML_LeftOnExprPrefix;
+//lMaxLeftOnExprColumn  := ML_LeftOnExprColumn;
+//lMaxRightOnExprAlias  := ML_RightOnExprPrefix;
+//lMaxRightOnExprColumn := ML_RightOnExprColumn;
 
-  if Options[ gtstTableAndAliasIntend ] then begin
-    ML_TableName         := 0;
-    ML_AliasName         := 0;
-    ML_TableAndAliasName := 0;
+//  if Options[ gtstTableAndAliasIntend ] then begin
+//    ML_TableName         := 0;
+//    ML_AliasName         := 0;
+//    ML_TableAndAliasName := 0;
+//
+//    for i := 0 to aNode.Count - 1 do
+//      if aNode[i].Check(gtsiTableRef) then begin
+//    //and (Length(aNode[i].Name) < MaxTableNameToIntend)
+//    //and (Length(aNode[i].AliasName) < MaxAliasNameToIntend) then begin
+//        if Length(aNode[i].Name) > ML_TableName then ML_TableName := Length(aNode[i].Name);
+//        if Length(aNode[i].AliasName) > ML_AliasName then ML_AliasName := Length(aNode[i].AliasName);
+//        if Length(aNode[i].Name + aNode[i].AliasName) > ML_TableAndAliasName then ML_TableAndAliasName := Length(aNode[i].Name + aNode[i].AliasName);
+//      end;
+//  end;
 
-    for i := 0 to aNode.Count - 1 do
-      if aNode[i].Check(gtsiTableRef) then begin
-    //and (Length(aNode[i].Name) < MaxTableNameToIntend)
-    //and (Length(aNode[i].AliasName) < MaxAliasNameToIntend) then begin
-        if Length(aNode[i].Name) > ML_TableName then ML_TableName := Length(aNode[i].Name);
-        if Length(aNode[i].AliasName) > ML_AliasName then ML_AliasName := Length(aNode[i].AliasName);
-        if Length(aNode[i].Name + aNode[i].AliasName) > ML_TableAndAliasName then ML_TableAndAliasName := Length(aNode[i].Name + aNode[i].AliasName);
-      end;
-  end;
-
-  if Options [ gtstOnCondIntend ] then begin
-    ML_LeftOnExprPrefix := 0;
-    ML_LeftOnExprColumn := 0;
-    ML_RightOnExprPrefix := 0;
-    ML_RightOnExprColumn := 0;
-
-    for i := 0 to aNode.Count - 1 do
-      if aNode[i].Check(gtsiTableRef) then begin
-        lItem := aNode[i].Find(gtsiCondTree, gtkwOn);
-        if Assigned(lItem)
-          then lItem.CalcConditionArgsLen(ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
-                                          ML_RightOnExprPrefix, ML_RightOnExprColumn);
-      end;
-  end;
+//  if Options [ gtstOnCondIntend ] then begin
+//    ML_LeftOnExprPrefix := 0;
+//    ML_LeftOnExprColumn := 0;
+//    ML_RightOnExprPrefix := 0;
+//    ML_RightOnExprColumn := 0;
+//
+//    for i := 0 to aNode.Count - 1 do
+//      if aNode[i].Check(gtsiTableRef) then begin
+//        lItem := aNode[i].Find(gtsiCondTree, gtkwOn);
+//        if Assigned(lItem)
+//          then lItem.CalcConditionArgsLen(ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
+//                                          ML_RightOnExprPrefix, ML_RightOnExprColumn);
+//      end;
+//  end;
 
   for i := 0 to aNode.Count - 1 do begin
     if aNode[i].Check(gtsiTableRef) then List_TabRef(aNode[i], aListerOpt);
     if aNode[i].Check(gtsiDml, gtkwSelect) then List_DML(aNode[i], aListerOpt);
   end;
 
-  ML_TableName := lMaxTableName;
-  ML_AliasName := lMaxAliasName;
-  ML_TableAndAliasName := lMaxTableAndAliasName;
-  ML_LeftOnExprPrefix := lMaxLeftOnExprAlias;
-  ML_LeftOnExprColumn := lMaxLeftOnExprColumn;
-  ML_RightOnExprPrefix := lMaxRightOnExprAlias;
-  ML_RightOnExprColumn := lMaxRightOnExprColumn;
+//ML_TableName := lMaxTableName;
+//ML_AliasName := lMaxAliasName;
+//ML_TableAndAliasName := lMaxTableAndAliasName;
+//ML_LeftOnExprPrefix := lMaxLeftOnExprAlias;
+//ML_LeftOnExprColumn := lMaxLeftOnExprColumn;
+//ML_RightOnExprPrefix := lMaxRightOnExprAlias;
+//ML_RightOnExprColumn := lMaxRightOnExprColumn;
 end;
 
 { lists DML statement }
