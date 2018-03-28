@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 28    18-03-19 20:12 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 29    18-03-20 18:41 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -59,58 +59,58 @@ var
 type
   TYaRegKey = ( yarkCommon, yarkSettings );
 
-var
-  GT_SET_BOOL_ARR : array [ TGtListerSettings ]
-  of record Key: TYaRegKey; Reg: String; Def: Boolean end
-  = ( (Key: yarkSettings; Reg: 'RightIntend';            Def: True),
-      (Key: yarkSettings; Reg: 'EmptyLineAfterQuery';    Def: True),
-      (Key: yarkSettings; Reg: 'SpaceBeforeComma';       Def: False),
-      (Key: yarkSettings; Reg: 'SpaceBeforeSemicolon';   Def: True), // False
-      (Key: yarkSettings; Reg: 'EmptyLineBeforeClause';  Def: True), // False
-      (Key: yarkSettings; Reg: 'UpperKeywords';          Def: True),
-      (Key: yarkSettings; Reg: 'ExpressionAsKeyword';    Def: True),
-      (Key: yarkSettings; Reg: 'TableAsKeyword';         Def: False), // True
-      (Key: yarkSettings; Reg: 'ColumnConstraint';       Def: True),
-      (Key: yarkSettings; Reg: 'OuterJoin';              Def: False),
-      (Key: yarkSettings; Reg: 'SortShortKeyword';       Def: True),
-      (Key: yarkSettings; Reg: 'SkipAscending';          Def: True), // False
-      (Key: yarkSettings; Reg: 'OneExprOnLine';          Def: True),
-      (Key: yarkSettings; Reg: 'OneCondOnLine';          Def: True),
-      (Key: yarkSettings; Reg: 'EmptyLineArounUnion';    Def: True),
-
-      (Key: yarkSettings; Reg: 'SpaceOutsideBrackets';   Def: False), // True
-      (Key: yarkSettings; Reg: 'SpaceInsideBrackets';    Def: True),
-      (Key: yarkSettings; Reg: 'SpaceAroundOperator';    Def: True),
-      (Key: yarkSettings; Reg: 'SpaceAfterComma';        Def: True),
-      (Key: yarkSettings; Reg: 'CommaAtNewLine';         Def: True),
-
-      (Key: yarkSettings; Reg: 'CaseIntend';             Def: False),
-      (Key: yarkSettings; Reg: 'CaseWhenAtNewLine';      Def: True),
-      (Key: yarkSettings; Reg: 'CaseThenAtNewLine';      Def: True),
-      (Key: yarkSettings; Reg: 'CaseElseAtNewLine';      Def: True),
-      (Key: yarkSettings; Reg: 'CaseEndAtNewLine';       Def: True),
-
-      (Key: yarkSettings; Reg: 'TableAndAliasIntend';    Def: True),
-      (Key: yarkSettings; Reg: 'SetExprIntend';          Def: True),
-      (Key: yarkSettings; Reg: 'CreateTableColConsBreakine';Def: True),
-      (Key: yarkSettings; Reg: 'NoSemicolonOnSingleQuery';Def:True),
-      (Key: yarkSettings; Reg: 'InnerJoin';              Def: False),
-      (Key: yarkSettings; Reg: 'AliasFirstUseCase';      Def: True),
-      (Key: yarkSettings; Reg: 'TableFirstUseCase';      Def: True),
-      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipFunOneParam'; Def: True),
-      (Key: yarkSettings; Reg: 'CreateTableColConsNewLineAfter'; Def: True),
-      (Key: yarkSettings; Reg: 'JoinCondOrder';          Def: True),
-      (Key: yarkSettings; Reg: 'CreateTableIntend';      Def: True),
-      (Key: yarkSettings; Reg: 'CreateTableEmptyLineBeforeComplexConstraints'; Def: True),
-      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipSubquery'; Def: True),
-      (Key: yarkSettings; Reg: 'OnCondIntend';           Def: True),
-      (Key: yarkSettings; Reg: 'SelectAliasIntend';      Def: True),
-      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipDatatype'; Def: True),
-      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipShort'; Def: True),
-      (Key: yarkSettings; Reg: 'OnCondRefsFirst';        Def: True),
-      (Key: yarkSettings; Reg: 'ExtQueryKeywordStyle';   Def: True),
-      (Key: yarkSettings; Reg: 'LinesNoAfterQuery';      Def: False)
-    );
+//var
+//  GT_SET_BOOL_ARR : array [ TGtListerSettings ]
+//  of record Key: TYaRegKey; Reg: String; Def: Boolean end
+//  = ( (Key: yarkSettings; Reg: 'RightIntend';            Def: True),
+//      (Key: yarkSettings; Reg: 'EmptyLineAfterQuery';    Def: True),
+//      (Key: yarkSettings; Reg: 'SpaceBeforeComma';       Def: False),
+//      (Key: yarkSettings; Reg: 'SpaceBeforeSemicolon';   Def: True), // False
+//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClause';  Def: True), // False
+//      (Key: yarkSettings; Reg: 'UpperKeywords';          Def: True),
+//      (Key: yarkSettings; Reg: 'ExpressionAsKeyword';    Def: True),
+//      (Key: yarkSettings; Reg: 'TableAsKeyword';         Def: False), // True
+//      (Key: yarkSettings; Reg: 'ColumnConstraint';       Def: True),
+//      (Key: yarkSettings; Reg: 'OuterJoin';              Def: False),
+//      (Key: yarkSettings; Reg: 'SortShortKeyword';       Def: True),
+//      (Key: yarkSettings; Reg: 'SkipAscending';          Def: True), // False
+//      (Key: yarkSettings; Reg: 'OneExprOnLine';          Def: True),
+//      (Key: yarkSettings; Reg: 'OneCondOnLine';          Def: True),
+//      (Key: yarkSettings; Reg: 'EmptyLineArounUnion';    Def: True),
+//
+//      (Key: yarkSettings; Reg: 'SpaceOutsideBrackets';   Def: False), // True
+//      (Key: yarkSettings; Reg: 'SpaceInsideBrackets';    Def: True),
+//      (Key: yarkSettings; Reg: 'SpaceAroundOperator';    Def: True),
+//      (Key: yarkSettings; Reg: 'SpaceAfterComma';        Def: True),
+//      (Key: yarkSettings; Reg: 'CommaAtNewLine';         Def: True),
+//
+//      (Key: yarkSettings; Reg: 'CaseIntend';             Def: False),
+//      (Key: yarkSettings; Reg: 'CaseWhenAtNewLine';      Def: True),
+//      (Key: yarkSettings; Reg: 'CaseThenAtNewLine';      Def: True),
+//      (Key: yarkSettings; Reg: 'CaseElseAtNewLine';      Def: True),
+//      (Key: yarkSettings; Reg: 'CaseEndAtNewLine';       Def: True),
+//
+//      (Key: yarkSettings; Reg: 'TableAndAliasIntend';    Def: True),
+//      (Key: yarkSettings; Reg: 'SetExprIntend';          Def: True),
+//      (Key: yarkSettings; Reg: 'CreateTableColConsBreakine';Def: True),
+//      (Key: yarkSettings; Reg: 'NoSemicolonOnSingleQuery';Def:True),
+//      (Key: yarkSettings; Reg: 'InnerJoin';              Def: False),
+//      (Key: yarkSettings; Reg: 'AliasFirstUseCase';      Def: True),
+//      (Key: yarkSettings; Reg: 'TableFirstUseCase';      Def: True),
+//      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipFunOneParam'; Def: True),
+//      (Key: yarkSettings; Reg: 'CreateTableColConsNewLineAfter'; Def: True),
+//      (Key: yarkSettings; Reg: 'JoinCondOrder';          Def: True),
+//      (Key: yarkSettings; Reg: 'CreateTableIntend';      Def: True),
+//      (Key: yarkSettings; Reg: 'CreateTableEmptyLineBeforeComplexConstraints'; Def: True),
+//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipSubquery'; Def: True),
+//      (Key: yarkSettings; Reg: 'OnCondIntend';           Def: True),
+//      (Key: yarkSettings; Reg: 'SelectAliasIntend';      Def: True),
+//      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipDatatype'; Def: True),
+//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipShort'; Def: True),
+//      (Key: yarkSettings; Reg: 'OnCondRefsFirst';        Def: True),
+//      (Key: yarkSettings; Reg: 'ExtQueryKeywordStyle';   Def: True),
+//      (Key: yarkSettings; Reg: 'LinesNoAfterQuery';      Def: False)
+//    );
 
 var
   GT_SET_CASE_ARR : array [ TGtListerCaseSettings ]
@@ -218,8 +218,8 @@ var
 
 function YaRegKey(aKey: TYaRegKey): String;
 
-procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
-function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
+//procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
+//function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
 
 procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
 function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
@@ -291,18 +291,18 @@ begin
 end;
 
 { gets YA Boolean Setting }
-function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
-begin
-  Result := rguGetBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, GT_SET_BOOL_ARR [ aSett ].Def);
-end;
+//function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
+//begin
+//  Result := rguGetBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, GT_SET_BOOL_ARR [ aSett ].Def);
+//end;
 
 { puts YA Boolean Setting }
-procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
-begin
-  if aForce or (aValue <> GT_SET_BOOL_ARR [ aSett ].Def)
-    then rguPutBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, aValue)
-    else rguDeleteVal(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg);
-end;
+//procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
+//begin
+//  if aForce or (aValue <> GT_SET_BOOL_ARR [ aSett ].Def)
+//    then rguPutBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, aValue)
+//    else rguDeleteVal(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg);
+//end;
 
 { gets YA Case Setting }
 function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
@@ -439,15 +439,15 @@ end;
 
 { set format options for script lister }
 procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
-var lOpt: TGtListerSettings;
+var //lOpt: TGtListerSettings;
     lCase: TGtListerCaseSettings;
 begin
   for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
     do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
 
   if aScriptFormat then begin { Format }
-    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
-      do aScriptFormater.Options [lOpt] := GtRegistryGetBool (lOpt);
+//    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
+//      do aScriptFormater.Options [lOpt] := GtRegistryGetBool (lOpt);
 
     aScriptFormater.ClauseIntend               := True;
     aScriptFormater.SubQueryIntend             := True;

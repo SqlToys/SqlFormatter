@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 320   18-03-19 20:12 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 321   18-03-20 18:41 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -31,10 +31,10 @@ type
 
   TGtSqlCaseOption         =( gtcoNoChange, gtcoUpperCase, gtcoLowerCase, gtcoFirstCharUpper, gtcoFirstUseCase );
 
-  TGtSqlListerOptions      =( gtloTextOnly, gtloSkipOneExprOnLine, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLine,
+  TGtSqlListerOptions      =( gtloTextOnly, //gtloSkipOneExprOnLineREMOVED, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLineREMOVED,
                               gtloTableConstraint, gtloAlterTableConstraint,
-                              gtloSameAsPrevClause, gtloCondLeftSideOrderREMOVED, gtloCondEqualSwapREMOVED,
-                              gtloSingleColumn, gtloOnLeftSideIntendREMOVED, gtloOnRightSideIntendREMOVED, gtloExprAliasIntendREMOVED,
+                              gtloSameAsPrevClause, //gtloCondLeftSideOrderREMOVED, gtloCondEqualSwapREMOVED,
+                              gtloSingleColumn, //gtloOnLeftSideIntendREMOVED, gtloOnRightSideIntendREMOVED, gtloExprAliasIntendREMOVED,
                               gtloSkipFrom
                             );
   TGtSqlListerOptionsSet   =set of TGtSqlListerOptions;
@@ -46,31 +46,31 @@ type
                          , gtlcIdentifierCONVERTER, gtlcKeyword
                          , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
 
-  TGtListerSettings = (gtstRightIntendREMOVED, gtstLineAfterQueryREMOVED,
-                       gtstSpaceBeforeComma, gtstSpaceBeforeSemicolon,
-                       gtstEmptyLineBeforeClauseREMOVED, gtstUpperKeywordsREMOVED,
-                       gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraintREMOVED,
-                       gtstOuterJoinCONVERTER, gtstSortShortCONVERTER, gtstSkipAscendingCONVERTER,
-                       gtstOneExprOnLine, gtstOneCondOnLine,
-                       gtstEmptyLineAroundUnionREMOVED,
-                       gtstSpaceOutsideBrackets, gtstSpaceInsideBrackets,
-                       gtstSpaceAroundOperator, gtstSpaceAfterComma, gtstCommaAtNewLine,
-                       gtstCaseAtNewLineREMOVED,
-                       gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
-                       gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
-                       gtstTableAndAliasIntendREMOVED, gtstSetExprIntendREMOVED, gtstCreateTable_ColConsBreakLineREMOVED,
-                       gtstNoSemicolonOnSingleQueryREMOVED, gtstInnerJoinCONVERTER,
-                       gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
-                       gtstSpaceInsideBracketsSkipFun,
-                       gtstCreateTable_ColConsNewLineAfterREMOVED, gtstJoinCondLeftSideOrderCONVERTER,
-                       gtstCreateTable_IntendREMOVED, gtstCreateTable_EmptyLineBefComplexConstrREMOVED,
-                       gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntendREMOVED,
-                       gtstSelectAliasIntendREMOVED, gtstSpaceInsideBracketsSkipDatatype, gtstEmptyLineBeforeClauseSkipShortREMOVED,
-                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
-  );
+//  TGtListerSettings = (gtstRightIntendREMOVED, gtstLineAfterQueryREMOVED,
+//                       gtstSpaceBeforeCommaREMOVED, gtstSpaceBeforeSemicolonREMOVED,
+//                       gtstEmptyLineBeforeClauseREMOVED, gtstUpperKeywordsREMOVED,
+//                       gtstExprAsKeywordCONVERTER, gtstTableAsKeywordCONVERTER, gtstColumnConstraintREMOVED,
+//                       gtstOuterJoinCONVERTER, gtstSortShortCONVERTER, gtstSkipAscendingCONVERTER,
+//                       gtstOneExprOnLineREMOVED, gtstOneCondOnLineREMOVED,
+//                       gtstEmptyLineAroundUnionREMOVED,
+//                       gtstSpaceOutsideBracketsREMOVED, gtstSpaceInsideBracketsREMOVED,
+//                       gtstSpaceAroundOperatorREMOVED, gtstSpaceAfterCommaREMOVED, gtstCommaAtNewLineREMOVED,
+//                       gtstCaseAtNewLineREMOVED,
+//                       gtstCaseWhenAtNewLineREMOVED, gtstCaseThenAtNewLineREMOVED,
+//                       gtstCaseElseAtNewLineREMOVED, gtstCaseEndAtNewLineREMOVED,
+//                       gtstTableAndAliasIntendREMOVED, gtstSetExprIntendREMOVED, gtstCreateTable_ColConsBreakLineREMOVED,
+//                       gtstNoSemicolonOnSingleQueryREMOVED, gtstInnerJoinCONVERTER,
+//                       gtstAliasFirstUseCaseREMOVED, gtstTableFirstUseCaseREMOVED,
+//                       gtstSpaceInsideBracketsSkipFunREMOVED,
+//                       gtstCreateTable_ColConsNewLineAfterREMOVED, gtstJoinCondLeftSideOrderCONVERTER,
+//                       gtstCreateTable_IntendREMOVED, gtstCreateTable_EmptyLineBefComplexConstrREMOVED,
+//                       gtstEmptyLineBeforeClauseSkipSubqueryREMOVED, gtstOnCondIntendREMOVED,
+//                       gtstSelectAliasIntendREMOVED, gtstSpaceInsideBracketsSkipDatatypeREMOVED, gtstEmptyLineBeforeClauseSkipShortREMOVED,
+//                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
+//  );
 
   TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
-  TGtListerSettingsArray = array [ TGtListerSettings ] of Boolean;
+//TGtListerSettingsArray = array [ TGtListerSettings ] of Boolean;
 
 {-------------------------------- Lister State --------------------------------}
 
@@ -136,7 +136,7 @@ type
     FormattingMode: TGtSqlFormattingOption;
   //MaxIdentifierLen: Integer;        // max length of any identifier
 
-    Options: TGtListerSettingsArray;
+  //Options: TGtListerSettingsArray;
     CaseOpt: TGtListerCaseSettingsArray;
 
     //Dialect: TGtSqlDialect;
@@ -327,7 +327,7 @@ uses SysUtils, GtStandard;
 
 { class constructor }
 constructor TGtSqlProtoLister.Create;
-var lOpt: TGtListerSettings;
+var //lOpt: TGtListerSettings;
     lCase: TGtListerCaseSettings;
 begin
   inherited Create;
@@ -350,8 +350,8 @@ begin
   SL := TStringList.Create;
   SL.DefaultEncoding := TEncoding.ANSI;
 
-  for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
-    do Options[ lOpt ] := False;
+//  for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
+//    do Options[ lOpt ] := False;
 
   for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
     do CaseOpt[ lCase ] := gtcoNoChange;
@@ -360,8 +360,8 @@ begin
   CaseOpt[ gtlcKeyword ] := gtcoUpperCase;
   // Options[ gtstUpperKeywords    ] := True;
   // Options[ gtstColumnConstraint ] := True;
-  Options[ gtstSortShortCONVERTER ] := True;
-  Options[ gtstSkipAscendingCONVERTER ] := True;
+//  Options[ gtstSortShortCONVERTER ] := True;
+//  Options[ gtstSkipAscendingCONVERTER ] := True;
 
 //MaxIdentifierLen := 30;
 end;
@@ -684,7 +684,7 @@ begin
 
   if (aStyle = gtlsOperator) then begin
     { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siê do identyfikatora }
-    if Options[ gtstSpaceAroundOperator ] or (UpperCase(aStr)='AND') or (UpperCase(aStr)='OR') or (UpperCase(aStr)='NOT')
+    if {Options[ gtstSpaceAroundOperator ] or} (UpperCase(aStr)='AND') or (UpperCase(aStr)='OR') or (UpperCase(aStr)='NOT')
       then AddSpace;
   end else
   if aAddClearSpace then AddSpace;
@@ -700,7 +700,7 @@ begin
     Add(aStr, LocalFormatStr(aStr, aStyle));
 //  end;
 
-  if (aStyle = gtlsOperator) and Options[ gtstSpaceAroundOperator ] then AddSpace;
+//if (aStyle = gtlsOperator) and Options[ gtstSpaceAroundOperator ] then AddSpace;
 end;
 
 { adds colored string }
@@ -765,19 +765,19 @@ begin
                   if aToken = gttkLeftBracket then begin
                     lStyle := BracketLevelStyle;
                     Inc(BracketLevel);
-                    AddStr(lStr, lStyle, Options[ gtstSpaceOutsideBrackets ] and aAddClearSpace);
-                    if Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
-                      and not (aSingleParam and Options[ gtstSpaceInsideBracketsSkipFun ])
-                      then AddSpace;
+                    AddStr(lStr, lStyle, False {Options[ gtstSpaceOutsideBrackets ] and aAddClearSpace} );
+//                    if Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
+//                      and not (aSingleParam and Options[ gtstSpaceInsideBracketsSkipFun ])
+//                      then AddSpace;
                     Exit;
                   end else
                   if aToken = gttkRightBracket then begin
                     Dec(BracketLevel);
                     lStyle := BracketLevelStyle;
-                    AddStr(lStr, lStyle,
-                           Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
-                           and not (aSingleParam and Options[ gtstSpaceInsideBracketsSkipFun ]) );
-                    if Options[ gtstSpaceOutsideBrackets] and aAddClearSpace then AddSpace;
+                    AddStr(lStr, lStyle, False);
+//                           Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
+//                           and not (aSingleParam and Options[ gtstSpaceInsideBracketsSkipFun ]) );
+                  //if Options[ gtstSpaceOutsideBrackets] and aAddClearSpace then AddSpace;
                     Exit;
                   end;
   end;
@@ -1031,26 +1031,26 @@ end;
 { adds formatting options for comma }
 procedure TGtSqlFormatLister.AddComma;
 begin
-  if not Options[ gtstSpaceBeforeComma ] then RemSpace;
+  //if not Options[ gtstSpaceBeforeComma ] then RemSpace;
 
-  AddStr(gttkComma, Options[ gtstSpaceBeforeComma ]);
+  AddStr(gttkComma);//, Options[ gtstSpaceBeforeComma ]);
 
-  if Options[ gtstSpaceAfterComma ] then AddSpace;
+//if Options[ gtstSpaceAfterComma ] then AddSpace;
 end;
 
 { adds comma after expression inside column/expr list }
 procedure TGtSqlFormatLister.AddCommaAfterExpr;
 begin
-  if Options[ gtstOneExprOnLine ] and not (gtloSkipOneExprOnLine in aListerOpt) then begin
-    if not Options[ gtstCommaAtNewLine ] then begin
-      AddComma;
-      AddClause(nil);
-    end else begin
-      AddClause(gttkComma)
-    end;
-  end else begin
+//  if Options[ gtstOneExprOnLine ] and not (gtloSkipOneExprOnLine in aListerOpt) then begin
+//    if not Options[ gtstCommaAtNewLine ] then begin
+//      AddComma;
+//      AddClause(nil);
+//    end else begin
+//      AddClause(gttkComma)
+//    end;
+//  end else begin
     AddComma;
-  end;
+//  end;
 end;
 
 { adds left bracket }
@@ -1203,14 +1203,14 @@ begin
   AddStr(aNode.DataType);
   if aNode.ColSize = gtsqlSizeOrPrecNotSpecified then Exit;
 
-  AddStr(gttkLeftBracket, not Options[gtstSpaceInsideBracketsSkipDatatype]);
+  AddStr(gttkLeftBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
 
   AddStr(IntToStr(aNode.ColSize), gtlsNumber, False);
 
   if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
   if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
 
-  AddStr(gttkRightBracket, not Options[gtstSpaceInsideBracketsSkipDatatype]);
+  AddStr(gttkRightBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
 end;
 
 { lists expression }
@@ -1299,7 +1299,7 @@ var //lSkipSubCaseFormat: Boolean;
 begin
   lNode := nil;
 //lSkipSubCaseFormat := gtloSkipSubCaseFormat in aListerOpt;
-  aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine, {gtloSkipSubCaseFormat,} gtloSkipOneCondOnLine ];
+//aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine {, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine} ];
 
 //if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
   if aNode.EmptyLineBefore then AddClause;
@@ -1355,7 +1355,7 @@ end;
 procedure  TGtSqlFormatLister.List_ExprCast;
 begin
   AddStr(gtkwCast);
-  AddStr(gttkLeftBracket, not Options[ gtstSpaceInsideBracketsSkipFun ]);
+  AddStr(gttkLeftBracket, False{not Options[ gtstSpaceInsideBracketsSkipFun ]});
 
   List_ExprTree(aNode.Find{ByKind}(gtsiExprTree), aListerOpt);
 
@@ -1363,7 +1363,7 @@ begin
 
   List_DataType(aNode, aListerOpt);
 
-  AddStr(gttkRightBracket, gttkRightBracket.Style, True, Options[ gtstSpaceInsideBracketsSkipFun ]);
+  AddStr(gttkRightBracket, gttkRightBracket.Style, True, False {Options[ gtstSpaceInsideBracketsSkipFun ]});
 end;
 
 { lists expression CONVERT }
@@ -1405,7 +1405,7 @@ begin
 
   if aNode.Check(gtsiExpr, gtkwDistinct) then AddStr(gtkwDistinct, False);
 
-  List_ExprList(lExprList, aListerOpt + [gtloSkipOneExprOnLine]);
+  List_ExprList(lExprList, aListerOpt); // + [gtloSkipOneExprOnLine]);
 
   AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
 
@@ -1416,7 +1416,7 @@ begin
     AddStr(gtkwDenseRank);
     AddStr(aNode.KeepName, gtlsAggrFunction);
     List_Clause_Expr(aNode.Find(gtsiExprList, gtkwOrder_By),
-                     aListerOpt + [gtloSkipOneExprOnLine], gtkwOrder_By, True {ClauseAppendCondition});
+                     aListerOpt {+ [gtloSkipOneExprOnLine]}, gtkwOrder_By, True {ClauseAppendCondition});
     AddRightBracket;
   end;
 end;
@@ -1541,7 +1541,7 @@ begin
          aNode[i].Check(gtsiExpr, gttkIdentifier) or aNode[i].Check(gtsiExpr, gttkParameterName) or
          aNode[i].Check(gtsiExpr, gttkColumnName) or aNode[i].Check(gtsiExpr, gttkStar)
         then List(aNode[i], aListerOpt)
-        else List(aNode[i], aListerOpt - [{gtloOnLeftSideIntend,} gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
+        else List(aNode[i], aListerOpt); // - [{gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
     end;
 
   AddRightBracket(aNode.BracketsCount);
@@ -1682,7 +1682,7 @@ begin
     if Assigned(lExpr) and lExpr.Check(gtsiExprList, gtkwIn) then begin
       AddStr(gttkLeftBracket);
 
-      List(lExpr, aListerOpt + [gtloSkipOneExprOnLine] {- [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
+      List(lExpr, aListerOpt {+ [gtloSkipOneExprOnLine] - [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
 
       AddStr(gttkRightBracket);
     end else begin
@@ -1758,9 +1758,9 @@ begin
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Check(gtsiCond) or aNode[i].Check(gtsiCondTree) then begin
       if b then begin
-        if Options[ gtstOneCondOnLine ] and not (gtloSkipOneCondOnLine in aListerOpt)
-          then AddClause(aNode.{LogicOp} Operand)
-          else AddStr(aNode.{LogicOp} Operand);
+      //if Options[ gtstOneCondOnLine ] and not (gtloSkipOneCondOnLine in aListerOpt)
+      //  then AddClause(aNode.{LogicOp} Operand)
+          {else} AddStr(aNode.{LogicOp} Operand);
       end;
 
 //      if not b then begin
@@ -2008,7 +2008,7 @@ begin
 
   if (gtloTableConstraint in aListerOpt) or (gtloAlterTableConstraint in aListerOpt) then begin
     AddStr(gttkLeftBracket);
-    List_ExprList(aNode, aListerOpt + [gtloSkipOneExprOnLine]);
+    List_ExprList(aNode, aListerOpt {+ [gtloSkipOneExprOnLine]});
     AddStr(gttkRightBracket);
   end;
 end;
@@ -2061,12 +2061,12 @@ begin
       else AddClause( gtkwInsert_Into, ClauseAppendCondition);
   end else
   if (aNode.{JoinOp} Operand = gttkComma) then begin
-    if not Options[ gtstCommaAtNewLine ] then begin
+//    if not Options[ gtstCommaAtNewLine ] then begin
       AddComma;
       AddClause(nil, ClauseAppendCondition);
-    end else begin
-      AddClause(gttkComma, ClauseAppendCondition);
-    end;
+//    end else begin
+//      AddClause(gttkComma, ClauseAppendCondition);
+//    end;
   end else
   if (aNode.{JoinOp} Operand = gtkwFrom) and (gtloSkipFrom in aListerOpt)
     then
@@ -2216,12 +2216,12 @@ begin
     //lNewLine := False;
 
       if cnt > 0 then begin
-        if Options[ gtstCommaAtNewLine ] then begin
-          AddClause(gttkComma);
-        end else begin
+//        if Options[ gtstCommaAtNewLine ] then begin
+//          AddClause(gttkComma);
+//        end else begin
           AddComma;
           AddClause(nil);
-        end;
+//        end;
       end;
 
         List_ColumnDef(aNode[j], {lTreeNode,} aListerOpt);
@@ -2251,12 +2251,12 @@ begin
             then AddEmptyLine;
 
         if cnt > 0 then begin
-          if Options[ gtstCommaAtNewLine ] then begin
-            AddClause(gttkComma);
-          end else begin
+//          if Options[ gtstCommaAtNewLine ] then begin
+//            AddClause(gttkComma);
+//          end else begin
             AddComma;
             AddClause(nil);
-          end;
+//          end;
         end;
 
           List_Constraint(aNode[j], {lTreeNode,} aListerOpt + [gtloTableConstraint]);
@@ -2459,7 +2459,8 @@ begin
         else aListerOpt := aListerOpt - [gtloSameAsPrevClause];
 
       if gtloSameAsPrevClause in aListerOpt then begin
-        if not Options[ gtstCommaAtNewLine ] then AddComma else AddClause(gttkComma);
+      //if not Options[ gtstCommaAtNewLine ] then AddComma else AddClause(gttkComma);
+        AddComma;
       end;
       end;
 
@@ -2881,7 +2882,7 @@ begin
 //      else aNode.OnCondMoveRefsFirst(aNode.Owner.Name);
 //  end;
 
-  List_CondTree(aNode, aListerOpt + [gtloSkipOneCondOnLine]);
+  List_CondTree(aNode, aListerOpt {+ [gtloSkipOneCondOnLine]});
 end;
 
 { lists VALUES clause }
@@ -3246,7 +3247,7 @@ begin
 
 //    if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
         if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
-          if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
+        //if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
           AddStr( gttkSemicolon, False );
         end;
 //    end;
