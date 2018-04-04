@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 29    18-03-20 18:41 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 30    18-03-25 17:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -112,19 +112,19 @@ type
 //      (Key: yarkSettings; Reg: 'LinesNoAfterQuery';      Def: False)
 //    );
 
-var
-  GT_SET_CASE_ARR : array [ TGtListerCaseSettings ]
-  of record Key: TYaRegKey; Reg: String; Def: TGtSqlCaseOption end
-  = ( (Key: yarkSettings; Reg: 'TableCase';             Def: gtcoFirstUseCase  ),
-      (Key: yarkSettings; Reg: 'ColumnCase';            Def: gtcoNoChange ),
-      (Key: yarkSettings; Reg: 'TableAliasCase';        Def: gtcoFirstUseCase ),
-      (Key: yarkSettings; Reg: 'ColumnAliasCase';       Def: gtcoNoChange ),
-      (Key: yarkSettings; Reg: 'ParameterCase';         Def: gtcoNoChange ),
-      (Key: yarkSettings; Reg: 'IdentifierCase';        Def: gtcoNoChange ),
-      (Key: yarkSettings; Reg: 'KeywordCase';           Def: gtcoUpperCase ),
-      (Key: yarkSettings; Reg: 'ColumnQuotedAliasCase'; Def: gtcoNoChange ),
-      (Key: yarkSettings; Reg: 'FunctionCase';          Def: gtcoNoChange )
-    );
+//var
+//  GT_SET_CASE_ARR : array [ TGtListerCaseSettings ]
+//  of record Key: TYaRegKey; Reg: String; Def: TGtSqlCaseOption end
+//  = ( (Key: yarkSettings; Reg: 'TableCase';             Def: gtcoFirstUseCase  ),
+//      (Key: yarkSettings; Reg: 'ColumnCase';            Def: gtcoNoChange ),
+//      (Key: yarkSettings; Reg: 'TableAliasCase';        Def: gtcoFirstUseCase ),
+//      (Key: yarkSettings; Reg: 'ColumnAliasCase';       Def: gtcoNoChange ),
+//      (Key: yarkSettings; Reg: 'ParameterCase';         Def: gtcoNoChange ),
+//      (Key: yarkSettings; Reg: 'IdentifierCase';        Def: gtcoNoChange ),
+//      (Key: yarkSettings; Reg: 'KeywordCase';           Def: gtcoUpperCase ),
+//      (Key: yarkSettings; Reg: 'ColumnQuotedAliasCase'; Def: gtcoNoChange ),
+//      (Key: yarkSettings; Reg: 'FunctionCase';          Def: gtcoNoChange )
+//    );
 
 type
   TYaBoolSettings = ( yastSpaceSavingAliases_OBSOLETE, yastPrefixNonUniqueCols_OBSOLETE,
@@ -221,8 +221,8 @@ function YaRegKey(aKey: TYaRegKey): String;
 //procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
 //function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
 
-procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
-function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
+//procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
+//function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
 
 procedure YaRegistryPutBool(aSett: TYaBoolSettings; aValue: Boolean; aForce: Boolean = False);
 function  YaRegistryGetBool(aSett: TYaBoolSettings): Boolean;
@@ -305,25 +305,25 @@ end;
 //end;
 
 { gets YA Case Setting }
-function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
-begin
-  case rguGetInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg,
-                 Ord(GT_SET_CASE_ARR [ aSett ].Def)) of
-    1: Result := gtcoUpperCase;
-    2: Result := gtcoLowerCase;
-    3: Result := gtcoFirstCharUpper;
-    4: Result := gtcoFirstUseCase;
-  else Result := gtcoNoChange;
-  end;
-end;
+//function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
+//begin
+//  case rguGetInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg,
+//                 Ord(GT_SET_CASE_ARR [ aSett ].Def)) of
+//    1: Result := gtcoUpperCase;
+//    2: Result := gtcoLowerCase;
+//    3: Result := gtcoFirstCharUpper;
+//    4: Result := gtcoFirstUseCase;
+//  else Result := gtcoNoChange;
+//  end;
+//end;
 
 { puts YA Case Setting }
-procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
-begin
-  if aForce or (aValue <> Ord(GT_SET_CASE_ARR [ aSett ].Def))
-    then rguPutInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg, aValue)
-    else rguDeleteVal(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg);
-end;
+//procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
+//begin
+//  if aForce or (aValue <> Ord(GT_SET_CASE_ARR [ aSett ].Def))
+//    then rguPutInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg, aValue)
+//    else rguDeleteVal(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg);
+//end;
 
 { puts YA Boolean Setting }
 procedure YaRegistryPutBool(aSett: TYaBoolSettings; aValue: Boolean; aForce: Boolean = False);
@@ -439,11 +439,11 @@ end;
 
 { set format options for script lister }
 procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
-var //lOpt: TGtListerSettings;
-    lCase: TGtListerCaseSettings;
+//var //lOpt: TGtListerSettings;
+    //lCase: TGtListerCaseSettings;
 begin
-  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
-    do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
+//  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
+//    do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
 
   if aScriptFormat then begin { Format }
 //    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)

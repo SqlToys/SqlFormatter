@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 6     18-02-11 18:43 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 7     18-03-25 17:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -67,15 +67,15 @@ var lSL: TStringList;
 //    if(aNode.CompOp        <> gttkNone)and(aNode.Count > 1)
 //                                       then s := s + ' CompOp="'        + XmlQuote(aNode.CompOp.Text)    + '"';
 //    if aNode.JoinOp        <> gttkNone then s := s + ' JoinOp="'        + XmlQuote(aNode.JoinOp.Text)    + '"';
-      if(aNode.Operand       <> gttkNone)then s := s + ' Operand="'       + XmlQuote(aNode.Operand.Text)   + '"';
-      if aNode.DataType      <> gttkNone then s := s + ' DataType="'      + XmlQuote(aNode.DataType.Text)  + '"';
-      if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.Text)  + '"';
-      if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.Text)  + '"';
-      if aNode.SortOrder     <> gttkNone then s := s + ' SortOrder="'     + XmlQuote(aNode.SortOrder.Text) + '"';
+      if(aNode.Operand       <> gttkNone)then s := s + ' Operand="'       + XmlQuote(aNode.Operand.TokenText)   + '"';
+      if aNode.DataType      <> gttkNone then s := s + ' DataType="'      + XmlQuote(aNode.DataType.TokenText)  + '"';
+      if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.TokenText)  + '"';
+      if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.TokenText)  + '"';
+      if aNode.SortOrder     <> gttkNone then s := s + ' SortOrder="'     + XmlQuote(aNode.SortOrder.TokenText) + '"';
       if Assigned(aNode.Keyword) then
       if(aNode.Keyword       <> gttkNone)//and(aNode.Keyword <> gttkIdentifier)and(aNode.Keyword <> gttkColumnName)
   //                                       and(aNode.Keyword <> gttkNumber)
-                                         then s := s + ' Keyword="'       + XmlQuote(aNode.Keyword.Text)   + '"';
+                                         then s := s + ' Keyword="'       + XmlQuote(aNode.Keyword.TokenText)   + '"';
 
       if Assigned(aNode.Values) then
         for i := 0 to aNode.Values.Count -1 do

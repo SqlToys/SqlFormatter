@@ -1,5 +1,9 @@
-(* $Header: /SQL Parser/pas/GtContainers.pas 111   17-12-13 18:09 Tomek $
+(* $Header: /SQL Toys/SqlFormat/GtContainers.pas 112   18-03-25 17:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
+{--------------------------------------  --------------------------------------}
+{ This unit provides simple item class and an items list class                 }
+{ Each item and class can have individual name                                 }
+{ For each item and list can be enabled class reference tracking               }
 {--------------------------------------  --------------------------------------}
 {$DEBUGINFO OFF}
 {$LOCALSYMBOLS OFF}
@@ -14,10 +18,8 @@ uses Classes, Contnrs, SysUtils
 
 {------------------------------ Class Hierarchy -------------------------------}
 
-{TGtGcItem                              adds & removes item from Garbage Coll. }
 {  TGtItem                                                                     }
 {    TGtUniList                                                                }
-{      TGtUniNameList                                                          }
 {      TGtTemporaryItemList                                                    }
 
 {--------------------------------- Item Class ---------------------------------}
@@ -85,6 +87,7 @@ type
     procedure   SetCapacity(aCapacity: Integer);
   public
     constructor Create(aOwner: TGtItem); override;
+    constructor CreateAsNameList(aOwner: TGtItem); virtual;
     destructor  Destroy; override;
 
     { list management }
@@ -98,19 +101,19 @@ type
 
     { name list management }
     procedure   AddName(aItem: TGtItem; aName: String=''); overload;
-    procedure   AddName(aName: String; aItem: TGtItem); overload;
+//  procedure   AddName(aName: String; aItem: TGtItem); overload;
     procedure   ChangeItemName(aItem: TGtItem; aName: String);
 
     { list search by class type }
-    function    FindByClass        (aItemClass: TGtItemClass; aItem: TGtItem=nil): TGtItem; virtual;
-    function    FindByClassOrCreate(aItemClass: TGtItemClass): TGtItem; virtual;
-    function    FindByClassAndName (aItemClass: TGtItemClass; aName: String=''; aItem: TGtItem=nil): TGtItem; virtual;
-    function    FindByName         (aName: String; aItem: TGtItem=nil): TGtItem; virtual;
+//  function    FindByClass        (aItemClass: TGtItemClass; aItem: TGtItem=nil): TGtItem; virtual;
+//  function    FindByClassOrCreate(aItemClass: TGtItemClass): TGtItem; virtual;
+//  function    FindByClassAndName (aItemClass: TGtItemClass; aName: String=''; aItem: TGtItem=nil): TGtItem; virtual;
+//  function    FindByName         (aName: String; aItem: TGtItem=nil): TGtItem; virtual;
 
-    function    CountByClass       (aItemClass: TGtItemClass; aItem: TGtItem=nil): Integer; virtual;
-    procedure   AddByClass         (aItemClass: TGtItemClass; aList: TGtUniList); virtual;
+//  function    CountByClass       (aItemClass: TGtItemClass; aItem: TGtItem=nil): Integer; virtual;
+//  procedure   AddByClass         (aItemClass: TGtItemClass; aList: TGtUniList); virtual;
 
-    procedure   ForEachClassCallProc(aClass: TGtItemClass; Proc: TGtItemProc); virtual;
+//  procedure   ForEachClassCallProc(aClass: TGtItemClass; Proc: TGtItemProc); virtual;
 
     { properties }
     property    Count: Integer read GetCount;
@@ -120,10 +123,10 @@ type
 
 {--------------------------- Unified Name List Class --------------------------}
 
-  TGtUniNameList = class (TGtUniList)
-  public
-    constructor Create(aOwner: TGtItem; aName: String); override;
-  end;
+//  TGtUniNameList = class (TGtUniList)
+//  public
+//    constructor Create(aOwner: TGtItem; aName: String); override;
+//  end;
 
 {-------------------------- Temporary Item List Class -------------------------}
 
@@ -327,6 +330,13 @@ begin
   FUseAsStringList := False;
 end;
 
+constructor TGtUniList.CreateAsNameList(aOwner: TGtItem);
+begin
+  inherited Create(aOwner);
+
+  FUseAsStringList := True;
+end;
+
 { class destructor, frees only items which are not connected to other lists }
 destructor  TGtUniList.Destroy;
 begin
@@ -489,10 +499,10 @@ begin
 end;
 
 { adds item to list }
-procedure TGtUniList.AddName(aName: String; aItem: TGtItem);
-begin
-  AddName(aItem, aName);
-end;
+//procedure TGtUniList.AddName(aName: String; aItem: TGtItem);
+//begin
+//  AddName(aItem, aName);
+//end;
 
 { changes item name on list }
 procedure TGtUniList.ChangeItemName(aItem: TGtItem; aName: String);
@@ -502,89 +512,89 @@ begin
 end;
 
 { finds next item of a given class }
-function TGtUniList.FindByClass (aItemClass: TGtItemClass; aItem: TGtItem=nil): TGtItem;
-var i: Integer;
-begin
-  Result := nil;
-
-  i := 0;
-  if Assigned(aItem) then i := GetIndex(aItem) +1;
-
-  while not Assigned(Result) and (i >= 0) and (i < Count) do
-    if not Assigned(aItemClass) or (GetItem(i) is aItemClass)
-      then Result := GetItem(i)
-      else Inc(i);
-end;
+//function TGtUniList.FindByClass (aItemClass: TGtItemClass; aItem: TGtItem=nil): TGtItem;
+//var i: Integer;
+//begin
+//  Result := nil;
+//
+//  i := 0;
+//  if Assigned(aItem) then i := GetIndex(aItem) +1;
+//
+//  while not Assigned(Result) and (i >= 0) and (i < Count) do
+//    if not Assigned(aItemClass) or (GetItem(i) is aItemClass)
+//      then Result := GetItem(i)
+//      else Inc(i);
+//end;
 
 { finds or creates item }
-function TGtUniList.FindByClassOrCreate(aItemClass: TGtItemClass): TGtItem;
-begin
-  Result := FindByClass(aItemClass);
-  if not Assigned(Result) then begin
-    Result := aItemClass.Create(Self, '');
-    AddItem(Result);
-  end;
-end;
+//function TGtUniList.FindByClassOrCreate(aItemClass: TGtItemClass): TGtItem;
+//begin
+//  Result := FindByClass(aItemClass);
+//  if not Assigned(Result) then begin
+//    Result := aItemClass.Create(Self, '');
+//    AddItem(Result);
+//  end;
+//end;
 
 { finds next item of a given class type and name }
-function TGtUniList.FindByClassAndName (aItemClass: TGtItemClass; aName: String=''; aItem: TGtItem=nil): TGtItem;
-begin
-  repeat
-    aItem := FindByClass(aItemClass, aItem);
-  until not Assigned(aItem) or (aItem.Name = aName);
-  Result := aItem;
-end;
+//function TGtUniList.FindByClassAndName (aItemClass: TGtItemClass; aName: String=''; aItem: TGtItem=nil): TGtItem;
+//begin
+//  repeat
+//    aItem := FindByClass(aItemClass, aItem);
+//  until not Assigned(aItem) or (aItem.Name = aName);
+//  Result := aItem;
+//end;
 
 { finds item of a given name }
-function TGtUniList.FindByName;
-begin
-  repeat
-    aItem := FindByClass(nil, aItem);
-  until not Assigned(aItem) or (aItem.Name = aName);
-  Result := aItem;
-end;
+//function TGtUniList.FindByName;
+//begin
+//  repeat
+//    aItem := FindByClass(nil, aItem);
+//  until not Assigned(aItem) or (aItem.Name = aName);
+//  Result := aItem;
+//end;
 
 { counts given classes }
-function  TGtUniList.CountByClass(aItemClass: TGtItemClass; aItem: TGtItem=nil): Integer;
-begin
-  Result := 0;
-
-  aItem := FindByClass(aItemClass, aItem);
-  while Assigned(aItem) do begin
-    Inc(Result);
-    aItem := FindByClass(aItemClass, aItem);
-  end;
-end;
+//function  TGtUniList.CountByClass(aItemClass: TGtItemClass; aItem: TGtItem=nil): Integer;
+//begin
+//  Result := 0;
+//
+//  aItem := FindByClass(aItemClass, aItem);
+//  while Assigned(aItem) do begin
+//    Inc(Result);
+//    aItem := FindByClass(aItemClass, aItem);
+//  end;
+//end;
 
 { adds items of a given class from another list }
-procedure TGtUniList.AddByClass (aItemClass: TGtItemClass; aList: TGtUniList);
-var lItem: TGtItem;
-begin
-  lItem := aList.FindByClass(aItemClass);
-  while Assigned(lItem) do begin
-    AddItem(lItem);
-    lItem:= aList.FindByClass(aItemClass, lItem);
-  end;
-end;
+//procedure TGtUniList.AddByClass (aItemClass: TGtItemClass; aList: TGtUniList);
+//var lItem: TGtItem;
+//begin
+//  lItem := aList.FindByClass(aItemClass);
+//  while Assigned(lItem) do begin
+//    AddItem(lItem);
+//    lItem:= aList.FindByClass(aItemClass, lItem);
+//  end;
+//end;
 
 { class iterator }
-procedure TGtUniList.ForEachClassCallProc(aClass: TGtItemClass; Proc: TGtItemProc);
-var i: Integer;
-begin
-  for i := 0 to Count - 1 do
-    if GetItem(i) is aClass  then Proc( GetItem(i) ) else
-    if GetItem(i) is TGtUniList then TGtUniList(GetItem(i)).ForEachClassCallProc(aClass, Proc);
-end;
+//procedure TGtUniList.ForEachClassCallProc(aClass: TGtItemClass; Proc: TGtItemProc);
+//var i: Integer;
+//begin
+//  for i := 0 to Count - 1 do
+//    if GetItem(i) is aClass  then Proc( GetItem(i) ) else
+//    if GetItem(i) is TGtUniList then TGtUniList(GetItem(i)).ForEachClassCallProc(aClass, Proc);
+//end;
 
 {--------------------------- Unified Name List Class --------------------------}
 
 { class constructor }
-constructor TGtUniNameList.Create(aOwner: TGtItem; aName: String);
-begin
-  inherited Create(aOwner, aName);
-
-  FUseAsStringList := True;
-end;
+//constructor TGtUniNameList.Create(aOwner: TGtItem; aName: String);
+//begin
+//  inherited Create(aOwner, aName);
+//
+//  FUseAsStringList := True;
+//end;
 
 end.
 

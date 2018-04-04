@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 321   18-03-20 18:41 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 322   18-03-25 17:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -39,12 +39,12 @@ type
                             );
   TGtSqlListerOptionsSet   =set of TGtSqlListerOptions;
 
-type
+//type
   // uwaga na kolejnosc w tabeli wartosci domyslnych.
-  TGtListerCaseSettings =( gtlcTableCONVERTER, gtlcColumnCONVERTER, gtlcTableAliasCONVERTER
-                         , gtlcColumnAliasCONVERTER, gtlcParameterCONVERTER
-                         , gtlcIdentifierCONVERTER, gtlcKeyword
-                         , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
+//  TGtListerCaseSettings =( gtlcTableCONVERTER, gtlcColumnCONVERTER, gtlcTableAliasCONVERTER
+//                         , gtlcColumnAliasCONVERTER, gtlcParameterCONVERTER
+//                         , gtlcIdentifierCONVERTER, gtlcKeyword
+//                         , gtlcColumnQuotedAliasCONVERTER, gtlcFunctionCONVERTER );
 
 //  TGtListerSettings = (gtstRightIntendREMOVED, gtstLineAfterQueryREMOVED,
 //                       gtstSpaceBeforeCommaREMOVED, gtstSpaceBeforeSemicolonREMOVED,
@@ -69,7 +69,7 @@ type
 //                       gtstOnCondRefsFirstCONVERTER, gtstExtQueryKeywordStyleREMOVED, gtstLinesNoAfterQueryREMOVED
 //  );
 
-  TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
+//TGtListerCaseSettingsArray = array [ TGtListerCaseSettings  ] of TGtSqlCaseOption;
 //TGtListerSettingsArray = array [ TGtListerSettings ] of Boolean;
 
 {-------------------------------- Lister State --------------------------------}
@@ -137,7 +137,7 @@ type
   //MaxIdentifierLen: Integer;        // max length of any identifier
 
   //Options: TGtListerSettingsArray;
-    CaseOpt: TGtListerCaseSettingsArray;
+  //CaseOpt: TGtListerCaseSettingsArray;
 
     //Dialect: TGtSqlDialect;
 
@@ -327,8 +327,8 @@ uses SysUtils, GtStandard;
 
 { class constructor }
 constructor TGtSqlProtoLister.Create;
-var //lOpt: TGtListerSettings;
-    lCase: TGtListerCaseSettings;
+//var //lOpt: TGtListerSettings;
+//  lCase: TGtListerCaseSettings;
 begin
   inherited Create;
 
@@ -353,11 +353,11 @@ begin
 //  for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
 //    do Options[ lOpt ] := False;
 
-  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
-    do CaseOpt[ lCase ] := gtcoNoChange;
+//  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
+//    do CaseOpt[ lCase ] := gtcoNoChange;
 
   // defaults for Compact.
-  CaseOpt[ gtlcKeyword ] := gtcoUpperCase;
+  //CaseOpt[ gtlcKeyword ] := gtcoUpperCase;
   // Options[ gtstUpperKeywords    ] := True;
   // Options[ gtstColumnConstraint ] := True;
 //  Options[ gtstSortShortCONVERTER ] := True;
@@ -741,7 +741,7 @@ begin
     Exit;
   end;
 
-  lStr := aToken.Text;
+  lStr := aToken.TokenText;
 
   case aToken.Kind of
     gtttKeyword : begin
@@ -825,7 +825,7 @@ end;
 procedure TGtSqlTokenLister.List(aTokenList: TGtLexTokenList);
 var i: Integer;
     s1, s2: String;
-    co: TGtListerCaseSettings;
+//  co: TGtListerCaseSettings;
 begin
   if not Assigned(aTokenList) then Exit;
 
@@ -834,8 +834,8 @@ begin
   BracketLevel := 0;
   CaseLevel    := 0;
 
-  for co := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings) do
-    CaseOpt[ co ] := gtcoNoChange;
+//  for co := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings) do
+//    CaseOpt[ co ] := gtcoNoChange;
 
   { essential - token lister }
   for i := 0 to aTokenList.Count-1 do
@@ -843,10 +843,10 @@ begin
       case aTokenList[i].Kind of
         gtttEndOfLine  : AddCurrLine;
 
-        gtttEolComment : AddStr    (gttkMinusMinus.Text + aTokenList[i].TokenText,
+        gtttEolComment : AddStr    (gttkMinusMinus.TokenText + aTokenList[i].TokenText,
                                     gtlsComment, False);
         gtttStdComment : begin
-                           s2 :=     gttkSlashStar.Text + aTokenList[i].TokenText + gttkStarSlash.Text;
+                           s2 :=     gttkSlashStar.TokenText + aTokenList[i].TokenText + gttkStarSlash.TokenText;
                            while s2 <> '' do begin
                              strBreakOnFirst(#$D, s2, s1, s2);
                              AddStr (s1, gtlsComment, False);
@@ -854,26 +854,26 @@ begin
                            end;
                          end;
       else
-        if aTokenList[i].TokenText = gttkSemicolon.Text then begin
+        if aTokenList[i].TokenText = gttkSemicolon.TokenText then begin
           BracketLevel := 0;
           AddStr(gttkSemicolon, False);
         end else
-        if aTokenList[i].TokenText = gttkLeftBracket.Text
+        if aTokenList[i].TokenText = gttkLeftBracket.TokenText
           then AddStr(gttkLeftBracket, False)
           else
-        if aTokenList[i].TokenText = gttkRightBracket.Text
+        if aTokenList[i].TokenText = gttkRightBracket.TokenText
           then AddStr(gttkRightBracket, False)
           else
-        if aTokenList[i].TokenText = gtkwCase.Text then begin
+        if aTokenList[i].TokenText = gtkwCase.TokenText then begin
           Inc(CaseLevel);
           AddStr(aTokenList[i].TokenText, CaseLevelStyle, False);
         end else
-        if (CaseLevel > 0) and ((aTokenList[i].TokenText = gtkwWhen.Text)
-                             or (aTokenList[i].TokenText = gtkwThen.Text)
-                             or (aTokenList[i].TokenText = gtkwElse.Text)) then begin
+        if (CaseLevel > 0) and ((aTokenList[i].TokenText = gtkwWhen.TokenText)
+                             or (aTokenList[i].TokenText = gtkwThen.TokenText)
+                             or (aTokenList[i].TokenText = gtkwElse.TokenText)) then begin
           AddStr(aTokenList[i].TokenText, CaseLevelStyle, False);
         end else
-        if (CaseLevel > 0) and (aTokenList[i].TokenText = gtkwEnd.Text) then begin
+        if (CaseLevel > 0) and (aTokenList[i].TokenText = gtkwEnd.TokenText) then begin
           AddStr(aTokenList[i].TokenText, CaseLevelStyle, False);
           Dec(CaseLevel);
         end else
@@ -963,7 +963,7 @@ procedure AddIntendToken;
 begin
   if Assigned(aIntendToken) then begin
     AddSpace(1);
-    if aIntendToken.Text = ''
+    if aIntendToken.TokenText = ''
       then AddSpace(1)
       else AddStr(aIntendToken, False); // bracket or comma
     AddSpace(ClauseBodySpace - 2);
@@ -975,7 +975,7 @@ end;
 var lDoIntend: Boolean;
     lLength: Integer;
 begin
-  if Assigned(aClause) then lLength := Length(aClause.Text) else lLength := 0;
+  if Assigned(aClause) then lLength := Length(aClause.TokenText) else lLength := 0;
 
   lDoIntend := ClauseIntend and not aAppend and
               (lLength < ML_ClauseKeyword + ClauseBodySpace) and
@@ -1247,17 +1247,17 @@ begin
     Exit;
   end;
 
-  if aNode.Check(gtsiExpr, gttkNumber) then s := strif(aNode.ExprMinus, gttkMinus.Text) + aNode.Name
+  if aNode.Check(gtsiExpr, gttkNumber) then s := strif(aNode.ExprMinus, gttkMinus.TokenText) + aNode.Name
   else
   if aNode.Check(gtsiExpr, gttkIdentifier) then
-                         if UpperCase(aNode.Name) = gtkwNull.Text
-                           then s :=   strif(aNode.ExprMinus, gttkMinus.Text) +
-                                       UpperLowerStr(aNode.Name, CaseOpt[ gtlcKeyword ])
-                           else s :=   strif(aNode.ExprMinus, gttkMinus.Text) +
+                         if UpperCase(aNode.Name) = gtkwNull.TokenText
+                           then s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
+                                       {UpperLowerStr(}aNode.Name{, CaseOpt[ gtlcKeyword ])}
+                           else s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
                                        aNode.Name
   else
   if aNode.Check(gtsiExpr, gttkParameterName) then
-                         s :=   strif(aNode.ExprMinus, gttkMinus.Text) +
+                         s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
                                 aNode.Name
   else
   if aNode.Check(gtsiExpr, gtkwVarchar) or aNode.Check(gtsiExpr, gttkFunParameter) or
@@ -1268,7 +1268,7 @@ begin
   if aNode.Check(gtsiExpr, gtkwVarchar) then AddStr(s, gtlsString,            CheckSpaceNeedBeforeExpression)
   else
   if aNode.Check(gtsiExpr, gttkIdentifier) then
-                         if UpperCase(aNode.Name) = gtkwNull.Text
+                         if UpperCase(aNode.Name) = gtkwNull.TokenText
                            then AddStr(s, gtlsNull,       CheckSpaceNeedBeforeExpression)
                            else AddStr(s, gtlsIdentifier, CheckSpaceNeedBeforeExpression)
   else
@@ -1401,13 +1401,13 @@ begin
 
   lExprList := aNode.Find{ByKind}(gtsiExprList);
 
-  AddStr(gttkLeftBracket, gttkLeftBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkLeftBracket, gttkLeftBracket.{Token}Style, True, Assigned(lExprList) and (lExprList.Count = 1));
 
   if aNode.Check(gtsiExpr, gtkwDistinct) then AddStr(gtkwDistinct, False);
 
   List_ExprList(lExprList, aListerOpt); // + [gtloSkipOneExprOnLine]);
 
-  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkRightBracket, gttkRightBracket.{Token}Style, True, Assigned(lExprList) and (lExprList.Count = 1));
 
   { ORACLE: KEEP DENSE RANK }
   if {(Dialect = gtdlOracle) and} (aNode.KeepName <> '') then begin
@@ -3149,18 +3149,18 @@ begin
 
   { klauzula wiodaca }
   if ((aNode.Kind = gtsiDml) or (aNode.Kind = gtsiDdl)) and Assigned(aNode.Keyword) and
-      (Length(aNode.Keyword.Text) > Result) //and (Length(aNode.Keyword.Text) <= MaxClauseToIntend)
-    then Result := Length(aNode.Keyword.Text);
+      (Length(aNode.Keyword.TokenText) > Result) //and (Length(aNode.Keyword.Text) <= MaxClauseToIntend)
+    then Result := Length(aNode.Keyword.TokenText);
 
   for i := 0 to aNode.Count - 1 do begin
     { keyword sub klauzul }
-    if Assigned(aNode[i].Keyword) and (Length(aNode[i].Keyword.Text) > Result)
-        then Result := Length(aNode[i].Keyword.Text);
+    if Assigned(aNode[i].Keyword) and (Length(aNode[i].Keyword.TokenText) > Result)
+        then Result := Length(aNode[i].Keyword.TokenText);
 
     { INSERT INTO }
     if aNode[i].Check(gtsiTableRef) then
       if Assigned(aNode[i].{JoinOp} Operand) then begin
-        l := Length(JoinOperatorToToken( aNode[i].{JoinOp} Operand , aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).Text);
+        l := Length(JoinOperatorToToken( aNode[i].{JoinOp} Operand , aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).TokenText);
         if l > Result then Result := l;
       end;
 
@@ -3168,7 +3168,7 @@ begin
     if aNode[i].Check(gtsiClauseTables, gtkwFrom) then begin
       for j := 0 to aNode[i].Count - 1 do begin
         if Assigned(aNode[i][j].{JoinOp} Operand) then begin
-          l := Length(JoinOperatorToToken( aNode[i][j].{JoinOp} Operand , aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).Text);
+          l := Length(JoinOperatorToToken( aNode[i][j].{JoinOp} Operand , aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).TokenText);
           if l > Result then Result := l;
         end;
 

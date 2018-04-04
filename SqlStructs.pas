@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 294   18-03-11 21:49 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 295   18-03-25 17:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -63,7 +63,7 @@ type
   TSqlNodeProcedure = procedure (aNode: TGtSqlNode);
 
 //type
-  TGtSqlNode = class (TGtLexItem)
+  TGtSqlNode = class (TGtLexNode)
   private
     FKind: TGtSqlNodeKind;
     FValues: TStringList;
