@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 322   18-03-25 17:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 323   18-03-25 18:45 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -28,8 +28,6 @@ type
 
 type
   TGtSqlFormattingOption   =( gtfoText, gtfoHtml, gtfoTreeView, gtfoRtf{, gtfoXml} );
-
-  TGtSqlCaseOption         =( gtcoNoChange, gtcoUpperCase, gtcoLowerCase, gtcoFirstCharUpper, gtcoFirstUseCase );
 
   TGtSqlListerOptions      =( gtloTextOnly, //gtloSkipOneExprOnLineREMOVED, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLineREMOVED,
                               gtloTableConstraint, gtloAlterTableConstraint,
@@ -125,8 +123,8 @@ type
 
     function    ConvertStr(aStr: String): String;
     procedure   AddStr    (aStr: String; aStyle: TGtLexTokenStyle; aAddClearSpace: Boolean = True); overload;
-    procedure   AddStr    (aToken: TGtLexTokenDef; aAddClearSpace: Boolean = True); overload;
-    procedure   AddStr    (aToken: TGtLexTokenDef; aStyle: TGtLexTokenStyle;
+    procedure   AddStr    (aToken: TGtLexToken{Def}; aAddClearSpace: Boolean = True); overload;
+    procedure   AddStr    (aToken: TGtLexToken{Def}; aStyle: TGtLexTokenStyle;
                            aAddClearSpace: Boolean = True; aSingleParam: Boolean = False); overload;
 
     procedure   BeginFormattedFile;
@@ -165,8 +163,8 @@ type
   protected
     { list and formatting methods }
     procedure  AddCurrLine; override;
-    procedure  AddClause(aClause: TGtLexTokenDef = nil; aAppend: Boolean = False); overload;
-    procedure  AddClause(aClause: TGtLexTokenDef; aIntendToken: TGtLexTokenDef;
+    procedure  AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False); overload;
+    procedure  AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
                          aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
     procedure  AddComma; virtual;
     procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
@@ -279,7 +277,7 @@ type
     procedure  List_CreateView         (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_CreateSynonym      (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
-    procedure  List_Grant              (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet; aKeyword: TGtLexTokenDef); virtual;
+    procedure  List_Grant              (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet; aKeyword: TGtLexToken{Def}); virtual;
 
     procedure  List_Select             (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_ForUpdate          (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
@@ -296,14 +294,14 @@ type
     procedure  List_NotRecognized      (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
     procedure  List_Clause_Name        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken1: TGtLexTokenDef; aClauseToken2: TGtLexTokenDef;
+                                        aClauseToken1: TGtLexToken{Def}; aClauseToken2: TGtLexToken{Def};
                                         aName: String='';
                                         aNameStyle: TGtLexTokenStyle=gtlsPlainText;
                                         aKeywordStyle: TGtLexTokenStyle=gtlsPlainText); virtual;
     procedure  List_Clause_Expr        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken: TGtLexTokenDef; aClauseAppend: Boolean); virtual;
+                                        aClauseToken: TGtLexToken{Def}; aClauseAppend: Boolean); virtual;
     procedure  List_Clause_Cond        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken: TGtLexTokenDef; aClauseAppend: Boolean); virtual;
+                                        aClauseToken: TGtLexToken{Def}; aClauseAppend: Boolean); virtual;
   public
     procedure  List_SqlParser          (aNode: TGtSqlParser);
   end;
@@ -314,10 +312,6 @@ const
   gtHtmlNewLine = '<BR>';
   gtRtfNewLine = '\par ';
   gtRtfNewLine_trim = '\par';
-
-{----------------------------------- General ----------------------------------}
-
-function UpperLowerStr(aStr: String; aCase: TGtSqlCaseOption = gtcoNoChange): String;
 
 implementation
 
@@ -611,17 +605,6 @@ begin
   end;
 end;
 
-{ uppers/lowers string case }
-function UpperLowerStr(aStr: String; aCase: TGtSqlCaseOption = gtcoNoChange): String;
-begin
-  case aCase of
-    gtcoUpperCase      : Result := AnsiUpperCase(aStr);
-    gtcoLowerCase      : Result := AnsiLowerCase(aStr);
-    gtcoFirstCharUpper : Result := AnsiUpperCase(Copy(aStr,1,1)) + AnsiLowerCase(Copy(aStr,2,99999));
-  else                   Result := aStr;
-  end;
-end;
-
 { adds colored string }
 procedure TGtSqlProtoLister.AddStr (aStr: String; aStyle: TGtLexTokenStyle; aAddClearSpace: Boolean = True);
 
@@ -704,15 +687,15 @@ begin
 end;
 
 { adds colored string }
-procedure TGtSqlProtoLister.AddStr (aToken: TGtLexTokenDef; aAddClearSpace: Boolean = True);
+procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken{Def}; aAddClearSpace: Boolean = True);
 begin
   if not Assigned(aToken) then Exit;
 
-  AddStr(aToken, aToken.Style, aAddClearSpace);
+  AddStr(aToken, aToken.TokenStyle, aAddClearSpace);
 end;
 
 { adds colored string }
-procedure TGtSqlProtoLister.AddStr (aToken: TGtLexTokenDef; aStyle: TGtLexTokenStyle;
+procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken{Def}; aStyle: TGtLexTokenStyle;
                                     aAddClearSpace: Boolean = True; aSingleParam: Boolean = False);
 var lStyle: TGtLexTokenStyle;
     lStr: String;
@@ -720,9 +703,9 @@ begin
   if not Assigned(aToken) then Exit;
 
   lStyle := aStyle; //aToken.TokenStyle;// gtlsPlainText;
-  if (aToken.Kind = gtttKeyword) and (aStyle = gtlsKeyword) then lStyle := FKeywordStyle;
+  if (aToken.TokenKind = gtttKeyword) and (aStyle = gtlsKeyword) then lStyle := FKeywordStyle;
 
-  if Assigned(aToken.SubToken2) and not (aToken.Style in [gtlsOperator, gtlsComment]) then begin
+  if Assigned(aToken.SubToken2) and not (aToken.TokenStyle in [gtlsOperator, gtlsComment]) then begin
     AddStr(aToken.SubToken1, lStyle, aAddClearSpace);
     AddSpace;
     AddStr(aToken.SubToken2, lStyle, aAddClearSpace);
@@ -743,7 +726,7 @@ begin
 
   lStr := aToken.TokenText;
 
-  case aToken.Kind of
+  case aToken.TokenKind of
     gtttKeyword : begin
                     if (aToken = gtkwCase) then begin
                       Inc(CaseLevel);
@@ -840,7 +823,7 @@ begin
   { essential - token lister }
   for i := 0 to aTokenList.Count-1 do
     if Assigned(aTokenList[i]) then
-      case aTokenList[i].Kind of
+      case aTokenList[i].TokenKind of
         gtttEndOfLine  : AddCurrLine;
 
         gtttEolComment : AddStr    (gttkMinusMinus.TokenText + aTokenList[i].TokenText,
@@ -877,7 +860,7 @@ begin
           AddStr(aTokenList[i].TokenText, CaseLevelStyle, False);
           Dec(CaseLevel);
         end else
-        AddStr(aTokenList[i].TokenText, aTokenList[i].Style, False);
+        AddStr(aTokenList[i].TokenText, aTokenList[i].TokenStyle, False);
       end;
 
   EndFormattedFile;
@@ -950,13 +933,13 @@ begin
 end;
 
 { adds clause to saved script }
-procedure TGtSqlFormatLister.AddClause(aClause: TGtLexTokenDef = nil; aAppend: Boolean = False);
+procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False);
 begin
   AddClause(aClause, nil, aAppend);
 end;
 
 { adds clause to saved script }
-procedure TGtSqlFormatLister.AddClause(aClause: TGtLexTokenDef; aIntendToken: TGtLexTokenDef;
+procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
                                        aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False);
 
 procedure AddIntendToken;
@@ -1363,7 +1346,7 @@ begin
 
   List_DataType(aNode, aListerOpt);
 
-  AddStr(gttkRightBracket, gttkRightBracket.Style, True, False {Options[ gtstSpaceInsideBracketsSkipFun ]});
+  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, False {Options[ gtstSpaceInsideBracketsSkipFun ]});
 end;
 
 { lists expression CONVERT }
@@ -1401,13 +1384,13 @@ begin
 
   lExprList := aNode.Find{ByKind}(gtsiExprList);
 
-  AddStr(gttkLeftBracket, gttkLeftBracket.{Token}Style, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkLeftBracket, gttkLeftBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
 
   if aNode.Check(gtsiExpr, gtkwDistinct) then AddStr(gtkwDistinct, False);
 
   List_ExprList(lExprList, aListerOpt); // + [gtloSkipOneExprOnLine]);
 
-  AddStr(gttkRightBracket, gttkRightBracket.{Token}Style, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
 
   { ORACLE: KEEP DENSE RANK }
   if {(Dialect = gtdlOracle) and} (aNode.KeepName <> '') then begin

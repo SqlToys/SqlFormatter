@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 295   18-03-25 17:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 296   18-03-25 18:45 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -22,7 +22,7 @@ uses Classes, GtContainers, SqlTokenizers;
 
 {-------------------------------- Join Operator -------------------------------}
 
-function  JoinOperatorToToken( jo: TGtLexTokenDef; InnerPreff: Boolean = False; OuterPreff: Boolean = False ): TGtLexTokenDef;
+function  JoinOperatorToToken( jo: TGtLexToken{Def}; InnerPreff: Boolean = False; OuterPreff: Boolean = False ): TGtLexToken{Def};
 
 {-------------------------------- Options Types -------------------------------}
 
@@ -67,7 +67,7 @@ type
   private
     FKind: TGtSqlNodeKind;
     FValues: TStringList;
-    FTokens: array [1..10] of TGtLexTokenDef;
+    FTokens: array [1..10] of TGtLexToken{Def};
 
     function        GetOwner_SqlNode: TGtSqlNode; //virtual;
     procedure       SetOwner_SqlNode(aOwner: TGtSqlNode); //virtual;
@@ -75,7 +75,7 @@ type
     procedure       SetSqlItemKind   (aKind: TGtSqlNodeKind);
     function        FindByKind(aKind: TGtSqlNodeKind; aNode: TGtSqlNode=nil): TGtSqlNode;
 
-    procedure       SetFTokens(aIndex: Integer; aToken: TGtLexTokenDef); //virtual;
+    procedure       SetFTokens(aIndex: Integer; aToken: TGtLexToken{Def}); //virtual;
 
     function        OwnerOfAnotherKind(aKind: TGtSqlNodeKind): TGtSqlNode;
 
@@ -96,13 +96,13 @@ type
     constructor     Create(aOwner: TGtItem; aKind: TGtSqlNodeKind; aName: String=''); overload; virtual;
     destructor      Destroy; override;
 
-    function        NewNode(aKind: TGtSqlNodeKind; aKeyword: TGtLexTokenDef=nil; aName: String=''): TGtSqlNode; virtual;
+    function        NewNode(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def}=nil; aName: String=''): TGtSqlNode; virtual;
 
     function        GetNode(aIndex: Integer): TGtSqlNode;
 
-    function        Check    (aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexTokenDef=nil; aName: String=''): Boolean;
-    function        Find     (aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexTokenDef=nil; aName: String=''; aNode: TGtSqlNode=nil): TGtSqlNode;
-    function        FindOwner(aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexTokenDef=nil; aName: String=''): TGtSqlNode;
+    function        Check    (aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String=''): Boolean;
+    function        Find     (aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String=''; aNode: TGtSqlNode=nil): TGtSqlNode;
+    function        FindOwner(aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String=''): TGtSqlNode;
 
     property        Owner: TGtSqlNode read GetOwner_SqlNode write SetOwner_SqlNode;
 
@@ -112,16 +112,16 @@ type
     property        Values: TStringList read FValues;
   public // function specific methods
     Nullable: TGtSqlNullableOption;
-//  property        LogicOp   : TGtLexTokenDef index 1 read FTokens[1] write SetFTokens;
-//  property        ExprOp    : TGtLexTokenDef index 2 read FTokens[2] write SetFTokens;
-//  property        CompOp    : TGtLexTokenDef index 3 read FTokens[3] write SetFTokens;
-//  property        JoinOp    : TGtLexTokenDef index 4 read FTokens[4] write SetFTokens;
-    property        DataType  : TGtLexTokenDef index 5 read FTokens[5] write SetFTokens;
-    property        OnDelete  : TGtLexTokenDef index 6 read FTokens[6] write SetFTokens;
-    property        OnUpdate  : TGtLexTokenDef index 7 read FTokens[7] write SetFTokens;
-    property        SortOrder : TGtLexTokenDef index 8 read FTokens[8] write SetFTokens;
-    property        Keyword   : TGtLexTokenDef index 9 read FTokens[9] write SetFTokens;
-    property        Operand   : TGtLexTokenDef index 10 read FTokens[10] write SetFTokens;
+//  property        LogicOp   : TGtLexToken{Def} index 1 read FTokens[1] write SetFTokens;
+//  property        ExprOp    : TGtLexToken{Def} index 2 read FTokens[2] write SetFTokens;
+//  property        CompOp    : TGtLexToken{Def} index 3 read FTokens[3] write SetFTokens;
+//  property        JoinOp    : TGtLexToken{Def} index 4 read FTokens[4] write SetFTokens;
+    property        DataType  : TGtLexToken{Def} index 5 read FTokens[5] write SetFTokens;
+    property        OnDelete  : TGtLexToken{Def} index 6 read FTokens[6] write SetFTokens;
+    property        OnUpdate  : TGtLexToken{Def} index 7 read FTokens[7] write SetFTokens;
+    property        SortOrder : TGtLexToken{Def} index 8 read FTokens[8] write SetFTokens;
+    property        Keyword   : TGtLexToken{Def} index 9 read FTokens[9] write SetFTokens;
+    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
 
     property        OldName              : String index 101 read GetValStr write SetValStr;
     property        NewName              : String index 102 read GetValStr write SetValStr;
@@ -201,12 +201,12 @@ type
 
     procedure       CalcConditionArgsLen(var ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
                                              ML_RightOnExprPrefix, ML_RightOnExprColumn: Integer);
-    procedure       CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexTokenDef;
+    procedure       CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
                                     aLinesLimit: Integer; aSeparateLines: Boolean;
                                     var aLongQuery: Boolean; var aQueryLines: Integer); overload;
 
     procedure       ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = False;
-                              aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexTokenDef=nil; aName: String='' ); overload;
+                              aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String='' ); overload;
   end;
 
 var GtSqlNodeCount: Integer = 0;
@@ -815,7 +815,7 @@ begin
 end;
 
 { sets FTokens property }
-procedure TGtSqlNode.SetFTokens(aIndex: Integer; aToken: TGtLexTokenDef);
+procedure TGtSqlNode.SetFTokens(aIndex: Integer; aToken: TGtLexToken{Def});
 begin
   if (aToken = gttkNone) or
      (aIndex = 1) and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot)) or
@@ -966,7 +966,7 @@ begin
 end;
 
 { calculates approx. no of lines for clause }
-procedure TGtSqlNode.CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexTokenDef;
+procedure TGtSqlNode.CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
                                      aLinesLimit: Integer; aSeparateLines: Boolean;
                                      var aLongQuery: Boolean; var aQueryLines: Integer);
 var lNode: TGtSqlNode;
@@ -995,7 +995,7 @@ end;
 
 { calls aProc for each node in aNode list }
 procedure TGtSqlNode.ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = False;
-                               aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexTokenDef=nil; aName: String='' );
+                               aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String='' );
 var i: Integer;
 begin
   for i := 0 to Count -1 do begin
