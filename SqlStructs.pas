@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 296   18-03-25 18:45 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 297   18-03-25 21:55 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -9,7 +9,7 @@ unit SqlStructs;
 
 interface
 
-uses Classes, GtContainers, SqlTokenizers;
+uses Classes, GtContainers, GtTokenizers;
 
 {------------------------------ SQL dialect type ------------------------------}
 
@@ -222,7 +222,7 @@ const
 
 implementation
 
-uses SysUtils, GtStandard;
+uses SysUtils, GtStandard, SqlCommon;
 
 {------------------------------ Compare Operator ------------------------------}
 

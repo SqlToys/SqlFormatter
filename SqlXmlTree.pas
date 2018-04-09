@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 7     18-03-25 17:17 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 8     18-03-25 21:55 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -15,7 +15,7 @@ procedure XmlToParseTree (aFileName: String; aTopNode: TGtSqlNode);
 implementation
 
 uses Classes, SysUtils, XmlIntf, XmlDoc, Variants,
-     SqlTokenizers;
+     GtTokenizers;
 
 { quotes string to use in xml }
 function  XmlQuote(aStr: String): String;

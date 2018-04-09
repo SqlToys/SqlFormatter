@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 323   18-03-25 18:45 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 324   18-03-25 21:55 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -10,7 +10,7 @@ unit SqlLister;
 interface
 
 uses Classes,
-     SqlTokenizers, SqlStructs, SqlParser;
+     GtTokenizers, SqlStructs, SqlParser;
 
 {------------------------------ Class Hierarchy -------------------------------}
 
@@ -315,7 +315,7 @@ const
 
 implementation
 
-uses SysUtils, GtStandard;
+uses SysUtils, GtStandard, SqlCommon;
 
 {--------------------------------- SQL Lister ---------------------------------}
 

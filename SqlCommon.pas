@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 30    18-03-25 17:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 31    18-03-25 21:54 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -9,7 +9,7 @@ unit SqlCommon;
 
 interface
 
-uses SqlTokenizers, SqlLister;
+uses GtTokenizers, SqlLister;
 
 {--------------------------------- Status Log ---------------------------------}
 
@@ -238,6 +238,183 @@ procedure YaRegistryPutBIU     (aStyle: TGtLexTokenStyle; aBold, aItalic, aUnder
 procedure SetScriptListerOptions(aScriptLister: TGtSqlProtoLister);
 procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
 
+{----------------------------- SQL Keyword Tokens -----------------------------}
+var
+  { ---- A ---- }
+  gtkwAdd,            gtkwAfter,          gtkwAlter,          gtkwAll,
+  gtkwAnalyze,
+  gtkwAnd,            gtkwAny,            gtkwAs,             gtkwAsc,
+  gtkwAscending,
+  { ---- B ---- }
+  gtkwBefore,         gtkwBegin,          gtkwBetween,        gtkwBigint,
+  gtkwBinary,         gtkwBit,            gtkwBlob,           gtkwBoolean,
+  gtkwBy,
+  { ---- C ---- }
+  gtkwCall,           gtkwCascade,        gtkwCase,           gtkwCast,
+  gtkwChar,           gtkwCheck,          gtkwClob,           gtkwClose,
+  gtkwCoalesce,
+  gtkwCollate,        gtkwColumn,         gtkwCommit,         gtkwConnect,
+  gtkwConstraint,     gtkwConstraints,    gtkwConvert,        gtkwCount,
+  gtkwCreate,         gtkwCross,          gtkwCursor,
+  { ---- D ---- }
+  gtkwDatabase,       gtkwDate,           gtkwDatetime,       gtkwDeadlock,
+  gtkwDeallocate,
+  gtkwDec,            gtkwDecimal,        gtkwDeclare,        gtkwDefault,
+  gtkwDenseRank,      gtkwDeny,           gtkwDemand,
+  gtkwDelete,         gtkwDesc,           gtkwDescending,     gtkwDescribe,
+  gtkwDisable,        gtkwDistinct,       gtkwDouble,         gtkwDrop,
+  { ---- E ---- }
+  gtkwEach,           gtkwElse,           gtkwElseIf,         gtkwEnable,
+  gtkwEncryption,     gtkwEnd,            gtkwEscape,         gtkwExcept,
+  gtkwException,      gtkwExec,           gtkwExecute,        gtkwExit,
+  gtkwExists,
+  { ---- F ---- }
+  gtkwFirst,
+  gtkwFloat,          gtkwFor,            gtkwForeign,        gtkwForward,
+  gtkwForce,
+  gtkwFrom,           gtkwFull,           gtkwFunction,
+  { ---- G ---- }
+  gtkwGlobal,         gtkwGo,             gtkwGoto,           gtkwGrant,
+  gtkwGroup,
+  { ---- H ---- }
+  gtkwHaving,         gtkwHint,
+  { ---- I ---- }
+  gtkwIdentity,       gtkwIf,             gtkwImmediate,      gtkwIn,
+  gtkwIncrement,      gtkwIndex,          gtkwInner,          gtkwInstead,
+  gtkwInt,            gtkwInt4,           gtkwInt8,           gtkwInteger,
+  gtkwInto,           gtkwInsert,         gtkwIntersect,      gtkwIs,
+  { ---- J ---- }
+  gtkwJoin,
+  { ---- K ---- }
+  gtkwKeep,           gtkwKey,
+  { ---- L ---- }
+  gtkwLabel,          gtkwLast,
+  gtkwLeft,           gtkwLike,           gtkwLimit,
+  gtkwLock,           gtkwLogin,          gtkwLoop,
+  { ---- M ---- }
+  gtkwMaterialized,   gtkwMinus,          gtkwModify,         gtkwMovement,
+  { ---- N ---- }
+  gtkwNchar,          gtkwNew,            gtkwNext,
+  gtkwNoCycle,        gtkwNot,            gtkwNoWait,
+  gtkwNull,           gtkwNulls,
+  gtkwNumber,         gtkwNumeric,        gtkwNvarchar,
+  { ---- O ---- }
+  gtkwOf,             gtkwOld,            gtkwOn,             gtkwOpen,
+  gtkwOption,         gtkwOr,             gtkwOrder,          gtkwOthers,
+  gtkwOut,            gtkwOutput,         gtkwOuter,          gtkwOver,
+  { ---- P ---- }
+  gtkwPartition,      gtkwPassword,       gtkwPragma,         gtkwPreserve,
+  gtkwPrimary,
+  gtkwPrint,          gtkwPrior,          gtkwProcedure,      gtkwPublic,
+  gtkwPurge,
+  { ---- Q ---- }
+  gtkwQuick,
+  { ---- R ---- }
+  gtkwRank,           gtkwReal,           gtkwReferences,     gtkwRename,
+  gtkwRecycleBin,     gtkwRefresh,        gtkwRestrict,
+  gtkwRepeat,         gtkwReplace,        gtkwReturn,         gtkwReturns,
+  gtkwReturning,      gtkwRevoke,
+  gtkwRight,          gtkwRollback,       gtkwRow,            gtkwRows,
+  { ---- S ---- }
+  gtkwSave,           gtkwSavepoint,      gtkwSchema,         gtkwSelect,
+  gtkwSet,            gtkwSequence,       gtkwSign,           gtkwSingle,
+  gtkwShrink,
+  gtkwSmallint,       gtkwSome,           gtkwStart,          gtkwStop,
+  gtkwStructure,      gtkwSynonym,        gtkwSpace,
+  { ---- T ---- }
+  gtkwTable,          gtkwTemp,           gtkwTemporary,      gtkwTinyint,
+  gtkwTime,           gtkwTimeout,        gtkwThen,           gtkwTo,
+  gtkwTop,            gtkwTran,           gtkwTrans,          gtkwTransaction,
+  gtkwTrigger,        gtkwTriggers,       gtkwTruncate,       gtkwType,
+  { ---- U ---- }
+  gtkwUnion,          gtkwUnique,         gtkwUnsigned,       gtkwUntil,
+  gtkwUnused,
+  gtkwUpdate,         gtkwUse,            gtkwUser,           gtkwUsing,
+  { ---- V ---- }
+  gtkwValidate,
+  gtkwValues,         gtkwVarchar,        gtkwVarchar2,       gtkwVersion,
+  gtkwView,
+  { ---- W ---- }
+  gtkwWait,           gtkwWith,           gtkwWhen,           gtkwWhere,
+  gtkwWhile,          gtkwWork,
+  { ---- X ---- }
+  gtkwXor
+  { ---- Y ---- }
+  { ---- Z ---- }
+                                                              : TGtLexToken{Def};
+{---------------------------- SQL Complex Keywords ----------------------------}
+var
+  { ---- A ---- }
+  gtkwAdd_Check,        gtkwAdd_Column,       gtkwAdd_Constraint,  gtkwAdd_Foreign_Key,
+  gtkwAdd_Primary_Key,  gtkwAdd_Unique,       gtkwAlter_Column,    gtkwAlter_Table,
+  gtkwAlter_Trigger,    gtkwAlter_Index,      gtkwAnalyze_Index,
+  { ---- B ---- }
+  gtkwBegin_Tran,       gtkwBegin_Transaction,
+  { ---- C ---- }
+  gtkwCascade_Constraints,
+  gtkwCommit_Tran,      gtkwCommit_Work,      gtkwCommit_Transaction,
+  gtkwConnect_By,       gtkwCreate_Index,     gtkwCreate_Sequence, gtkwCreate_Table,
+  gtkwCreate_Temporary_Table,                 gtkwCreate_Global_Temporary_Table,
+  gtkwCreate_Global,    gtkwTemporary_Table,
+  gtkwCreate_Login,
+  gtkwCreate_Synonym,   gtkwCreate_Public_Synonym,                 gtkwCreate_Or_Replace_Synonym,
+  gtkwCreate_Or_Replace_Public_Synonym,
+  gtkwCreate_Unique_Index,                    gtkwCreate_User,
+  gtkwCreate_View,      gtkwCreate_Or_Replace,gtkwCreate_Or_Replace_View,
+  gtkwCreate_Materialized_View,               gtkwCreate_Or_Replace_Materialized_View,
+  gtkwCross_Join,
+  { ---- D ---- }
+  gtkwDeallocate_Unused,
+  gtkwDelete_From,      gtkwDelete_Rows,
+  gtkwDrop_Table,       gtkwDrop_Column,     gtkwDrop_Constraint,
+  gtkwDrop_Index,       gtkwDrop_Sequence,    gtkwDrop_Synonym,    gtkwDrop_View,
+  { ---- E ---- }
+  gtkwEnable_Row_Movement,
+  gtkwEnd_Tran,         gtkwEnd_Transaction,
+  { ---- F ---- }
+  gtkwForeign_Key,      gtkwFor_Update,       gtkwFor_Update_Of,
+  gtkwFull_Join,        gtkwFull_Outer_Join,
+  { ---- G ---- }
+  gtkwGroup_By,
+  { ---- H ---- }
+  { ---- I ---- }
+  gtkwIncrement_By,     gtkwInner_Join,       gtkwInsert_Into,     gtkwInsert_Or_Replace_Into,
+  gtkwIs_Not_Null,      gtkwIs_Null,
+  { ---- J ---- }
+  { ---- K ---- }
+  { ---- L ---- }
+  gtkwLeft_Join,        gtkwLeft_Outer_Join,
+  { ---- M ---- }
+  gtkwModify_Column,
+  { ---- N ---- }
+  gtkwNot_Between,      gtkwNot_Exists,       gtkwNot_In,          gtkwNot_Like,
+  gtkwNot_Null,         gtkwNulls_First,      gtkwNulls_Last,
+  { ---- O ---- }
+  gtkwOn_Commit,        gtkwOn_Delete,        gtkwOn_Update,        gtkwOrder_By,
+  gtkwOn_Demand,
+  { ---- P ---- }
+  gtkwPreserve_Rows,    gtkwPrimary_Key,      gtkwPurge_RecycleBin,
+  { ---- Q ---- }
+  { ---- R ---- }
+  gtkwRename_Column,    gtkwRename_Table,     gtkwRename_To,       gtkwRight_Join,
+  gtkwRight_Outer_Join, gtkwRollback_Tran,    gtkwRollback_Transaction,
+  gtkwRollback_To_Savepoint,
+  { ---- S ---- }
+  gtkwSet_Null,         gtkwSelect_Into,
+  gtkwShrink_Space,     gtkwStart_With,      gtkwStart_Transaction,
+  gtkwStop_Transaction,
+  { ---- T ---- }
+  gtkwTo_Savepoint ,    gtkwTruncate_Table,
+  { ---- U ---- }
+  gtkwUnion_All,
+  { ---- V ---- }
+  gtkwValidate_Structure,
+  gtkwValues_LeftBracket
+  { ---- W ---- }
+  { ---- X ---- }
+  { ---- Y ---- }
+  { ---- Z ---- }
+                                                              : TGtLexToken{Def};
 implementation
 
 uses Classes, {Forms, Dialogs,} SysUtils,
@@ -478,5 +655,393 @@ begin
   StatusLogStartTime1 := 0;
   StatusLogLastTimeInt   := 0;
   StatusLogTextInt    := '';
+
+
+{------------------------------- Keyword Tokens -------------------------------}
+
+  { ---- A ---- }
+  gtkwAdd                   := LexKeywordTokenDefs.AddToken( 'ADD',         '', gtttKeyword );
+  gtkwAfter                 := LexKeywordTokenDefs.AddToken( 'AFTER',       '', gtttKeyword );
+  gtkwAlter                 := LexKeywordTokenDefs.AddToken( 'ALTER',       '', gtttKeyword );
+  gtkwAll                   := LexKeywordTokenDefs.AddToken( 'ALL',         '', gtttKeyword );
+  gtkwAnalyze               := LexKeywordTokenDefs.AddToken( 'ANALYZE',     '', gtttKeyword );
+  gtkwAnd                   := LexKeywordTokenDefs.AddToken( 'AND',         '', gtttKeyword );
+  gtkwAny                   := LexKeywordTokenDefs.AddToken( 'ANY',         '', gtttKeyword );
+  gtkwAs                    := LexKeywordTokenDefs.AddToken( 'AS',          '', gtttKeyword );
+  gtkwAsc                   := LexKeywordTokenDefs.AddToken( 'ASC',         '', gtttKeyword );
+  gtkwAscending             := LexKeywordTokenDefs.AddToken( 'ASCENDING',   '', gtttKeyword );
+  { ---- B ---- }
+  gtkwBefore                := LexKeywordTokenDefs.AddToken( 'BEFORE',      '', gtttKeyword );
+  gtkwBegin                 := LexKeywordTokenDefs.AddToken( 'BEGIN',       '', gtttKeyword );
+  gtkwBetween               := LexKeywordTokenDefs.AddToken( 'BETWEEN',     '', gtttKeyword );
+  gtkwBigint                := LexKeywordTokenDefs.AddToken( 'BIGINT',      '', gtttKeyword, gtlsDatatype );
+  gtkwBinary                := LexKeywordTokenDefs.AddToken( 'BINARY',      '', gtttKeyword, gtlsDatatype );
+  gtkwBit                   := LexKeywordTokenDefs.AddToken( 'BIT',         '', gtttKeyword, gtlsDatatype );
+  gtkwBlob                  := LexKeywordTokenDefs.AddToken( 'BLOB',        '', gtttKeyword, gtlsDatatype );
+  gtkwBoolean               := LexKeywordTokenDefs.AddToken( 'BOOLEAN',     '', gtttKeyword, gtlsDatatype );
+  gtkwBy                    := LexKeywordTokenDefs.AddToken( 'BY',          '', gtttKeyword );
+  { ---- C ---- }
+  gtkwCall                  := LexKeywordTokenDefs.AddToken( 'CALL',        '', gtttKeyword );
+  gtkwCascade               := LexKeywordTokenDefs.AddToken( 'CASCADE',     '', gtttKeyword );
+  gtkwCase                  := LexKeywordTokenDefs.AddToken( 'CASE',        '', gtttKeyword );
+  gtkwCast                  := LexKeywordTokenDefs.AddToken( 'CAST',        '', gtttKeyword );
+  gtkwChar                  := LexKeywordTokenDefs.AddToken( 'CHAR',        '', gtttKeyword, gtlsDatatype );
+  gtkwCheck                 := LexKeywordTokenDefs.AddToken( 'CHECK',       '', gtttKeyword );
+  gtkwClob                  := LexKeywordTokenDefs.AddToken( 'CLOB',        '', gtttKeyword, gtlsDatatype );
+  gtkwClose                 := LexKeywordTokenDefs.AddToken( 'CLOSE',       '', gtttKeyword );
+  gtkwCoalesce              := LexKeywordTokenDefs.AddToken( 'COALESCE',    '', gtttKeyword );
+  gtkwCollate               := LexKeywordTokenDefs.AddToken( 'COLLATE',     '', gtttKeyword );
+  gtkwColumn                := LexKeywordTokenDefs.AddToken( 'COLUMN',      '', gtttKeyword );
+  gtkwCommit                := LexKeywordTokenDefs.AddToken( 'COMMIT',      '', gtttKeyword, gtlsTcl );
+  gtkwConnect               := LexKeywordTokenDefs.AddToken( 'CONNECT',     '', gtttKeyword );
+  gtkwConstraint            := LexKeywordTokenDefs.AddToken( 'CONSTRAINT',  '', gtttKeyword );
+  gtkwConstraints           := LexKeywordTokenDefs.AddToken( 'CONSTRAINTS', '', gtttKeyword );
+  gtkwConvert               := LexKeywordTokenDefs.AddToken( 'CONVERT',     '', gtttKeyword );
+  gtkwCount                 := LexKeywordTokenDefs.AddToken( 'COUNT',       '', gtttKeyword, gtlsAggrFunction );
+  gtkwCreate                := LexKeywordTokenDefs.AddToken( 'CREATE',      '', gtttKeyword );
+  gtkwCross                 := LexKeywordTokenDefs.AddToken( 'CROSS',       '', gtttKeyword );
+  gtkwCursor                := LexKeywordTokenDefs.AddToken( 'CURSOR',      '', gtttKeyword );
+  { ---- D ---- }
+  gtkwDatabase              := LexKeywordTokenDefs.AddToken( 'DATABASE',    '', gtttKeyword );
+  gtkwDate                  := LexKeywordTokenDefs.AddToken( 'DATE',        '', gtttKeyword, gtlsDatatype );
+  gtkwDatetime              := LexKeywordTokenDefs.AddToken( 'DATETIME',    '', gtttKeyword, gtlsDatatype );
+  gtkwDeallocate            := LexKeywordTokenDefs.AddToken( 'DEALLOCATE',  '', gtttKeyword );
+  gtkwDeadlock              := LexKeywordTokenDefs.AddToken( 'DEADLOCK',    '', gtttKeyword );
+  gtkwDec                   := LexKeywordTokenDefs.AddToken( 'DEC',         '', gtttKeyword, gtlsDatatype );
+  gtkwDecimal               := LexKeywordTokenDefs.AddToken( 'DECIMAL',     '', gtttKeyword, gtlsDatatype );
+  gtkwDeclare               := LexKeywordTokenDefs.AddToken( 'DECLARE',     '', gtttKeyword );
+  gtkwDefault               := LexKeywordTokenDefs.AddToken( 'DEFAULT',     '', gtttKeyword );
+  gtkwDelete                := LexKeywordTokenDefs.AddToken( 'DELETE',      '', gtttKeyword );
+  gtkwDemand                := LexKeywordTokenDefs.AddToken( 'DEMAND',      '', gtttKeyword );
+  gtkwDenseRank             := LexKeywordTokenDefs.AddToken( 'DENSE_RANK', '', gtttKeyword );
+  gtkwDeny                  := LexKeywordTokenDefs.AddToken( 'DENY',        '', gtttKeyword, gtlsDcl );
+  gtkwDesc                  := LexKeywordTokenDefs.AddToken( 'DESC',        '', gtttKeyword );
+  gtkwDescending            := LexKeywordTokenDefs.AddToken( 'DESCENDING',  '', gtttKeyword );
+  gtkwDescribe              := LexKeywordTokenDefs.AddToken( 'DESCRIBE',    '', gtttKeyword );
+  gtkwDisable               := LexKeywordTokenDefs.AddToken( 'DISABLE',     '', gtttKeyword );
+  gtkwDistinct              := LexKeywordTokenDefs.AddToken( 'DISTINCT',    '', gtttKeyword, gtlsFunction );
+  gtkwDouble                := LexKeywordTokenDefs.AddToken( 'DOUBLE',      '', gtttKeyword, gtlsDatatype );
+  gtkwDrop                  := LexKeywordTokenDefs.AddToken( 'DROP',        '', gtttKeyword );
+  { ---- E ---- }
+  gtkwEach                  := LexKeywordTokenDefs.AddToken( 'EACH',        '', gtttKeyword );
+  gtkwElse                  := LexKeywordTokenDefs.AddToken( 'ELSE',        '', gtttKeyword );
+  gtkwElseIf                := LexKeywordTokenDefs.AddToken( 'ELSEIF',      '', gtttKeyword );
+  gtkwEnable                := LexKeywordTokenDefs.AddToken( 'ENABLE',      '', gtttKeyword );
+  gtkwEncryption            := LexKeywordTokenDefs.AddToken( 'ENCRYPTION',  '', gtttKeyword );
+  gtkwEnd                   := LexKeywordTokenDefs.AddToken( 'END',         '', gtttKeyword );
+  gtkwEscape                := LexKeywordTokenDefs.AddToken( 'ESCAPE',      '', gtttKeyword );
+  gtkwExcept                := LexKeywordTokenDefs.AddToken( 'EXCEPT',      '', gtttKeyword, gtlsUnion );
+  gtkwException             := LexKeywordTokenDefs.AddToken( 'EXCEPTION',   '', gtttKeyword );
+  gtkwExec                  := LexKeywordTokenDefs.AddToken( 'EXEC',        '', gtttKeyword );
+  gtkwExecute               := LexKeywordTokenDefs.AddToken( 'EXECUTE',     '', gtttKeyword );
+  gtkwExit                  := LexKeywordTokenDefs.AddToken( 'EXIT',        '', gtttKeyword );
+  gtkwExists                := LexKeywordTokenDefs.AddToken( 'EXISTS',      '', gtttKeyword );
+  { ---- F ---- }
+  gtkwFirst                 := LexKeywordTokenDefs.AddToken( 'FIRST',       '', gtttKeyword );
+  gtkwFloat                 := LexKeywordTokenDefs.AddToken( 'FLOAT',       '', gtttKeyword, gtlsDatatype );
+  gtkwFor                   := LexKeywordTokenDefs.AddToken( 'FOR',         '', gtttKeyword );
+  gtkwForce                 := LexKeywordTokenDefs.AddToken( 'FORCE',       '', gtttKeyword );
+  gtkwForeign               := LexKeywordTokenDefs.AddToken( 'FOREIGN',     '', gtttKeyword );
+  gtkwForward               := LexKeywordTokenDefs.AddToken( 'FORWARD',     '', gtttKeyword );
+  gtkwFrom                  := LexKeywordTokenDefs.AddToken( 'FROM',        '', gtttKeyword );
+  gtkwFull                  := LexKeywordTokenDefs.AddToken( 'FULL',        '', gtttKeyword );
+  gtkwFunction              := LexKeywordTokenDefs.AddToken( 'FUNCTION',    '', gtttKeyword );
+  { ---- G ---- }
+  gtkwGlobal                := LexKeywordTokenDefs.AddToken( 'GLOBAL',      '', gtttKeyword );
+  gtkwGo                    := LexKeywordTokenDefs.AddToken( 'GO',          '', gtttKeyword );
+  gtkwGoto                  := LexKeywordTokenDefs.AddToken( 'GOTO',        '', gtttKeyword );
+  gtkwGrant                 := LexKeywordTokenDefs.AddToken( 'GRANT',       '', gtttKeyword, gtlsDcl );
+  gtkwGroup                 := LexKeywordTokenDefs.AddToken( 'GROUP',       '', gtttKeyword );
+  { ---- H ---- }
+  gtkwHaving                := LexKeywordTokenDefs.AddToken( 'HAVING',      '', gtttKeyword );
+  gtkwHint                  := LexKeywordTokenDefs.AddToken( 'HINT',        '', gtttKeyword );
+  { ---- I ---- }
+  gtkwIdentity              := LexKeywordTokenDefs.AddToken( 'IDENTITY',    '', gtttKeyword );
+  gtkwIf                    := LexKeywordTokenDefs.AddToken( 'IF',          '', gtttKeyword );
+  gtkwImmediate             := LexKeywordTokenDefs.AddToken( 'IMMEDIATE',   '', gtttKeyword );
+  gtkwIn                    := LexKeywordTokenDefs.AddToken( 'IN',          '', gtttKeyword );
+  gtkwIncrement             := LexKeywordTokenDefs.AddToken( 'INCREMENT',   '', gtttKeyword );
+  gtkwIndex                 := LexKeywordTokenDefs.AddToken( 'INDEX',       '', gtttKeyword );
+  gtkwInner                 := LexKeywordTokenDefs.AddToken( 'INNER',       '', gtttKeyword );
+  gtkwInstead               := LexKeywordTokenDefs.AddToken( 'INSTEAD',     '', gtttKeyword );
+  gtkwInt                   := LexKeywordTokenDefs.AddToken( 'INT',         '', gtttKeyword, gtlsDatatype );
+  gtkwInt4                  := LexKeywordTokenDefs.AddToken( 'INT4',        '', gtttKeyword, gtlsDatatype );
+  gtkwInt8                  := LexKeywordTokenDefs.AddToken( 'INT8',        '', gtttKeyword, gtlsDatatype );
+  gtkwInteger               := LexKeywordTokenDefs.AddToken( 'INTEGER',     '', gtttKeyword, gtlsDatatype );
+  gtkwInto                  := LexKeywordTokenDefs.AddToken( 'INTO',        '', gtttKeyword );
+  gtkwInsert                := LexKeywordTokenDefs.AddToken( 'INSERT',      '', gtttKeyword );
+  gtkwIntersect             := LexKeywordTokenDefs.AddToken( 'INTERSECT',   '', gtttKeyword, gtlsUnion );
+  gtkwIs                    := LexKeywordTokenDefs.AddToken( 'IS',          '', gtttKeyword );
+  { ---- J ---- }
+  gtkwJoin                  := LexKeywordTokenDefs.AddToken( 'JOIN',        '', gtttKeyword );
+  { ---- K ---- }
+  gtkwKeep                  := LexKeywordTokenDefs.AddToken( 'KEEP',        '', gtttKeyword );
+  gtkwKey                   := LexKeywordTokenDefs.AddToken( 'KEY',         '', gtttKeyword );
+  { ---- L ---- }
+  gtkwLast                  := LexKeywordTokenDefs.AddToken( 'LAST',        '', gtttKeyword );
+  gtkwLabel                 := LexKeywordTokenDefs.AddToken( 'LABEL',       '', gtttKeyword );
+  gtkwLeft                  := LexKeywordTokenDefs.AddToken( 'LEFT',        '', gtttKeyword );
+  gtkwLike                  := LexKeywordTokenDefs.AddToken( 'LIKE',        '', gtttKeyword );
+  gtkwLimit                 := LexKeywordTokenDefs.AddToken( 'LIMIT',       '', gtttKeyword );
+  gtkwLock                  := LexKeywordTokenDefs.AddToken( 'LOCK',        '', gtttKeyword );
+  gtkwLogin                 := LexKeywordTokenDefs.AddToken( 'LOGIN',       '', gtttKeyword );
+  gtkwLoop                  := LexKeywordTokenDefs.AddToken( 'LOOP',        '', gtttKeyword );
+  { ---- M ---- }
+  gtkwMaterialized          := LexKeywordTokenDefs.AddToken( 'MATERIALIZED','', gtttKeyword );
+  gtkwMinus                 := LexKeywordTokenDefs.AddToken( 'MINUS',       '', gtttKeyword, gtlsUnion );
+  gtkwModify                := LexKeywordTokenDefs.AddToken( 'MODIFY',      '', gtttKeyword );
+  gtkwMovement              := LexKeywordTokenDefs.AddToken( 'MOVEMENT',    '', gtttKeyword );
+  { ---- N ---- }
+  gtkwNChar                 := LexKeywordTokenDefs.AddToken( 'NCHAR',       '', gtttKeyword, gtlsDatatype );
+  gtkwNew                   := LexKeywordTokenDefs.AddToken( 'NEW',         '', gtttKeyword );
+  gtkwNext                  := LexKeywordTokenDefs.AddToken( 'NEXT',        '', gtttKeyword );
+  gtkwNoCycle               := LexKeywordTokenDefs.AddToken( 'NOCYCLE',     '', gtttKeyword );
+  gtkwNoWait                := LexKeywordTokenDefs.AddToken( 'NOWAIT',      '', gtttKeyword );
+  gtkwNot                   := LexKeywordTokenDefs.AddToken( 'NOT',         '', gtttKeyword );
+  gtkwNull                  := LexKeywordTokenDefs.AddToken( 'NULL',        '', gtttKeyword, gtlsNull);
+  gtkwNulls                 := LexKeywordTokenDefs.AddToken( 'NULLS',       '', gtttKeyword, gtlsNull);
+  gtkwNumber                := LexKeywordTokenDefs.AddToken( 'NUMBER',      '', gtttKeyword, gtlsDatatype );
+  gtkwNumeric               := LexKeywordTokenDefs.AddToken( 'NUMERIC',     '', gtttKeyword, gtlsDatatype );
+  gtkwNVarchar              := LexKeywordTokenDefs.AddToken( 'NVARCHAR',    '', gtttKeyword, gtlsDatatype );
+  { ---- O ---- }
+  gtkwOf                    := LexKeywordTokenDefs.AddToken( 'OF',          '', gtttKeyword );
+  gtkwOld                   := LexKeywordTokenDefs.AddToken( 'OLD',         '', gtttKeyword );
+  gtkwOn                    := LexKeywordTokenDefs.AddToken( 'ON',          '', gtttKeyword );
+  gtkwOpen                  := LexKeywordTokenDefs.AddToken( 'OPEN',        '', gtttKeyword );
+  gtkwOption                := LexKeywordTokenDefs.AddToken( 'OPTION',      '', gtttKeyword );
+  gtkwOr                    := LexKeywordTokenDefs.AddToken( 'OR',          '', gtttKeyword );
+  gtkwOrder                 := LexKeywordTokenDefs.AddToken( 'ORDER',       '', gtttKeyword );
+  gtkwOthers                := LexKeywordTokenDefs.AddToken( 'OTHERS',      '', gtttKeyword );
+  gtkwOut                   := LexKeywordTokenDefs.AddToken( 'OUT',         '', gtttKeyword );
+  gtkwOutput                := LexKeywordTokenDefs.AddToken( 'OUTPUT',      '', gtttKeyword );
+  gtkwOuter                 := LexKeywordTokenDefs.AddToken( 'OUTER',       '', gtttKeyword );
+  gtkwOver                  := LexKeywordTokenDefs.AddToken( 'OVER',        '', gtttKeyword );
+  { ---- P ---- }
+  gtkwPartition             := LexKeywordTokenDefs.AddToken( 'PARTITION',   '', gtttKeyword );
+  gtkwPassword              := LexKeywordTokenDefs.AddToken( 'PASSWORD',    '', gtttKeyword );
+  gtkwPragma                := LexKeywordTokenDefs.AddToken( 'PRAGMA',      '', gtttKeyword );
+  gtkwPreserve              := LexKeywordTokenDefs.AddToken( 'PRESERVE',    '', gtttKeyword );
+  gtkwPrimary               := LexKeywordTokenDefs.AddToken( 'PRIMARY',     '', gtttKeyword );
+  gtkwPrint                 := LexKeywordTokenDefs.AddToken( 'PRINT',       '', gtttKeyword );
+  gtkwPrior                 := LexKeywordTokenDefs.AddToken( 'PRIOR',       '', gtttKeyword, gtlsPrior );
+  gtkwProcedure             := LexKeywordTokenDefs.AddToken( 'PROCEDURE',   '', gtttKeyword );
+  gtkwPublic                := LexKeywordTokenDefs.AddToken( 'PUBLIC',      '', gtttKeyword );
+  gtkwPurge                 := LexKeywordTokenDefs.AddToken( 'PURGE',       '', gtttKeyword );
+  { ---- Q ---- }
+  gtkwQuick                 := LexKeywordTokenDefs.AddToken( 'QUICK',       '', gtttKeyword );
+  { ---- R ---- }
+  gtkwRank                  := LexKeywordTokenDefs.AddToken( 'RANK',        '', gtttKeyword );
+  gtkwReal                  := LexKeywordTokenDefs.AddToken( 'REAL',        '', gtttKeyword, gtlsDatatype );
+  gtkwRecycleBin            := LexKeywordTokenDefs.AddToken( 'RECYCLEBIN',  '', gtttKeyword );
+  gtkwReferences            := LexKeywordTokenDefs.AddToken( 'REFERENCES',  '', gtttKeyword );
+  gtkwRefresh               := LexKeywordTokenDefs.AddToken( 'REFRESH',     '', gtttKeyword );
+  gtkwRename                := LexKeywordTokenDefs.AddToken( 'RENAME',      '', gtttKeyword );
+  gtkwRepeat                := LexKeywordTokenDefs.AddToken( 'REPEAT',      '', gtttKeyword );
+  gtkwReplace               := LexKeywordTokenDefs.AddToken( 'REPLACE',     '', gtttKeyword );
+  gtkwRestrict              := LexKeywordTokenDefs.AddToken( 'RESTRICT',    '', gtttKeyword );
+  gtkwReturn                := LexKeywordTokenDefs.AddToken( 'RETURN',      '', gtttKeyword );
+  gtkwReturning             := LexKeywordTokenDefs.AddToken( 'RETURNING',   '', gtttKeyword );
+  gtkwReturns               := LexKeywordTokenDefs.AddToken( 'RETURNS',     '', gtttKeyword );
+  gtkwRevoke                := LexKeywordTokenDefs.AddToken( 'REVOKE',      '', gtttKeyword, gtlsDcl );
+  gtkwRight                 := LexKeywordTokenDefs.AddToken( 'RIGHT',       '', gtttKeyword );
+  gtkwRollback              := LexKeywordTokenDefs.AddToken( 'ROLLBACK',    '', gtttKeyword, gtlsTcl );
+  gtkwRow                   := LexKeywordTokenDefs.AddToken( 'ROW',         '', gtttKeyword );
+  gtkwRows                  := LexKeywordTokenDefs.AddToken( 'ROWS',        '', gtttKeyword );
+  { ---- S ---- }
+  gtkwSave                  := LexKeywordTokenDefs.AddToken( 'SAVE',        '', gtttKeyword );
+  gtkwSavepoint             := LexKeywordTokenDefs.AddToken( 'SAVEPOINT',   '', gtttKeyword, gtlsTcl );
+  gtkwSchema                := LexKeywordTokenDefs.AddToken( 'SCHEMA',      '', gtttKeyword );
+  gtkwSelect                := LexKeywordTokenDefs.AddToken( 'SELECT',      '', gtttKeyword );
+  gtkwSet                   := LexKeywordTokenDefs.AddToken( 'SET',         '', gtttKeyword );
+  gtkwSequence              := LexKeywordTokenDefs.AddToken( 'SEQUENCE',    '', gtttKeyword );
+  gtkwShrink                := LexKeywordTokenDefs.AddToken( 'SHRINK',      '', gtttKeyword );
+  gtkwSign                  := LexKeywordTokenDefs.AddToken( 'SIGN',        '', gtttKeyword );
+  gtkwSingle                := LexKeywordTokenDefs.AddToken( 'SINGLE',      '', gtttKeyword, gtlsDatatype );
+  gtkwSmallint              := LexKeywordTokenDefs.AddToken( 'SMALLINT',    '', gtttKeyword, gtlsDatatype );
+  gtkwSome                  := LexKeywordTokenDefs.AddToken( 'SOME',        '', gtttKeyword );
+  gtkwSpace                 := LexKeywordTokenDefs.AddToken( 'SPACE',       '', gtttKeyword );
+  gtkwStart                 := LexKeywordTokenDefs.AddToken( 'START',       '', gtttKeyword );
+  gtkwStop                  := LexKeywordTokenDefs.AddToken( 'STOP',        '', gtttKeyword );
+  gtkwStructure             := LexKeywordTokenDefs.AddToken( 'STRUCTURE',   '', gtttKeyword );
+  gtkwSynonym               := LexKeywordTokenDefs.AddToken( 'SYNONYM',     '', gtttKeyword );
+  { ---- T ---- }
+  gtkwTable                 := LexKeywordTokenDefs.AddToken( 'TABLE',       '', gtttKeyword );
+  gtkwTemp                  := LexKeywordTokenDefs.AddToken( 'TEMP',        '', gtttKeyword );
+  gtkwTemporary             := LexKeywordTokenDefs.AddToken( 'TEMPORARY',   '', gtttKeyword );
+  gtkwTinyint               := LexKeywordTokenDefs.AddToken( 'TINYINT',     '', gtttKeyword, gtlsDatatype );
+  gtkwTime                  := LexKeywordTokenDefs.AddToken( 'TIME',        '', gtttKeyword, gtlsDatatype );
+  gtkwTimeout               := LexKeywordTokenDefs.AddToken( 'TIMEOUT',     '', gtttKeyword );
+  gtkwThen                  := LexKeywordTokenDefs.AddToken( 'THEN',        '', gtttKeyword );
+  gtkwTo                    := LexKeywordTokenDefs.AddToken( 'TO',          '', gtttKeyword );
+  gtkwTop                   := LexKeywordTokenDefs.AddToken( 'TOP',         '', gtttKeyword );
+  gtkwTran                  := LexKeywordTokenDefs.AddToken( 'TRAN',        '', gtttKeyword );
+  gtkwTrans                 := LexKeywordTokenDefs.AddToken( 'TRANS',       '', gtttKeyword );
+  gtkwTransaction           := LexKeywordTokenDefs.AddToken( 'TRANSACTION', '', gtttKeyword );
+  gtkwTrigger               := LexKeywordTokenDefs.AddToken( 'TRIGGER',     '', gtttKeyword );
+  gtkwTriggers              := LexKeywordTokenDefs.AddToken( 'TRIGGERS',    '', gtttKeyword );
+  gtkwTruncate              := LexKeywordTokenDefs.AddToken( 'TRUNCATE',    '', gtttKeyword );
+  gtkwType                  := LexKeywordTokenDefs.AddToken( 'TYPE',        '', gtttKeyword );
+  { ---- U ---- }
+  gtkwUnion                 := LexKeywordTokenDefs.AddToken( 'UNION',       '', gtttKeyword, gtlsUnion );
+  gtkwUnique                := LexKeywordTokenDefs.AddToken( 'UNIQUE',      '', gtttKeyword );
+  gtkwUnsigned              := LexKeywordTokenDefs.AddToken( 'UNSIGNED',    '', gtttKeyword, gtlsDatatype );
+  gtkwUnused                := LexKeywordTokenDefs.AddToken( 'UNUSED',      '', gtttKeyword );
+  gtkwUntil                 := LexKeywordTokenDefs.AddToken( 'UNTIL',       '', gtttKeyword );
+  gtkwUpdate                := LexKeywordTokenDefs.AddToken( 'UPDATE',      '', gtttKeyword );
+  gtkwUse                   := LexKeywordTokenDefs.AddToken( 'USE',         '', gtttKeyword );
+  gtkwUser                  := LexKeywordTokenDefs.AddToken( 'USER',        '', gtttKeyword );
+  gtkwUsing                 := LexKeywordTokenDefs.AddToken( 'USING',       '', gtttKeyword );
+  { ---- V ---- }
+  gtkwValidate              := LexKeywordTokenDefs.AddToken( 'VALIDATE',    '', gtttKeyword );
+  gtkwValues                := LexKeywordTokenDefs.AddToken( 'VALUES',      '', gtttKeyword );
+  gtkwVarchar               := LexKeywordTokenDefs.AddToken( 'VARCHAR',     '', gtttKeyword, gtlsDatatype );
+  gtkwVarchar2              := LexKeywordTokenDefs.AddToken( 'VARCHAR2',    '', gtttKeyword, gtlsDatatype );
+  gtkwVersion               := LexKeywordTokenDefs.AddToken( 'VERSION',     '', gtttKeyword );
+  gtkwView                  := LexKeywordTokenDefs.AddToken( 'VIEW',        '', gtttKeyword );
+  { ---- W ---- }
+  gtkwWait                  := LexKeywordTokenDefs.AddToken( 'WAIT',        '', gtttKeyword );
+  gtkwWith                  := LexKeywordTokenDefs.AddToken( 'WITH',        '', gtttKeyword );
+  gtkwWhen                  := LexKeywordTokenDefs.AddToken( 'WHEN',        '', gtttKeyword );
+  gtkwWhere                 := LexKeywordTokenDefs.AddToken( 'WHERE',       '', gtttKeyword );
+  gtkwWhile                 := LexKeywordTokenDefs.AddToken( 'WHILE',       '', gtttKeyword );
+  gtkwWork                  := LexKeywordTokenDefs.AddToken( 'WORK',        '', gtttKeyword );
+  { ---- X ---- }
+  gtkwXor                   := LexKeywordTokenDefs.AddToken( 'XOR',         '', gtttKeyword );
+  { ---- Y ---- }
+  { ---- Z ---- }
+
+{---------------------------- SQL Complex Keywords ----------------------------}
+
+  { ---- A ---- }
+  gtkwAdd_Check              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwCheck );
+  gtkwAdd_Column             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwColumn );
+  gtkwAdd_Constraint         := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwConstraint );
+  gtkwAdd_Foreign_Key        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwForeign,  gtkwKey);
+  gtkwAdd_Primary_Key        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwPrimary,  gtkwKey);
+  gtkwAdd_Unique             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwAdd,      gtkwUnique );
+  gtkwAlter_Column           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwAlter,     gtkwColumn );
+  gtkwAlter_Index            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwAlter,    gtkwIndex);
+  gtkwAlter_Table            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwAlter,    gtkwTable );
+  gtkwAlter_Trigger          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwAlter,    gtkwTrigger );
+  gtkwAnalyze_Index          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwAnalyze,   gtkwIndex);
+  { ---- B ---- }
+  gtkwBegin_Tran             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsTcl,       gtkwBegin,    gtkwTran);
+  gtkwBegin_Transaction      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwBegin,     gtkwTransaction );
+  { ---- C ---- }
+  gtkwCascade_Constraints    := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCascade,   gtkwConstraints);
+  gtkwCommit_Tran            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCommit,    gtkwTran );
+  gtkwCommit_Transaction     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCommit,    gtkwTransaction );
+  gtkwCommit_Work            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCommit,    gtkwWork );
+  gtkwConnect_By             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwConnect,   gtkwBy );
+  gtkwCreate_Index           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,   gtkwIndex );
+  gtkwCreate_Or_Replace      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCreate,    gtkwOr,       gtkwReplace );
+  gtkwCreate_Or_Replace_View := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreateView,gtkwCreate,   gtkwOr,       gtkwReplace, gtkwView );
+  gtkwCreate_Login           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDcl,       gtkwCreate,   gtkwLogin );
+  gtkwCreate_Sequence        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,   gtkwSequence );
+  gtkwCreate_Synonym         := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,   gtkwSynonym);
+  gtkwCreate_Public_Synonym  := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCreate,    gtkwPublic,   gtkwSynonym);
+  gtkwCreate_Or_Replace_Synonym
+                             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCreate,    gtkwOr,       gtkwReplace, gtkwSynonym);
+  gtkwCreate_Or_Replace_Public_Synonym
+                             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwOr,        gtkwReplace,   gtkwPublic, gtkwSynonym);
+  gtkwCreate_Table           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwTable );
+  gtkwCreate_Temporary_Table := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwTemporary, gtkwTable );
+  gtkwCreate_Global_Temporary_Table
+                             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwGlobal,    gtkwTemporary, gtkwTable );
+  gtkwCreate_Global          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwGlobal );
+  gtkwTemporary_Table        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwTemporary, gtkwTable );
+  gtkwCreate_Unique_Index    := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreate, gtkwCreate,    gtkwUnique,    gtkwIndex );
+  gtkwCreate_User            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDcl,       gtkwCreate,    gtkwUser );
+  gtkwCreate_View            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreateView,gtkwCreate,    gtkwView );
+  gtkwCreate_Materialized_View:=LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreateView,gtkwCreate,    gtkwMaterialized, gtkwView );
+  gtkwCreate_Or_Replace_Materialized_View
+                             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlCreateView,gtkwCreate,    gtkwOr, gtkwReplace, gtkwMaterialized, gtkwView );
+
+  gtkwCross_Join             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwCross,     gtkwJoin );
+  { ---- D ---- }
+  gtkwDeallocate_Unused      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwDeallocate,gtkwUnused);
+  gtkwDelete_From            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwDelete,    gtkwFrom );
+  gtkwDelete_Rows            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwDelete,    gtkwRows );
+  gtkwDrop_Table             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop, gtkwDrop,      gtkwTable );
+  gtkwDrop_Column            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop,   gtkwDrop,     gtkwColumn );
+  gtkwDrop_Constraint        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop,   gtkwDrop,     gtkwConstraint );
+  gtkwDrop_Index             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwDrop,      gtkwIndex );
+  gtkwDrop_Sequence          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop,   gtkwDrop,     gtkwSequence );
+  gtkwDrop_Synonym           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop,   gtkwDrop,     gtkwSynonym );
+  gtkwDrop_View              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlDrop,   gtkwDrop,     gtkwView );
+  { ---- E ---- }
+  gtkwEnable_Row_Movement    := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwEnable,    gtkwRow,      gtkwMovement);
+  gtkwEnd_Tran               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsTcl,       gtkwEnd,      gtkwTran);
+  gtkwEnd_Transaction        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwEnd,       gtkwTransaction );
+  { ---- F ---- }
+  gtkwForeign_Key            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwForeign,   gtkwKey );
+  gtkwFor_Update             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwFor,       gtkwUpdate );
+  gtkwFor_Update_Of          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwFor,       gtkwUpdate,   gtkwOf );
+  gtkwFull_Join              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwFull,      gtkwJoin );
+  gtkwFull_Outer_Join        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwFull,      gtkwOuter,    gtkwJoin );
+  { ---- G ---- }
+  gtkwGroup_By               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwGroup,     gtkwBy );
+  { ---- H ---- }
+  { ---- I ---- }
+  gtkwIncrement_By           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwIncrement, gtkwBy );
+  gtkwInner_Join             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwInner,     gtkwJoin );
+  gtkwInsert_Into            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwInsert,    gtkwInto );
+  gtkwInsert_Or_Replace_Into := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwInsert,    gtkwOr,        gtkwReplace,  gtkwInto);
+  gtkwIs_Not_Null            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwIs,        gtkwNot,      gtkwNull);
+  gtkwIs_Null                := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwIs,        gtkwNull );
+  { ---- J ---- }
+  { ---- K ---- }
+  { ---- L ---- }
+  gtkwLeft_Join              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwLeft,      gtkwJoin );
+  gtkwLeft_Outer_Join        := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwLeft,      gtkwOuter,    gtkwJoin );
+  { ---- M ---- }
+  gtkwModify_Column          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwModify,    gtkwColumn );
+  { ---- N ---- }
+  gtkwNot_Between            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwNot,       gtkwBetween );
+  gtkwNot_Exists             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwNot,       gtkwExists );
+  gtkwNot_In                 := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwNot,       gtkwIn );
+  gtkwNot_Like               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwNot,       gtkwLike );
+  gtkwNot_Null               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwNot,       gtkwNull );
+  gtkwNulls_First            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwNulls,     gtkwFirst );
+  gtkwNulls_Last             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwNulls,     gtkwLast  );
+  { ---- O ---- }
+  gtkwOn_Commit              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwCommit );
+  gtkwOn_Demand              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDemand );
+  gtkwOn_Delete              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete );
+  gtkwOn_Update              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate );
+  gtkwOrder_By               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOrder,     gtkwBy );
+  { ---- P ---- }
+  gtkwPreserve_Rows          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwPreserve,  gtkwRows );
+  gtkwPrimary_Key            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwPrimary,   gtkwKey );
+  gtkwPurge_RecycleBin       := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwPurge,     gtkwRecycleBin );
+  { ---- Q ---- }
+  { ---- R ---- }
+  gtkwRename_Column          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,   gtkwColumn );
+  gtkwRename_Table           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,    gtkwTable );
+  gtkwRename_To              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,   gtkwTo );
+  gtkwRight_Join             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwRight,     gtkwJoin );
+  gtkwRight_Outer_Join       := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwRight,     gtkwOuter,    gtkwJoin );
+  gtkwRollback_Tran          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwRollback,  gtkwTran );
+  gtkwRollback_Transaction   := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwRollback,  gtkwTransaction );
+  gtkwRollback_To_Savepoint  := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwRollback,  gtkwTo,       gtkwSavepoint );
+  { ---- S ---- }
+  gtkwSet_Null               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwSet,       gtkwNull );
+  gtkwSelect_Into            := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwSelect,    gtkwInto );
+  gtkwShrink_Space           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwShrink,    gtkwSpace);
+  gtkwStart_With             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwStart,     gtkwWith );
+  gtkwStart_Transaction      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwStart,     gtkwTransaction );
+  gtkwStop_Transaction       := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwStop,      gtkwTransaction );
+  { ---- T ---- }
+  gtkwTo_Savepoint           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwTo,        gtkwSavepoint);
+  gtkwTruncate_Table         := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwTruncate,  gtkwTable);
+  { ---- U ---- }
+  gtkwUnion_All              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsUnion,     gtkwUnion,     gtkwAll );
+  { ---- V ---- }
+  gtkwValidate_Structure     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwValidate,  gtkwStructure);
+  gtkwValues_LeftBracket     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwValues,    gttkLeftBracket);
+  { ---- W ---- }
+  { ---- X ---- }
+  { ---- Y ---- }
+  { ---- Z ---- }
 end.
 
