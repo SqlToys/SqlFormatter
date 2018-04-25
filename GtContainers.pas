@@ -5,8 +5,8 @@
 { Each item and class can have individual name                                 }
 { For each item and list can be enabled class reference tracking               }
 {--------------------------------------  --------------------------------------}
-{$DEBUGINFO OFF}
-{$LOCALSYMBOLS OFF}
+{ DEBUGINFO OFF}
+{ LOCALSYMBOLS OFF}
 unit GtContainers;
 
 interface
@@ -94,7 +94,9 @@ type
     procedure   Clear;
 
     procedure   AddItem(aItem: TGtItem); virtual;
+    procedure   AddItemBefore(aNewItem, aExistingItem: TGtItem); virtual;
     function    RemoveItem(aItem: TGtItem): Boolean; override;
+    function    RemoveIndex(aIndex: Integer): Boolean; virtual;
     function    GetItem(aIndex: Integer): TGtItem;
     function    GetIndex(aItem: TGtItem): Integer;
     function    FindItem(aItem: TGtItem): Boolean;
@@ -434,6 +436,63 @@ begin
   {$IFDEF GtGarbageCollector}
   GcLogOp( gtgcAdd, aItem );
   {$ENDIF}
+end;
+
+{ adds item to list, before existing item }
+procedure TGtUniList.AddItemBefore(aNewItem, aExistingItem: TGtItem);
+var i: Integer;
+begin
+  if not Assigned(aNewItem) then Exit;
+  if not Assigned(aExistingItem) then Exit;
+
+  {$IFDEF GtUniListDebug}
+  if Assigned(FObjectList) and (FObjectList.IndexOf(aItem) <> -1)
+    then raise EUniListDuplicate.Create(ClassName + gtstrObjListDuplicate);
+
+  if Assigned(FStringList) and (FStringList.IndexOfObject(aItem) <> -1)
+    then raise EUniListDuplicate.Create(ClassName + gtstrStrListDuplicate);
+  {$ENDIF}
+
+  CreateList;
+
+  if Assigned(FObjectList) then begin
+    i := FObjectList.IndexOf(aExistingItem);
+    if i <> -1 then begin
+      FObjectList.Insert(i, aNewItem);
+      aNewItem.AddReference( Self );
+    end;
+  end else
+  if Assigned(FStringList) then begin
+    i := FStringList.IndexOfObject(aExistingItem);
+    if i <> -1 then begin
+      FStringList.InsertObject(i, aNewItem.Name, aNewItem);
+      aNewItem.AddReference( Self );
+    end;
+  end;
+
+  {$IFDEF GtGarbageCollector}
+  GcLogOp( gtgcAdd, aItem );
+  {$ENDIF}
+end;
+
+{ removes item from list }
+function TGtUniList.RemoveIndex(aIndex: Integer): Boolean;
+begin
+  Result := False;
+  if (aIndex < 0) or (aIndex >= Count) then Exit;
+  if(not Assigned(FObjectList) or (FObjectList.Count = 0)) and
+    (not Assigned(FStringList) or (FStringList.Count = 0)) then Exit;
+
+  inherited RemoveItem( Items[aIndex] );
+
+  if Assigned(FObjectList) then begin
+    FObjectList.Delete(aIndex);
+    Result := True;
+  end else
+  if Assigned(FStringList) then begin
+    FStringList.Delete(aIndex);
+    Result := True;
+  end;
 end;
 
 { removes item from list }

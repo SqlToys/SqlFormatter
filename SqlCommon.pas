@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 31    18-03-25 21:54 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 32    18-04-08 9:39 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -213,7 +213,10 @@ var
       (  Reg: 'Brackets3';     Color: $2222EE;   Style: 'B__'),
       (  Reg: 'Brackets4';     Color: $EEEE22;   Style: 'B__'), // 22EEEE
       (  Reg: 'Brackets5';     Color: $EE22EE;   Style: 'B__'), // 22EE22, EE22EE
-      (  Reg: 'Brackets6';     Color: $22EEEE;   Style: 'B__')  // EEEE22
+      (  Reg: 'Brackets6';     Color: $22EEEE;   Style: 'B__'), // EEEE22
+
+      // EXT. RELEVANT
+      (  Reg: 'Semicolon';     Color: $000000;   Style: '___')
     );
 
 function YaRegKey(aKey: TYaRegKey): String;
