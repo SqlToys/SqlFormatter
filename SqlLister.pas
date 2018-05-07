@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 324   18-03-25 21:55 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 325   18-04-08 15:18 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -118,7 +118,7 @@ type
     procedure   AddEmptyLine(aIle: Integer = -1); //(aAppend: Boolean = False);
     function    RemoveFormatting(aStr: String): String;
 
-    function    BracketLevelStyle: TGtLexTokenStyle;
+    function    BracketLevelStyle(aToken: TGtLexToken): TGtLexTokenStyle;
     function    CaseLevelStyle: TGtLexTokenStyle;
 
     function    ConvertStr(aStr: String): String;
@@ -570,16 +570,28 @@ begin
 end;
 
 { returns token style for nested brackets }
-function TGtSqlProtoLister.BracketLevelStyle: TGtLexTokenStyle;
+function TGtSqlProtoLister.BracketLevelStyle(aToken: TGtLexToken): TGtLexTokenStyle;
 begin
-  case BracketLevel mod 6 of
-    0 : Result := gtlsBracket1;
-    1 : Result := gtlsBracket2;
-    2 : Result := gtlsBracket3;
-    3 : Result := gtlsBracket4;
-    4 : Result := gtlsBracket5;
-  else  Result := gtlsBracket6;
-  end;
+  if aToken = gttkLeftBracket then begin
+    case BracketLevel mod 6 of
+      0 : Result := gtlsBracketOpen1;
+      1 : Result := gtlsBracketOpen2;
+      2 : Result := gtlsBracketOpen3;
+      3 : Result := gtlsBracketOpen4;
+      4 : Result := gtlsBracketOpen5;
+    else  Result := gtlsBracketOpen6;
+    end;
+  end else
+  if aToken = gttkRightBracket then begin
+    case BracketLevel mod 6 of
+      0 : Result := gtlsBracketClose1;
+      1 : Result := gtlsBracketClose2;
+      2 : Result := gtlsBracketClose3;
+      3 : Result := gtlsBracketClose4;
+      4 : Result := gtlsBracketClose5;
+    else  Result := gtlsBracketClose6;
+    end;
+  end else Result:= gtlsPlainText;
 end;
 
 { returns token style for nested CASEs }
@@ -746,7 +758,7 @@ begin
                      (aToken = gttkStarEqual) or (aToken = gttkEqualStar) or (aToken = gttkBracketPlusBracket)
                   then lStyle := gtlsOperator else
                   if aToken = gttkLeftBracket then begin
-                    lStyle := BracketLevelStyle;
+                    lStyle := BracketLevelStyle(aToken);
                     Inc(BracketLevel);
                     AddStr(lStr, lStyle, False {Options[ gtstSpaceOutsideBrackets ] and aAddClearSpace} );
 //                    if Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
@@ -756,7 +768,7 @@ begin
                   end else
                   if aToken = gttkRightBracket then begin
                     Dec(BracketLevel);
-                    lStyle := BracketLevelStyle;
+                    lStyle := BracketLevelStyle(aToken);
                     AddStr(lStr, lStyle, False);
 //                           Options[ gtstSpaceInsideBrackets ] and aAddClearSpace
 //                           and not (aSingleParam and Options[ gtstSpaceInsideBracketsSkipFun ]) );

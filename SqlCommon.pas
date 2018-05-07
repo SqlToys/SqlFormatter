@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 32    18-04-08 9:39 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 33    18-04-08 15:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -208,15 +208,22 @@ var
       (  Reg: 'Cases6';        Color: $AAAA44;   Style: 'B__'), // CCCC66
 
       // EXT. BRACKETS
-      (  Reg: 'Brackets1';     Color: $EE2222;   Style: 'B__'),
-      (  Reg: 'Brackets2';     Color: $22EE22;   Style: 'B__'), // EE22EE, 22EE22
-      (  Reg: 'Brackets3';     Color: $2222EE;   Style: 'B__'),
-      (  Reg: 'Brackets4';     Color: $EEEE22;   Style: 'B__'), // 22EEEE
-      (  Reg: 'Brackets5';     Color: $EE22EE;   Style: 'B__'), // 22EE22, EE22EE
-      (  Reg: 'Brackets6';     Color: $22EEEE;   Style: 'B__'), // EEEE22
+      (  Reg: 'BracketOpen1';  Color: $EE2222;   Style: 'B__'),
+      (  Reg: 'BracketOpen2';  Color: $22EE22;   Style: 'B__'), // EE22EE, 22EE22
+      (  Reg: 'BracketOpen3';  Color: $2222EE;   Style: 'B__'),
+      (  Reg: 'BracketOpen4';  Color: $EEEE22;   Style: 'B__'), // 22EEEE
+      (  Reg: 'BracketOpen5';  Color: $EE22EE;   Style: 'B__'), // 22EE22, EE22EE
+      (  Reg: 'BracketOpen6';  Color: $22EEEE;   Style: 'B__'), // EEEE22
+      (  Reg: 'BracketClose1'; Color: $EE2222;   Style: 'B__'),
+      (  Reg: 'BracketClose2'; Color: $22EE22;   Style: 'B__'), // EE22EE, 22EE22
+      (  Reg: 'BracketClose3'; Color: $2222EE;   Style: 'B__'),
+      (  Reg: 'BracketClose4'; Color: $EEEE22;   Style: 'B__'), // 22EEEE
+      (  Reg: 'BracketClose5'; Color: $EE22EE;   Style: 'B__'), // 22EE22, EE22EE
+      (  Reg: 'BracketClose6'; Color: $22EEEE;   Style: 'B__'), // EEEE22
 
       // EXT. RELEVANT
-      (  Reg: 'Semicolon';     Color: $000000;   Style: '___')
+      (  Reg: 'Semicolon';     Color: $000000;   Style: '___'),
+      (  Reg: 'Comma';         Color: $000000;   Style: '___')
     );
 
 function YaRegKey(aKey: TYaRegKey): String;
@@ -602,7 +609,12 @@ begin
         then ColorAndStyleSetLister(aScriptLister, lStyle, lStyle)
         else ColorAndStyleSetLister(aScriptLister, lStyle, gtlsKeyword)
     end else
-    if lStyle in [gtlsBracket1, gtlsBracket2, gtlsBracket3, gtlsBracket4, gtlsBracket5, gtlsBracket6] then begin
+    if lStyle in [gtlsBracketOpen1, gtlsBracketOpen2, gtlsBracketOpen3, gtlsBracketOpen4, gtlsBracketOpen5, gtlsBracketOpen6] then begin
+      if YaRegistryGetBool (yastExtColorBrackets)
+        then ColorAndStyleSetLister(aScriptLister, lStyle, lStyle)
+        else ColorAndStyleSetLister(aScriptLister, lStyle, gtlsPlainText)
+    end else
+    if lStyle in [gtlsBracketClose1, gtlsBracketClose2, gtlsBracketClose3, gtlsBracketClose4, gtlsBracketClose5, gtlsBracketClose6] then begin
       if YaRegistryGetBool (yastExtColorBrackets)
         then ColorAndStyleSetLister(aScriptLister, lStyle, lStyle)
         else ColorAndStyleSetLister(aScriptLister, lStyle, gtlsPlainText)

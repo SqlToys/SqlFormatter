@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/GtContainers.pas 112   18-03-25 17:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/GtContainers.pas 114   18-04-08 15:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 { This unit provides simple item class and an items list class                 }
@@ -95,6 +95,7 @@ type
 
     procedure   AddItem(aItem: TGtItem); virtual;
     procedure   AddItemBefore(aNewItem, aExistingItem: TGtItem); virtual;
+    procedure   AddItemAfter(aNewItem, aExistingItem: TGtItem); virtual;
     function    RemoveItem(aItem: TGtItem): Boolean; override;
     function    RemoveIndex(aIndex: Integer): Boolean; virtual;
     function    GetItem(aIndex: Integer): TGtItem;
@@ -466,6 +467,43 @@ begin
     i := FStringList.IndexOfObject(aExistingItem);
     if i <> -1 then begin
       FStringList.InsertObject(i, aNewItem.Name, aNewItem);
+      aNewItem.AddReference( Self );
+    end;
+  end;
+
+  {$IFDEF GtGarbageCollector}
+  GcLogOp( gtgcAdd, aItem );
+  {$ENDIF}
+end;
+
+{ adds item to list, after existing item }
+procedure TGtUniList.AddItemAfter(aNewItem, aExistingItem: TGtItem);
+var i: Integer;
+begin
+  if not Assigned(aNewItem) then Exit;
+  if not Assigned(aExistingItem) then Exit;
+
+  {$IFDEF GtUniListDebug}
+  if Assigned(FObjectList) and (FObjectList.IndexOf(aItem) <> -1)
+    then raise EUniListDuplicate.Create(ClassName + gtstrObjListDuplicate);
+
+  if Assigned(FStringList) and (FStringList.IndexOfObject(aItem) <> -1)
+    then raise EUniListDuplicate.Create(ClassName + gtstrStrListDuplicate);
+  {$ENDIF}
+
+  CreateList;
+
+  if Assigned(FObjectList) then begin
+    i := FObjectList.IndexOf(aExistingItem);
+    if i <> -1 then begin
+      FObjectList.Insert(i+1, aNewItem);
+      aNewItem.AddReference( Self );
+    end;
+  end else
+  if Assigned(FStringList) then begin
+    i := FStringList.IndexOfObject(aExistingItem);
+    if i <> -1 then begin
+      FStringList.InsertObject(i+1, aNewItem.Name, aNewItem);
       aNewItem.AddReference( Self );
     end;
   end;
