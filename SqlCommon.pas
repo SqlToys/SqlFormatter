@@ -171,6 +171,7 @@ var
       (  Reg: 'Tables';        Color: $008888;   Style: 'B__'),
       (  Reg: 'Views';         Color: $00AA88;   Style: 'B__'), // 00CC88
       (  Reg: 'TableAliases';  Color: $FF8800;   Style: 'B__'), // EE8800
+      (  Reg: 'TableAliasDef'; Color: $FF8800;   Style: 'B__'), // EE8800
       (  Reg: 'Columns';       Color: $CCAA88;   Style: 'B__'),
       // (  Reg: 'RefColumns';    Color: $880000;   Style: '_I_'),
       (  Reg: 'ColumnAliases'; Color: $FF4444;   Style: 'B__'), // EE8888, BI_
