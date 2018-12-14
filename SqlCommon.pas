@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 34    18-04-22 13:07 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 35    18-12-14 21:29 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -401,12 +401,13 @@ var
   gtkwNot_Between,      gtkwNot_Exists,       gtkwNot_In,          gtkwNot_Like,
   gtkwNot_Null,         gtkwNulls_First,      gtkwNulls_Last,
   { ---- O ---- }
-  gtkwOn_Commit,        gtkwOn_Delete,        gtkwOn_Update,        gtkwOrder_By,
-  gtkwOn_Demand,
+  gtkwOn_Commit,        gtkwOn_Commit_Preserve_Rows,               gtkwOn_Commit_Delete_Rows,
+  gtkwOn_Delete,        gtkwOn_Demand,        gtkwOn_Update,       gtkwOrder_By,
   { ---- P ---- }
   gtkwPreserve_Rows,    gtkwPrimary_Key,      gtkwPurge_RecycleBin,
   { ---- Q ---- }
   { ---- R ---- }
+  gtkwRefresh_Force,    gtkwRefresh_On_Demand,gtkwRefresh_Force_On_Demand,
   gtkwRename_Column,    gtkwRename_Table,     gtkwRename_To,       gtkwRight_Join,
   gtkwRight_Outer_Join, gtkwRollback_Tran,    gtkwRollback_Transaction,
   gtkwRollback_To_Savepoint,
@@ -1022,6 +1023,8 @@ begin
   gtkwNulls_Last             := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsNull,      gtkwNulls,     gtkwLast  );
   { ---- O ---- }
   gtkwOn_Commit              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwCommit );
+  gtkwOn_Commit_Preserve_Rows:= LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwCommit,    gtkwPreserve, gtkwRows );
+  gtkwOn_Commit_Delete_Rows  := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwCommit,    gtkwDelete,   gtkwRows );
   gtkwOn_Demand              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDemand );
   gtkwOn_Delete              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete );
   gtkwOn_Update              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate );
@@ -1032,6 +1035,9 @@ begin
   gtkwPurge_RecycleBin       := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwPurge,     gtkwRecycleBin );
   { ---- Q ---- }
   { ---- R ---- }
+  gtkwRefresh_Force          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRefresh,  gtkwForce);
+  gtkwRefresh_On_Demand      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRefresh,  gtkwOn,  gtkwDemand);
+  gtkwRefresh_Force_On_Demand:= LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRefresh,  gtkwForce, gtkwOn,  gtkwDemand);
   gtkwRename_Column          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,   gtkwColumn );
   gtkwRename_Table           := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,    gtkwTable );
   gtkwRename_To              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtlsDdlModify, gtkwRename,   gtkwTo );

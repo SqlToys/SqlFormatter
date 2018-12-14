@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 297   18-03-25 21:55 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 298   18-12-14 21:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -58,6 +58,9 @@ type
   function GtSqlNodeKindToName( aKind: TGtSqlNodeKind ): string;
   function GtSqlNodeNameToKind( aName: String ): TGtSqlNodeKind;
 
+const
+  cSqlNodeTokenMax = 14;
+
 type
   TGtSqlNode = class;
   TSqlNodeProcedure = procedure (aNode: TGtSqlNode);
@@ -67,7 +70,7 @@ type
   private
     FKind: TGtSqlNodeKind;
     FValues: TStringList;
-    FTokens: array [1..10] of TGtLexToken{Def};
+    FTokens: array [1..cSqlNodeTokenMax] of TGtLexToken{Def};
 
     function        GetOwner_SqlNode: TGtSqlNode; //virtual;
     procedure       SetOwner_SqlNode(aOwner: TGtSqlNode); //virtual;
@@ -112,16 +115,23 @@ type
     property        Values: TStringList read FValues;
   public // function specific methods
     Nullable: TGtSqlNullableOption;
+
 //  property        LogicOp   : TGtLexToken{Def} index 1 read FTokens[1] write SetFTokens;
 //  property        ExprOp    : TGtLexToken{Def} index 2 read FTokens[2] write SetFTokens;
 //  property        CompOp    : TGtLexToken{Def} index 3 read FTokens[3] write SetFTokens;
 //  property        JoinOp    : TGtLexToken{Def} index 4 read FTokens[4] write SetFTokens;
+
     property        DataType  : TGtLexToken{Def} index 5 read FTokens[5] write SetFTokens;
-    property        OnDelete  : TGtLexToken{Def} index 6 read FTokens[6] write SetFTokens;
-    property        OnUpdate  : TGtLexToken{Def} index 7 read FTokens[7] write SetFTokens;
+//    property        OnDelete  : TGtLexToken{Def} index 6 read FTokens[6] write SetFTokens;
+//    property        OnUpdate  : TGtLexToken{Def} index 7 read FTokens[7] write SetFTokens;
     property        SortOrder : TGtLexToken{Def} index 8 read FTokens[8] write SetFTokens;
     property        Keyword   : TGtLexToken{Def} index 9 read FTokens[9] write SetFTokens;
     property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
+
+    property        KeywordExt: TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
+    property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
+    property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
+    property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
 
     property        OldName              : String index 101 read GetValStr write SetValStr;
     property        NewName              : String index 102 read GetValStr write SetValStr;
@@ -134,18 +144,18 @@ type
     property        KeepName             : String index 109 read GetValStr write SetValStr;
 
     property        Negation             : Boolean index 201 read GetValBool write SetValBool;
-    property        Unique               : Boolean index 202 read GetValBool write SetValBool;
-    property{Create}OrReplace            : Boolean index 203 read GetValBool write SetValBool;
-    property        Public               : Boolean index 204 read GetValBool write SetValBool;
-    property        Global               : Boolean index 205 read GetValBool write SetValBool;
-    property        Temporary            : Boolean index 206 read GetValBool write SetValBool;
+//    property        Unique               : Boolean index 202 read GetValBool write SetValBool;
+//    property{Create}OrReplace            : Boolean index 203 read GetValBool write SetValBool;
+//    property        Public               : Boolean index 204 read GetValBool write SetValBool;
+//    property        Global               : Boolean index 205 read GetValBool write SetValBool;
+//    property        Temporary            : Boolean index 206 read GetValBool write SetValBool;
     property        Identity             : Boolean index 207 read GetValBool write SetValBool;
     property        Distinct             : Boolean index 208 read GetValBool write SetValBool;
-    property        NoWait               : Boolean index 209 read GetValBool write SetValBool;
-    property        Materialized         : Boolean index 210 read GetValBool write SetValBool;
+//    property        NoWait               : Boolean index 209 read GetValBool write SetValBool;
+//  property        Materialized         : Boolean index 210 read GetValBool write SetValBool;
     property        NoCycle              : Boolean index 211 read GetValBool write SetValBool;
-  //property        OuterMark1           : Boolean index 212 read GetValBool write SetValBool;
-  //property        OuterMark2           : Boolean index 213 read GetValBool write SetValBool;
+//  //property        OuterMark1           : Boolean index 212 read GetValBool write SetValBool;
+//  //property        OuterMark2           : Boolean index 213 read GetValBool write SetValBool;
     property        ExprMinus            : Boolean index 214 read GetValBool write SetValBool;
     property        ExprReverseOp        : Boolean index 215 read GetValBool write SetValBool;
     property        ExprReverseOp2       : Boolean index 216 read GetValBool write SetValBool;
@@ -153,14 +163,14 @@ type
     property        Enable               : Boolean index 218 read GetValBool write SetValBool;
     property        Disable              : Boolean index 219 read GetValBool write SetValBool;
     property        Cascade              : Boolean index 220 read GetValBool write SetValBool;
-    property        NullsFirst           : Boolean index 221 read GetValBool write SetValBool;
-    property        NullsLast            : Boolean index 222 read GetValBool write SetValBool;
-    property        Purge                : Boolean index 223 read GetValBool write SetValBool;
-    property        OnDemand             : Boolean index 224 read GetValBool write SetValBool;
-    property        Force                : Boolean index 225 read GetValBool write SetValBool;
-    property        OnCommitPreserveRows : Boolean index 226 read GetValBool write SetValBool;
-    property        OnCommitDeleteRows   : Boolean index 227 read GetValBool write SetValBool;
-    property        Semicolon            : Boolean index 228 read GetValBool write SetValBool;
+//    property        NullsFirst           : Boolean index 221 read GetValBool write SetValBool;
+//    property        NullsLast            : Boolean index 222 read GetValBool write SetValBool;
+//    property        Purge                : Boolean index 223 read GetValBool write SetValBool;
+//    property        OnDemand             : Boolean index 224 read GetValBool write SetValBool;
+//    property        Force                : Boolean index 225 read GetValBool write SetValBool;
+//    property        OnCommitPreserveRows : Boolean index 226 read GetValBool write SetValBool;
+//    property        OnCommitDeleteRows   : Boolean index 227 read GetValBool write SetValBool;
+//    property        Semicolon            : Boolean index 228 read GetValBool write SetValBool;
     property        OuterMark1Oracle     : Boolean index 229 read GetValBool write SetValBool;
     property        OuterMark1MSSQL      : Boolean index 230 read GetValBool write SetValBool;
     property        OuterMark2Oracle     : Boolean index 231 read GetValBool write SetValBool;
@@ -171,7 +181,7 @@ type
     property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
 
     property        NewLineBefore        : Boolean index 236 read GetValBool write SetValBool;
-    property        NewLineAfter         : Boolean index 237 read GetValBool write SetValBool;
+//  property        NewLineAfter         : Boolean index 237 read GetValBool write SetValBool;
     property        EmptyLineBefore      : Boolean index 238 read GetValBool write SetValBool;
     property        EmptyLineAfter       : Boolean index 239 read GetValBool write SetValBool;
 
@@ -357,7 +367,7 @@ begin
 
   Nullable := gtopNullNotSpecified; //True; // TODO: database default value ??
 
-  for i := 1 to 10 do FTokens[i] := gttkNone;
+  for i := 1 to cSqlNodeTokenMax do FTokens[i] := gttkNone;
 end;
 
 { class constructor }
@@ -856,10 +866,11 @@ begin
                        (aToken = gtkwExists) or (aToken = gtkwNot_Exists) or
                        (aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
                        (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
-                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma))
-
+                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
+     (aIndex = 11) or (aIndex = 12)
   then begin
     FTokens [aIndex] := aToken;
+    if aIndex = 9 {keyword} then FTokens[11] {keyword ext} := aToken;
   end else begin
     FTokens [aIndex] := gttkNone;
     //raise

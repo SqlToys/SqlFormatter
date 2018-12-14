@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 8     18-03-25 21:55 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 9     18-12-14 21:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -69,13 +69,18 @@ var lSL: TStringList;
 //    if aNode.JoinOp        <> gttkNone then s := s + ' JoinOp="'        + XmlQuote(aNode.JoinOp.Text)    + '"';
       if(aNode.Operand       <> gttkNone)then s := s + ' Operand="'       + XmlQuote(aNode.Operand.TokenText)   + '"';
       if aNode.DataType      <> gttkNone then s := s + ' DataType="'      + XmlQuote(aNode.DataType.TokenText)  + '"';
-      if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.TokenText)  + '"';
-      if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.TokenText)  + '"';
+//    if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.TokenText)  + '"';
+//    if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.TokenText)  + '"';
       if aNode.SortOrder     <> gttkNone then s := s + ' SortOrder="'     + XmlQuote(aNode.SortOrder.TokenText) + '"';
       if Assigned(aNode.Keyword) then
       if(aNode.Keyword       <> gttkNone)//and(aNode.Keyword <> gttkIdentifier)and(aNode.Keyword <> gttkColumnName)
   //                                       and(aNode.Keyword <> gttkNumber)
                                          then s := s + ' Keyword="'       + XmlQuote(aNode.Keyword.TokenText)   + '"';
+      if aNode.KeywordExt    <> gttkNone then s := s + ' KeywordExt="'    + XmlQuote(aNode.KeywordExt.TokenText)+ '"';
+
+      if aNode.KeywordAfter1 <> gttkNone then s := s + ' KeywordAfter1="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
+      if aNode.KeywordAfter2 <> gttkNone then s := s + ' KeywordAfter2="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
+      if aNode.KeywordAfter3 <> gttkNone then s := s + ' KeywordAfter3="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
 
       if Assigned(aNode.Values) then
         for i := 0 to aNode.Values.Count -1 do
@@ -134,10 +139,14 @@ procedure XmlToParseTree (aFileName: String; aTopNode: TGtSqlNode);
 //        if aXmlNode.AttributeNodes[i].NodeName = 'JoinOp'    then Result.JoinOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'Operand'   then Result.Operand  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'DataType'  then Result.DataType := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'OnDelete'  then Result.OnDelete := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'OnUpdate'  then Result.OnUpdate := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//          if aXmlNode.AttributeNodes[i].NodeName = 'OnDelete'  then Result.OnDelete := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+//          if aXmlNode.AttributeNodes[i].NodeName = 'OnUpdate'  then Result.OnUpdate := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'SortOrder' then Result.SortOrder:= LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'Keyword'   then Result.Keyword  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordExt'      then Result.KeywordExt  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAfter1'   then Result.KeywordAfter1  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAfter2'   then Result.KeywordAfter2  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAfter3'   then Result.KeywordAfter3  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
              Result.SetValueByName( aXmlNode.AttributeNodes[i].NodeName, XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue ) );
         end;
 

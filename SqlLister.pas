@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 325   18-04-08 15:18 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 326   18-12-14 21:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -701,7 +701,7 @@ end;
 { adds colored string }
 procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken{Def}; aAddClearSpace: Boolean = True);
 begin
-  if not Assigned(aToken) then Exit;
+  if not Assigned(aToken) or (aToken = gttkNone) then Exit;
 
   AddStr(aToken, aToken.TokenStyle, aAddClearSpace);
 end;
@@ -712,7 +712,7 @@ procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken{Def}; aStyle: TGtLexToke
 var lStyle: TGtLexTokenStyle;
     lStr: String;
 begin
-  if not Assigned(aToken) then Exit;
+  if not Assigned(aToken) or (aToken = gttkNone) then Exit;
 
   lStyle := aStyle; //aToken.TokenStyle;// gtlsPlainText;
   if (aToken.TokenKind = gtttKeyword) and (aStyle = gtlsKeyword) then lStyle := FKeywordStyle;
@@ -1574,8 +1574,9 @@ begin
 //  end;
 
   { BNF: NULLS FIRST | NULLS LAST }
-  if aNode.NullsFirst then AddStr(gtkwNulls_First) else
-  if aNode.NullsLast  then AddStr(gtkwNulls_Last);
+  AddStr(aNode.KeywordAfter1);
+//  if aNode.NullsFirst then AddStr(gtkwNulls_First) else
+//  if aNode.NullsLast  then AddStr(gtkwNulls_Last);
 end;
 
 { lists set expressions }
@@ -1803,7 +1804,8 @@ begin
     AddStr(gttkDot, False);
     AddStr(aNode.ColumnName, gtlsColumn, False);
     AddStr(gttkPercent, False);
-    AddStr(aNode.DataType, False);
+    //AddStr(aNode.DataType, False);
+    AddStr(gtkwType, False);
   end else begin
     List_DataType(aNode, aListerOpt);
   end;
@@ -1840,14 +1842,15 @@ begin
   end;
 
   lUnique := aNode.Find(gtsiDDL, gtkwCreate_Index);
-  if Assigned(lUnique) and lUnique.Unique then AddStr(gtkwUnique);
+  if Assigned(lUnique) and lUnique.KeywordExt.HasSubToken(gtkwUnique) then AddStr(gtkwUnique);
+//if Assigned(lUnique) and lUnique.Unique then AddStr(gtkwUnique);
 
   for i := 0 to aNode.Count - 1 do begin
     if (aNode[i].Kind = gtsiConstraint) then begin
     //if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
       if aNode[i].NewLineBefore then AddClause;
       List_Constraint(aNode[i], aListerOpt + [gtloSingleColumn]);
-      if aNode[i].NewLineAfter then AddCurrLine;
+//    if aNode[i].NewLineAfter then AddCurrLine;
     end;
   end;
 end;
@@ -1959,18 +1962,22 @@ begin
     end;
   end;
 
-  if aNode.OnDelete <> gttkNone then begin
+//if aNode.OnDelete <> gttkNone then begin
+  if aNode.KeywordAfter1 <> gttkNone then begin
     if gtloAlterTableConstraint in aListerOpt
       then AddClause(gtkwOn_Delete)
       else AddStr(gtkwOn_Delete);
-    AddStr(aNode.OnDelete);
+  //AddStr(aNode.OnDelete);
+    AddStr(aNode.KeywordAfter1);
   end;
 
-  if aNode.OnUpdate <> gttkNone then begin
+//if aNode.OnUpdate <> gttkNone then begin
+  if aNode.KeywordAfter2 <> gttkNone then begin
     if gtloAlterTableConstraint in aListerOpt
       then AddClause(gtkwOn_Update)
       else AddStr(gtkwOn_Update);
-    AddStr(aNode.OnUpdate);
+  //AddStr(aNode.OnUpdate);
+    AddStr(aNode.KeywordAfter2);
   end;
 end;
 
@@ -2051,9 +2058,10 @@ begin
     then AddClause(gtkwUpdate, ClauseAppendCondition)
     else
   if (aNode.{JoinOp} Operand = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
-    if aNode.GetQuery.OrReplace
-      then AddClause( gtkwInsert_Or_Replace_Into, ClauseAppendCondition )
-      else AddClause( gtkwInsert_Into, ClauseAppendCondition);
+    AddClause(aNode.KeywordExt);
+//    if aNode.GetQuery.OrReplace
+//      then AddClause( gtkwInsert_Or_Replace_Into, ClauseAppendCondition )
+//      else AddClause( gtkwInsert_Into, ClauseAppendCondition);
   end else
   if (aNode.{JoinOp} Operand = gttkComma) then begin
 //    if not Options[ gtstCommaAtNewLine ] then begin
@@ -2135,8 +2143,10 @@ begin
   lIntend := NewLineIntend;
 
   { list: CREATE [[GLOBAL] TEMPORARY] TABLE table-name }
-  if aNode.Temporary then begin
-    if aNode.Global then begin
+//if aNode.Temporary then begin
+  if aNode.KeywordExt.HasSubToken(gtkwTemporary) then begin
+  //if aNode.Global then begin
+    if aNode.KeywordExt.HasSubToken(gtkwGlobal) then begin
       AddClause(gtkwCreate_Global);
       AddStr(gtkwTemporary_Table);
     end else begin
@@ -2292,11 +2302,12 @@ begin
 
   AddClause(gttkRightBracket);
 
-  if aNode.OnCommitPreserveRows or aNode.OnCommitDeleteRows then begin
-    AddStr(gtkwOn_Commit);
-    if aNode.OnCommitPreserveRows then AddStr(gtkwPreserve_Rows) else
-    if aNode.OnCommitDeleteRows   then AddStr(gtkwDelete_Rows);
-  end;
+  AddStr(aNode.KeywordAfter1);
+//  if aNode.OnCommitPreserveRows or aNode.OnCommitDeleteRows then begin
+//    AddStr(gtkwOn_Commit);
+//    if aNode.OnCommitPreserveRows then AddStr(gtkwPreserve_Rows) else
+//    if aNode.OnCommitDeleteRows   then AddStr(gtkwDelete_Rows);
+//  end;
 
   NewLineIntend := lIntend;
 //ML_ColumnName := 0;
@@ -2310,8 +2321,10 @@ begin
 
   List_Clause_Name (aNode, aListerOpt, gtkwDrop_Table, nil, aNode.Name, gtlsTable, gtlsDdlDrop);
 
-  if aNode.Cascade then AddStr(gtkwCascade_Constraints);
-  if aNode.Purge   then AddStr(gtkwPurge);
+//if aNode.Cascade then AddStr(gtkwCascade_Constraints);
+//if aNode.Purge   then AddStr(gtkwPurge);
+  AddStr(aNode.KeywordAfter1);
+  AddStr(aNode.KeywordAfter2);
 end;
 
 { lists ADD COLUMN clause }
@@ -2495,9 +2508,10 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreate;
 
-  if aNode.Unique
-    then AddClause(gtkwCreate_Unique_Index)
-    else AddClause(gtkwCreate_Index);
+  AddClause(aNode.KeywordExt);
+//  if aNode.Unique
+//    then AddClause(gtkwCreate_Unique_Index)
+//    else AddClause(gtkwCreate_Index);
 
   AddStr(aNode.Name, gtlsIdentifier);
   AddStr(gtkwOn);
@@ -2584,22 +2598,26 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreateView;
 
-  if aNode.OrReplace then begin
-    if aNode.Materialized
-      then AddClause(gtkwCreate_Or_Replace_Materialized_View)
-      else AddClause(gtkwCreate_Or_Replace_View);
-  end else begin
-    if aNode.Materialized
-      then AddClause(gtkwCreate_Materialized_View)
-      else AddClause(gtkwCreate_View);
-  end;
+//  if aNode.OrReplace then begin
+//    if aNode.Materialized
+//      then AddClause(gtkwCreate_Or_Replace_Materialized_View)
+//      else AddClause(gtkwCreate_Or_Replace_View);
+//  end else begin
+//    if aNode.Materialized
+//      then AddClause(gtkwCreate_Materialized_View)
+//      else AddClause(gtkwCreate_View);
+//  end;
+
+  AddClause(aNode.KeywordExt);
 
   AddStr(aNode.Name, gtlsView);
 
-  if aNode.Materialized then begin
-    if aNode.Force or aNode.OnDemand then AddStr(gtkwRefresh);
-    if aNode.Force then AddStr(gtkwForce);
-    if aNode.OnDemand then AddStr(gtkwOn_Demand);
+//if aNode.Materialized then begin
+//if aNode.KeywordExt.HasSubToken(gtkwMaterialized) then begin
+  if Assigned(aNode.KeywordAfter1) and aNode.KeywordAfter1.HasSubToken(gtkwRefresh) then begin
+//    if aNode.Force or aNode.OnDemand then AddStr(gtkwRefresh);
+//    if aNode.Force then AddStr(gtkwForce);
+//    if aNode.OnDemand then AddStr(gtkwOn_Demand);
 
     lItem := aNode.Find(gtsiExprTree, gtkwStart_With);
     if Assigned(lItem) then begin
@@ -2626,15 +2644,16 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreate;
 
-  if aNode.OrReplace then begin
-    if aNode.Public
-      then AddClause(gtkwCreate_Or_Replace_Public_Synonym)
-      else AddClause(gtkwCreate_Or_Replace_Synonym);
-  end else begin
-    if aNode.Public
-      then AddClause(gtkwCreate_Public_Synonym)
-      else AddClause(gtkwCreate_Synonym);
-  end;
+  AddClause(aNode.KeywordExt);
+//  if aNode.OrReplace then begin
+//    if aNode.Public
+//      then AddClause(gtkwCreate_Or_Replace_Public_Synonym)
+//      else AddClause(gtkwCreate_Or_Replace_Synonym);
+//  end else begin
+//    if aNode.Public
+//      then AddClause(gtkwCreate_Public_Synonym)
+//      else AddClause(gtkwCreate_Synonym);
+//  end;
 
   AddStr(aNode.Name, gtlsSynonym);
   AddStr(gtkwFor);
@@ -2818,7 +2837,8 @@ begin
 
   List_Clause_Expr(aNode, aListerOpt, gtkwFor_Update_Of, ClauseAppendCondition);
 
-  if aNode.NoWait then AddStr(gtkwNoWait);
+  AddStr(aNode.KeywordAfter1);
+//if aNode.NoWait then AddStr(gtkwNoWait);
 end;
 
 { lists UNION | MINUS | INTERSECT }
@@ -3241,7 +3261,8 @@ begin
       SkipNextNewLine := False;
 
 //    if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
-        if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
+      //if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
+        if aNode.QueryList[i].KeywordAfter1.HasSubToken(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
         //if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
           AddStr( gttkSemicolon, False );
         end;
