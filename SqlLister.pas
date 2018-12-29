@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 326   18-12-14 21:30 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 327   18-12-16 18:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1195,7 +1195,7 @@ end;
 { lists data type }
 procedure  TGtSqlFormatLister.List_DataType;
 begin
-  AddStr(aNode.DataType);
+  AddStr(aNode.{DataType} Keyword);
   if aNode.ColSize = gtsqlSizeOrPrecNotSpecified then Exit;
 
   AddStr(gttkLeftBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
@@ -1523,10 +1523,10 @@ begin
   for i := 0 to aNode.Count - 1 do
     if (aNode[i].Kind in [gtsiExpr, gtsiExprTree]) or aNode[i].Check(gtsiDml, gtkwSelect) then begin
       if i > 0 then begin
-        if (aNode[i].ExprReverseOp) and (aNode.{ExprOp} Operand = gttkPlus) then AddStr(gttkMinus) else
-        if (aNode[i].ExprReverseOp) and (aNode.{ExprOp} Operand = gttkStar) then AddStr(gttkSlash) else
-        if (aNode[i].ExprReverseOp2)and (aNode.{ExprOp} Operand = gttkStar) then AddStr(gttkPercent)
-        else AddStr(aNode.{ExprOp} Operand);
+        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkPlus) then AddStr(gttkMinus) else
+        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkSlash) else
+        if (aNode[i].ExprReverseOp2)and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkPercent)
+        else AddStr(aNode.Keyword {Operand});
 
 //      aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
       end;
@@ -1558,7 +1558,7 @@ begin
   end;
 
   { adds sort order }
-  AddStr(aNode.SortOrder);
+  AddStr(aNode.KeywordAfter1 {SortOrder});
 //  if Assigned(aNode.Owner) then begin
 //      if (aNode.Owner.Kind = gtsiExprList) and (aNode.Owner.Keyword = gtkwOrder_By) then begin
 //
@@ -1664,14 +1664,14 @@ begin
   if aNode.Negation then AddStr(gtkwNot);
   AddLeftBracket(aNode.BracketsCount);
 
-  if (aNode.{CompOp} Operand = gtkwExists) or (aNode.{CompOp} Operand = gtkwNot_Exists) then begin
-    AddStr(aNode.{CompOp} Operand);
+  if (aNode.Keyword {Operand} = gtkwExists) or (aNode.Keyword {Operand} = gtkwNot_Exists) then begin
+    AddStr(aNode.Keyword {Operand});
     List(aNode.Find(gtsiDml, gtkwSelect), aListerOpt);
   end else
-  if (aNode.{CompOp} Operand = gtkwIn) or (aNode.{CompOp} Operand = gtkwNot_In) then begin
+  if (aNode.Keyword {Operand} = gtkwIn) or (aNode.Keyword {Operand} = gtkwNot_In) then begin
     List( aNode.Find(gtsiNone, nil, '1'), aListerOpt {- [ gtloOnRightSideIntend ]});
 
-    AddStr(aNode.{CompOp} Operand);
+    AddStr(aNode.Keyword {Operand});
     AddSpace; // independent of space-outside-brackets !!
 
     lExpr := aNode.Find(gtsiNone, nil, '2');
@@ -1694,7 +1694,7 @@ begin
     List(lItem, aListerOpt {- [ gtloOnRightSideIntend ]} );
 
     { operator }
-    if (aNode.{CompOp} Operand = gttkEqual) then begin
+    if (aNode.Keyword {Operand} = gttkEqual) then begin
       if aNode.OuterMark1Oracle then begin
                            AddStr(gttkBracketPlusBracket);
                            AddStr(gttkEqual);
@@ -1703,28 +1703,28 @@ begin
         then AddStr(gttkStarEqual)
       else                 AddStr(gttkEqual);
     end else
-    if (aNode.{CompOp} Operand = gtkwBetween) or (aNode.{CompOp} Operand = gtkwNot_Between) or
-       (aNode.{CompOp} Operand = gtkwLike) or (aNode.{CompOp} Operand = gtkwNot_Like) or
-       (aNode.{CompOp} Operand = gtkwIs_Null) or (aNode.{CompOp} Operand = gtkwIs_Not_Null)
-      then AddStr(aNode.{CompOp} Operand)
-      else AddStr(aNode.{CompOp} Operand);
+    if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) or
+       (aNode.Keyword {Operand} = gtkwLike)    or (aNode.Keyword {Operand} = gtkwNot_Like) or
+       (aNode.Keyword {Operand} = gtkwIs_Null) or (aNode.Keyword {Operand} = gtkwIs_Not_Null)
+      then AddStr(aNode.Keyword {Operand})
+      else AddStr(aNode.Keyword {Operand});
 
     { right expression }
-    if aNode.OuterMark2MSSQL and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
-//    if (gtloCondEqualSwap in aListerOpt) and (aNode.{CompOp} Operand = gttkEqual)
+    if aNode.OuterMark2MSSQL and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
+//    if (gtloCondEqualSwap in aListerOpt) and (aNode.Keyword {Operand} = gttkEqual)
 //      then lItem := aNode.Find(gtsiNone, nil, '1')
 //      else
     lItem := aNode.Find(gtsiNone, nil, '2');
 
     List(lItem, aListerOpt {- [gtloOnLeftSideIntend]});
-    if aNode.OuterMark2Oracle and (aNode.{CompOp} Operand = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
+    if aNode.OuterMark2Oracle and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
 
     { additional expression }
-    if (aNode.{CompOp} Operand = gtkwBetween) or (aNode.{CompOp} Operand = gtkwNot_Between) then begin
+    if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) then begin
       AddStr(gtkwAnd);
       List(aNode.Find(gtsiNone, nil, '3'), aListerOpt {- [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
     end else
-    if ((aNode.{CompOp} Operand = gtkwLike) or (aNode.{CompOp} Operand = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
+    if ((aNode.Keyword {Operand} = gtkwLike) or (aNode.Keyword {Operand} = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
       AddStr(gtkwEscape);
       AddStr(aNode.CondEscape, gtlsString);
     end;
@@ -1755,8 +1755,8 @@ begin
     if aNode[i].Check(gtsiCond) or aNode[i].Check(gtsiCondTree) then begin
       if b then begin
       //if Options[ gtstOneCondOnLine ] and not (gtloSkipOneCondOnLine in aListerOpt)
-      //  then AddClause(aNode.{LogicOp} Operand)
-          {else} AddStr(aNode.{LogicOp} Operand);
+      //  then AddClause(aNode.Keyword {Operand})
+          {else} AddStr(aNode.Keyword {Operand});
       end;
 
 //      if not b then begin
@@ -1799,7 +1799,7 @@ begin
 //    if (Copy(RawText, Length(RawText) - 1 + 1, 1) <> ' ') then Inc(lLen); // AddClearSpace will add a space
 //  end;
 
-  if aNode.DataType = gtkwType then begin
+  if aNode.Keyword {DataType} = gtkwType then begin
     AddStr(aNode.TableName, gtlsTable);
     AddStr(gttkDot, False);
     AddStr(aNode.ColumnName, gtlsColumn, False);
@@ -2054,16 +2054,16 @@ var lSubQuery: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.{JoinOp} Operand = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
+  if (aNode.Keyword {Operand} = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
     then AddClause(gtkwUpdate, ClauseAppendCondition)
     else
-  if (aNode.{JoinOp} Operand = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
+  if (aNode.Keyword {Operand} = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
     AddClause(aNode.KeywordExt);
 //    if aNode.GetQuery.OrReplace
 //      then AddClause( gtkwInsert_Or_Replace_Into, ClauseAppendCondition )
 //      else AddClause( gtkwInsert_Into, ClauseAppendCondition);
   end else
-  if (aNode.{JoinOp} Operand = gttkComma) then begin
+  if (aNode.Keyword {Operand} = gttkComma) then begin
 //    if not Options[ gtstCommaAtNewLine ] then begin
       AddComma;
       AddClause(nil, ClauseAppendCondition);
@@ -2071,9 +2071,9 @@ begin
 //      AddClause(gttkComma, ClauseAppendCondition);
 //    end;
   end else
-  if (aNode.{JoinOp} Operand = gtkwFrom) and (gtloSkipFrom in aListerOpt)
+  if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
     then
-    else AddClause( JoinOperatorToToken( aNode.{JoinOp} Operand , aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ),
+    else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ),
                     ClauseAppendCondition );
 
   { table name or query }
@@ -2124,8 +2124,8 @@ begin
   end;
 
   { join condition }
-  if (aNode.{JoinOp} Operand = gtkwInner) or (aNode.{JoinOp} Operand = gtkwLeft) or
-     (aNode.{JoinOp} Operand = gtkwRight) or (aNode.{JoinOp} Operand = gtkwFull) then begin
+  if (aNode.Keyword {Operand} = gtkwInner) or (aNode.Keyword {Operand} = gtkwLeft) or
+     (aNode.Keyword {Operand} = gtkwRight) or (aNode.Keyword {Operand} = gtkwFull) then begin
 
     List(aNode.Find(gtsiCondTree, gtkwOn), {lTreeNode,} aListerOpt);
     List(aNode.Find(gtsiCondTree, gtkwUsing), {lTreeNode,} aListerOpt);
@@ -3011,8 +3011,8 @@ begin
   { subquery wrapper }
   if aQuery.IsSubQuery and not(aQuery.Owner.Check(gtsiUnions) or aQuery.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
-    if (aQuery.{JoinOp} Operand = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
-      AddClause( JoinOperatorToToken( aQuery.{JoinOp} Operand ),
+    if (aQuery.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
+      AddClause( JoinOperatorToToken( aQuery.Keyword {Operand} ),
                  gttkLeftBracket,
                  ClauseAppendCondition,
                  aQuery.Owner.Check(gtsiExprTree) or aQuery.Owner.Check(gtsiCond) or aQuery.Owner.Check(gtsiCondTree));
@@ -3174,16 +3174,16 @@ begin
 
     { INSERT INTO }
     if aNode[i].Check(gtsiTableRef) then
-      if Assigned(aNode[i].{JoinOp} Operand) then begin
-        l := Length(JoinOperatorToToken( aNode[i].{JoinOp} Operand , aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).TokenText);
+      if Assigned(aNode[i].Keyword {Operand}) then begin
+        l := Length(JoinOperatorToToken( aNode[i].Keyword {Operand}, aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).TokenText);
         if l > Result then Result := l;
       end;
 
     { JOIN clauses }
     if aNode[i].Check(gtsiClauseTables, gtkwFrom) then begin
       for j := 0 to aNode[i].Count - 1 do begin
-        if Assigned(aNode[i][j].{JoinOp} Operand) then begin
-          l := Length(JoinOperatorToToken( aNode[i][j].{JoinOp} Operand , aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).TokenText);
+        if Assigned(aNode[i][j].Keyword {Operand}) then begin
+          l := Length(JoinOperatorToToken( aNode[i][j].Keyword {Operand}, aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).TokenText);
           if l > Result then Result := l;
         end;
 

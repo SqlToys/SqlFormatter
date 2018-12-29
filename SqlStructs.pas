@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 298   18-12-14 21:30 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 299   18-12-16 18:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -121,12 +121,12 @@ type
 //  property        CompOp    : TGtLexToken{Def} index 3 read FTokens[3] write SetFTokens;
 //  property        JoinOp    : TGtLexToken{Def} index 4 read FTokens[4] write SetFTokens;
 
-    property        DataType  : TGtLexToken{Def} index 5 read FTokens[5] write SetFTokens;
+//    property        DataType  : TGtLexToken{Def} index 5 read FTokens[5] write SetFTokens;
 //    property        OnDelete  : TGtLexToken{Def} index 6 read FTokens[6] write SetFTokens;
 //    property        OnUpdate  : TGtLexToken{Def} index 7 read FTokens[7] write SetFTokens;
-    property        SortOrder : TGtLexToken{Def} index 8 read FTokens[8] write SetFTokens;
+//    property        SortOrder : TGtLexToken{Def} index 8 read FTokens[8] write SetFTokens;
     property        Keyword   : TGtLexToken{Def} index 9 read FTokens[9] write SetFTokens;
-    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
+//    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
 
     property        KeywordExt: TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
     property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
@@ -905,7 +905,7 @@ begin
   Result := False;
   if aColPrefix = '' then Exit;
   if not Check(gtsiCond) then Exit;
-  if ({CompOp} Operand = gtkwExists) or ({CompOp} Operand = gtkwNot_Exists) then Exit;
+  if (Keyword {Operand} = gtkwExists) or (Keyword {Operand} = gtkwNot_Exists) then Exit;
 
   lNode := Find(gtsiNone, nil, '1');
   if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
@@ -915,7 +915,7 @@ begin
   if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
   if Result then Exit;
 
-  if (({CompOp} Operand = gtkwBetween) or ({CompOp} Operand = gtkwNot_Between)) then begin
+  if ((Keyword {Operand} = gtkwBetween) or (Keyword {Operand} = gtkwNot_Between)) then begin
     lNode := Find(gtsiNone, nil, '3');
     if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
   end;
