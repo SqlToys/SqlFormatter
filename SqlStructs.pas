@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 299   18-12-16 18:33 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 300   18-12-29 22:56 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -852,7 +852,7 @@ begin
      (aIndex = 7) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
      (aIndex = 8) and ((aToken = gtkwAsc) or (aToken = gtkwDesc) or
                        (aToken = gtkwAscending) or (aToken = gtkwDescending)) or
-     (aIndex = 9) or
+     (aIndex = 9) and  Assigned(aToken) or
      (aIndex = 10)and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot) or
                        (aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
                        (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent) or
