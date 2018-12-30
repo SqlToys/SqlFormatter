@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 10    18-12-16 18:33 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 11    18-12-29 18:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -72,15 +72,19 @@ var lSL: TStringList;
 //    if aNode.OnDelete      <> gttkNone then s := s + ' OnDelete="'      + XmlQuote(aNode.OnDelete.TokenText)  + '"';
 //    if aNode.OnUpdate      <> gttkNone then s := s + ' OnUpdate="'      + XmlQuote(aNode.OnUpdate.TokenText)  + '"';
 //    if aNode.SortOrder     <> gttkNone then s := s + ' SortOrder="'     + XmlQuote(aNode.SortOrder.TokenText) + '"';
-      if Assigned(aNode.Keyword) then
-      if(aNode.Keyword       <> gttkNone)//and(aNode.Keyword <> gttkIdentifier)and(aNode.Keyword <> gttkColumnName)
+      if Assigned(aNode.Keyword) and
+        (aNode.Keyword       <> gttkNone)//and(aNode.Keyword <> gttkIdentifier)and(aNode.Keyword <> gttkColumnName)
   //                                       and(aNode.Keyword <> gttkNumber)
                                          then s := s + ' Keyword="'       + XmlQuote(aNode.Keyword.TokenText)   + '"';
-      if aNode.KeywordExt    <> gttkNone then s := s + ' KeywordExt="'    + XmlQuote(aNode.KeywordExt.TokenText)+ '"';
+      if Assigned(aNode.KeywordExt) and
+        (aNode.KeywordExt    <> gttkNone)then s := s + ' KeywordExt="'    + XmlQuote(aNode.KeywordExt.TokenText)+ '"';
 
-      if aNode.KeywordAfter1 <> gttkNone then s := s + ' KeywordAfter1="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
-      if aNode.KeywordAfter2 <> gttkNone then s := s + ' KeywordAfter2="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
-      if aNode.KeywordAfter3 <> gttkNone then s := s + ' KeywordAfter3="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
+      if Assigned(aNode.KeywordAfter1) and
+        (aNode.KeywordAfter1 <> gttkNone)then s := s + ' KeywordAfter1="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
+      if Assigned(aNode.KeywordAfter2) and
+        (aNode.KeywordAfter2 <> gttkNone)then s := s + ' KeywordAfter2="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
+      if Assigned(aNode.KeywordAfter3) and
+        (aNode.KeywordAfter3 <> gttkNone)then s := s + ' KeywordAfter3="' + XmlQuote(aNode.KeywordAfter1.TokenText)+ '"';
 
       if Assigned(aNode.Values) then
         for i := 0 to aNode.Values.Count -1 do

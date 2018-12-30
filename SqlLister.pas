@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 327   18-12-16 18:33 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 328   18-12-29 18:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1297,7 +1297,7 @@ begin
 //aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine {, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine} ];
 
 //if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-  if aNode.EmptyLineBefore then AddClause;
+  if aNode.NewLineBefore then AddClause;
   AddStr(gtkwCase);
 
   { [expression] }
