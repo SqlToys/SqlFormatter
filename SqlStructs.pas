@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 300   18-12-29 22:56 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 301   18-12-30 14:23 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -149,20 +149,20 @@ type
 //    property        Public               : Boolean index 204 read GetValBool write SetValBool;
 //    property        Global               : Boolean index 205 read GetValBool write SetValBool;
 //    property        Temporary            : Boolean index 206 read GetValBool write SetValBool;
-    property        Identity             : Boolean index 207 read GetValBool write SetValBool;
-    property        Distinct             : Boolean index 208 read GetValBool write SetValBool;
+//    property        Identity             : Boolean index 207 read GetValBool write SetValBool;
+//  property        Distinct             : Boolean index 208 read GetValBool write SetValBool;
 //    property        NoWait               : Boolean index 209 read GetValBool write SetValBool;
 //  property        Materialized         : Boolean index 210 read GetValBool write SetValBool;
-    property        NoCycle              : Boolean index 211 read GetValBool write SetValBool;
+//    property        NoCycle              : Boolean index 211 read GetValBool write SetValBool;
 //  //property        OuterMark1           : Boolean index 212 read GetValBool write SetValBool;
 //  //property        OuterMark2           : Boolean index 213 read GetValBool write SetValBool;
     property        ExprMinus            : Boolean index 214 read GetValBool write SetValBool;
     property        ExprReverseOp        : Boolean index 215 read GetValBool write SetValBool;
     property        ExprReverseOp2       : Boolean index 216 read GetValBool write SetValBool;
-    property        ExprPrior            : Boolean index 217 read GetValBool write SetValBool;
-    property        Enable               : Boolean index 218 read GetValBool write SetValBool;
-    property        Disable              : Boolean index 219 read GetValBool write SetValBool;
-    property        Cascade              : Boolean index 220 read GetValBool write SetValBool;
+//    property        ExprPrior            : Boolean index 217 read GetValBool write SetValBool;
+//    property        Enable               : Boolean index 218 read GetValBool write SetValBool;
+//    property        Disable              : Boolean index 219 read GetValBool write SetValBool;
+//    property        Cascade              : Boolean index 220 read GetValBool write SetValBool;
 //    property        NullsFirst           : Boolean index 221 read GetValBool write SetValBool;
 //    property        NullsLast            : Boolean index 222 read GetValBool write SetValBool;
 //    property        Purge                : Boolean index 223 read GetValBool write SetValBool;
@@ -177,8 +177,8 @@ type
     property        OuterMark2MSSQL      : Boolean index 232 read GetValBool write SetValBool;
     property        AliasAsToken         : Boolean index 233 read GetValBool write SetValBool;
 
-    property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
-    property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
+//  property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
+//  property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
 
     property        NewLineBefore        : Boolean index 236 read GetValBool write SetValBool;
 //  property        NewLineAfter         : Boolean index 237 read GetValBool write SetValBool;
@@ -870,7 +870,7 @@ begin
      (aIndex = 11) or (aIndex = 12)
   then begin
     FTokens [aIndex] := aToken;
-    if aIndex = 9 {keyword} then FTokens[11] {keyword ext} := aToken;
+//  if aIndex = 9 {keyword} then FTokens[11] {keyword ext} := aToken;
   end else begin
     FTokens [aIndex] := gttkNone;
     //raise

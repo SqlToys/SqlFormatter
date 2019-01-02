@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 328   18-12-29 18:57 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 329   18-12-30 14:23 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1214,7 +1214,8 @@ var s: String;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.ExprPrior then AddStr(gtkwPrior);
+//if aNode.ExprPrior then AddStr(gtkwPrior);
+  if aNode.KeywordExt = gtkwPrior then AddStr(gtkwPrior);
 
   if aNode.Check(gtsiExpr, gtkwCase) then begin
     List_ExprCase (aNode, aListerOpt);
@@ -1746,7 +1747,8 @@ var b: Boolean;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.NoCycle  then AddStr(gtkwNoCycle);
+//if aNode.NoCycle  then AddStr(gtkwNoCycle);
+  if aNode.KeywordExt = gtkwNoCycle then AddStr(aNode.KeywordExt);
   if aNode.Negation then AddStr(gtkwNot);
   AddLeftBracket(aNode.BracketsCount);
 
@@ -1813,7 +1815,8 @@ begin
 //  if lIntend and (ML_DataType - Length(RawText) + lLen > 0)
 //    then AddSpace(ML_DataType - Length(RawText) + lLen + 1);
 
-  if aNode.Identity then begin
+//if aNode.Identity then begin
+  if aNode.KeywordExt = gtkwIdentity then begin
     AddStr(gtkwIdentity);
     if aNode.ColIdentitySeed >0 then begin
       AddStr(gttkLeftBracket);
@@ -2073,8 +2076,8 @@ begin
   end else
   if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
     then
-    else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ),
-                    ClauseAppendCondition );
+  //else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ), ClauseAppendCondition );
+    else AddClause( aNode.KeywordExt, ClauseAppendCondition );
 
   { table name or query }
   lSubQuery := aNode.Find(gtsiDml, gtkwSelect);
@@ -2409,7 +2412,8 @@ begin
   if not(gtloSameAsPrevClause in aListerOpt) then AddClause(gtkwDrop_Constraint);
   AddStr(aNode.Name, gtlsConstraint);
 
-  if aNode.Cascade then AddStr(gtkwCascade);
+//if aNode.Cascade then AddStr(gtkwCascade);
+  if aNode.KeywordAfter1 = gtkwCascade then AddStr(gtkwCascade);
 end;
 
 { lists RENAME TABLE clause }
@@ -2566,8 +2570,10 @@ begin
 
   List_Clause_Name(aNode, aListerOpt, gtkwAlter_Trigger, nil, aNode.Name, gtlsIdentifier, gtlsDdlModify);
 
-  if aNode.Enable then AddStr(gtkwEnable) else
-  if aNode.Disable then AddStr(gtkwDisable);
+//  if aNode.Enable then AddStr(gtkwEnable) else
+//  if aNode.Disable then AddStr(gtkwDisable);
+  if aNode.KeywordAfter1 = gtkwEnable then AddStr(gtkwEnable) else
+  if aNode.KeywordAfter1 = gtkwDisable then AddStr(gtkwDisable);
 end;
 
 { lists CREATE SEQUENCE }
@@ -2798,7 +2804,8 @@ begin
   AddClause(gtkwSelect, ClauseAppendCondition);
 
   { BNF: [DISTINCT] }
-  if aNode.Distinct then begin
+  if aNode.KeywordExt = gtkwDistinct then begin
+//if aNode.Distinct then begin
     AddStr( gtkwDistinct );
     if aNode.Count > 1 then AddClause( gttkNone );
   end;
@@ -3175,7 +3182,8 @@ begin
     { INSERT INTO }
     if aNode[i].Check(gtsiTableRef) then
       if Assigned(aNode[i].Keyword {Operand}) then begin
-        l := Length(JoinOperatorToToken( aNode[i].Keyword {Operand}, aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).TokenText);
+    //  l := Length(JoinOperatorToToken( aNode[i].Keyword {Operand}, aNode[i].JoinInnerKeyword, aNode[i].JoinOuterKeyword ).TokenText);
+        l := Length(aNode[i].KeywordExt.TokenText);
         if l > Result then Result := l;
       end;
 
@@ -3183,7 +3191,8 @@ begin
     if aNode[i].Check(gtsiClauseTables, gtkwFrom) then begin
       for j := 0 to aNode[i].Count - 1 do begin
         if Assigned(aNode[i][j].Keyword {Operand}) then begin
-          l := Length(JoinOperatorToToken( aNode[i][j].Keyword {Operand}, aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).TokenText);
+      //  l := Length(JoinOperatorToToken( aNode[i][j].Keyword {Operand}, aNode[i][j].JoinInnerKeyword, aNode[i][j].JoinOuterKeyword ).TokenText);
+          l := Length(aNode[i][j].KeywordExt.TokenText);
           if l > Result then Result := l;
         end;
 
