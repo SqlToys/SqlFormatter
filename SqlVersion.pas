@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlVersion.pas 353   18-12-30 14:23 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlVersion.pas 354   18-12-30 16:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2012.09.16                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlVersion;
@@ -103,7 +103,7 @@ end;
 
 function VER_BUILD: string;
 begin
-  Result := '763'; // current build
+  Result := '764'; // current build
 end;
 
 end.

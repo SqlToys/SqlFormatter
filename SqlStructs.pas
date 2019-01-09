@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 301   18-12-30 14:23 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 302   18-12-30 16:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -59,7 +59,7 @@ type
   function GtSqlNodeNameToKind( aName: String ): TGtSqlNodeKind;
 
 const
-  cSqlNodeTokenMax = 14;
+  cSqlNodeTokenMax = 15;
 
 type
   TGtSqlNode = class;
@@ -114,7 +114,7 @@ type
 
     property        Values: TStringList read FValues;
   public // function specific methods
-    Nullable: TGtSqlNullableOption;
+//  Nullable: TGtSqlNullableOption;
 
 //  property        LogicOp   : TGtLexToken{Def} index 1 read FTokens[1] write SetFTokens;
 //  property        ExprOp    : TGtLexToken{Def} index 2 read FTokens[2] write SetFTokens;
@@ -132,16 +132,21 @@ type
     property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
     property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
     property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
+//  property        KeywordBefore: TGtLexToken{Def} index 15 read FTokens[15] write SetFTokens;
 
-    property        OldName              : String index 101 read GetValStr write SetValStr;
-    property        NewName              : String index 102 read GetValStr write SetValStr;
+//  property        OldName              : String index 101 read GetValStr write SetValStr;
+//  property        NewName              : String index 102 read GetValStr write SetValStr;
     property        AliasName            : String index 103 read GetValStr write SetValStr;
-    property        CollateName          : String index 104 read GetValStr write SetValStr;
-    property        CondEscape           : String index 105 read GetValStr write SetValStr;
-    property        ObjectName           : String index 106 read GetValStr write SetValStr;
-    property        TableName            : String index 107 read GetValStr write SetValStr;
-    property        ColumnName           : String index 108 read GetValStr write SetValStr;
-    property        KeepName             : String index 109 read GetValStr write SetValStr;
+//  property        CollateName          : String index 104 read GetValStr write SetValStr;
+//  property        CondEscape           : String index 105 read GetValStr write SetValStr;
+//  property        ObjectName           : String index 106 read GetValStr write SetValStr;
+//  property        TableName            : String index 107 read GetValStr write SetValStr;
+//  property        ColumnName           : String index 108 read GetValStr write SetValStr;
+//  property        KeepName             : String index 109 read GetValStr write SetValStr;
+
+    property        Name1                : String index 110 read GetValStr write SetValStr;
+    property        Name2                : String index 111 read GetValStr write SetValStr;
+    property        Name3                : String index 112 read GetValStr write SetValStr;
 
     property        Negation             : Boolean index 201 read GetValBool write SetValBool;
 //    property        Unique               : Boolean index 202 read GetValBool write SetValBool;
@@ -175,7 +180,7 @@ type
     property        OuterMark1MSSQL      : Boolean index 230 read GetValBool write SetValBool;
     property        OuterMark2Oracle     : Boolean index 231 read GetValBool write SetValBool;
     property        OuterMark2MSSQL      : Boolean index 232 read GetValBool write SetValBool;
-    property        AliasAsToken         : Boolean index 233 read GetValBool write SetValBool;
+//    property        AliasAsToken         : Boolean index 233 read GetValBool write SetValBool;
 
 //  property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
 //  property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
@@ -365,7 +370,7 @@ begin
 
   SetSqlItemKind( gtsiNone );
 
-  Nullable := gtopNullNotSpecified; //True; // TODO: database default value ??
+//Nullable := gtopNullNotSpecified; //True; // TODO: database default value ??
 
   for i := 1 to cSqlNodeTokenMax do FTokens[i] := gttkNone;
 end;
@@ -867,7 +872,11 @@ begin
                        (aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
                        (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
                        (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
-     (aIndex = 11) or (aIndex = 12)
+     (aIndex = 11) or
+     (aIndex = 12) and Assigned(aToken) or
+     (aIndex = 13) and Assigned(aToken) or
+     (aIndex = 14) and Assigned(aToken) or
+     (aIndex = 15) and Assigned(aToken)
   then begin
     FTokens [aIndex] := aToken;
 //  if aIndex = 9 {keyword} then FTokens[11] {keyword ext} := aToken;

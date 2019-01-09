@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 11    18-12-29 18:57 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 12    18-12-30 16:15 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -54,11 +54,11 @@ var lSL: TStringList;
         then s := s + ' Name="' + XmlQuote(aNode.Name) + '"';
 
       { node attributes }
-      case aNode.Nullable of
-        gtopNullNotSpecified : ;
-        gtopNull             : s := s + ' Nullable="NULL"';
-        gtopNotNull          : s := s + ' Nullable="NOT NULL"';
-      end;
+//      case aNode.Nullable of
+//        gtopNullNotSpecified : ;
+//        gtopNull             : s := s + ' Nullable="NULL"';
+//        gtopNotNull          : s := s + ' Nullable="NOT NULL"';
+//      end;
 
 //    if(aNode.LogicOp       <> gttkNone)and(aNode.Count > 1)
 //                                       then s := s + ' LogicOp="'       + XmlQuote(aNode.LogicOp.Text)   + '"';
@@ -133,9 +133,9 @@ procedure XmlToParseTree (aFileName: String; aTopNode: TGtSqlNode);
         if not VarIsNull(aXmlNode.AttributeNodes[i].NodeValue) then begin
           if aXmlNode.AttributeNodes[i].NodeName = 'Name' then Result.Name := XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue ) else
           if aXmlNode.AttributeNodes[i].NodeName = 'Nullable' then begin
-            if aXmlNode.AttributeNodes[i].NodeValue = 'NULL' then Result.Nullable := gtopNull else
-            if aXmlNode.AttributeNodes[i].NodeValue = 'NOT NULL' then Result.Nullable := gtopNotNull
-                                                                 else Result.Nullable := gtopNullNotSpecified;
+//            if aXmlNode.AttributeNodes[i].NodeValue = 'NULL' then Result.Nullable := gtopNull else
+//            if aXmlNode.AttributeNodes[i].NodeValue = 'NOT NULL' then Result.Nullable := gtopNotNull
+//                                                                 else Result.Nullable := gtopNullNotSpecified;
           end else
 //        if aXmlNode.AttributeNodes[i].NodeName = 'LogicOp'   then Result.LogicOp  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
 //        if aXmlNode.AttributeNodes[i].NodeName = 'ExprOp'    then Result.ExprOp   := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
