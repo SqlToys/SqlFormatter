@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 302   18-12-30 16:15 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 303   18-12-30 20:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -131,12 +131,12 @@ type
     property        KeywordExt: TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
     property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
     property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
-    property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
+//  property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
 //  property        KeywordBefore: TGtLexToken{Def} index 15 read FTokens[15] write SetFTokens;
 
 //  property        OldName              : String index 101 read GetValStr write SetValStr;
 //  property        NewName              : String index 102 read GetValStr write SetValStr;
-    property        AliasName            : String index 103 read GetValStr write SetValStr;
+//  property        AliasName            : String index 103 read GetValStr write SetValStr;
 //  property        CollateName          : String index 104 read GetValStr write SetValStr;
 //  property        CondEscape           : String index 105 read GetValStr write SetValStr;
 //  property        ObjectName           : String index 106 read GetValStr write SetValStr;
@@ -146,7 +146,7 @@ type
 
     property        Name1                : String index 110 read GetValStr write SetValStr;
     property        Name2                : String index 111 read GetValStr write SetValStr;
-    property        Name3                : String index 112 read GetValStr write SetValStr;
+//  property        Name3                : String index 112 read GetValStr write SetValStr;
 
     property        Negation             : Boolean index 201 read GetValBool write SetValBool;
 //    property        Unique               : Boolean index 202 read GetValBool write SetValBool;
@@ -190,12 +190,15 @@ type
     property        EmptyLineBefore      : Boolean index 238 read GetValBool write SetValBool;
     property        EmptyLineAfter       : Boolean index 239 read GetValBool write SetValBool;
 
-    property        ColSize              : Integer index 301 read GetValInt  write SetValInt;
-    property        ColIdentitySeed      : Integer index 302 read GetValInt  write SetValInt;
-    property        ColIdentityInc       : Integer index 303 read GetValInt  write SetValInt;
-    property        Top                  : Integer index 304 read GetValInt  write SetValInt;
-    property        ColPrec              : Integer index 305 read GetValInt  write SetValInt;
+//  property        ColSize              : Integer index 301 read GetValInt  write SetValInt;
+//  property        ColIdentitySeed      : Integer index 302 read GetValInt  write SetValInt;
+//  property        ColIdentityInc       : Integer index 303 read GetValInt  write SetValInt;
+//  property        Top                  : Integer index 304 read GetValInt  write SetValInt;
+//  property        ColPrec              : Integer index 305 read GetValInt  write SetValInt;
     property        BracketsCount        : Integer index 306 read GetValInt  write SetValInt;
+
+    property        Int1                 : Integer index 310 read GetValInt  write SetValInt;
+    property        Int2                 : Integer index 311 read GetValInt  write SetValInt;
   public // service methods
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;
@@ -824,59 +827,62 @@ begin
   if not Assigned(lOwner) then lOwner := FindOwner(gtsiDml, gtkwSelect);
   if not Assigned(lOwner) then Exit;
 
-  if lOwner.AliasName <> ''
-    then Result := lOwner.AliasName
+//if lOwner.AliasName <> ''
+//  then Result := lOwner.AliasName
+  if lOwner.Name1 <> ''
+    then Result := lOwner.Name1
     else Result := lOwner.Name;
 end;
 
 { sets FTokens property }
 procedure TGtSqlNode.SetFTokens(aIndex: Integer; aToken: TGtLexToken{Def});
 begin
-  if (aToken = gttkNone) or
-     (aIndex = 1) and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot)) or
-     (aIndex = 2) and ((aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
-                       (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent)) or
-     (aIndex = 3) and ((aToken = gttkEqual) or (aToken = gttkLessThan) or (aToken = gttkGreaterThan) or
-                       (aToken = gttkLessEqual) or (aToken = gttkGreaterEqual) or
-                       (aToken = gttkNotEqual) or (aToken = gttkDiffer) or
-                       (aToken = gtkwBetween) or (aToken = gtkwNot_Between) or
-                       (aToken = gtkwIn) or (aToken = gtkwNot_In) or
-                       (aToken = gtkwLike) or (aToken = gtkwNot_Like) or
-                       (aToken = gtkwIs_Null) or (aToken = gtkwIs_Not_Null) or
-                       (aToken = gtkwExists) or (aToken = gtkwNot_Exists)) or
-     (aIndex = 4) and ((aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
-                       (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
-                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
-     (aIndex = 5) and ((aToken = gtkwBit) or (aToken = gtkwInt) or (aToken = gtkwInteger) or (aToken = gtkwTinyInt) or (aToken = gtkwSmallInt) or
-                       (aToken = gtkwBigInt) or (aToken = gtkwInt4) or (aToken = gtkwInt8) or (aToken = gtkwFloat) or
-                       (aToken = gtkwSingle) or (aToken = gtkwDouble) or (aToken = gtkwReal) or (aToken = gtkwDecimal) or
-                       (aToken = gtkwNumeric) or (aToken = gtkwNumber) or (aToken = gtkwDate) or (aToken = gtkwTime) or
-                       (aToken = gtkwDateTime) or (aToken = gtkwChar) or (aToken = gtkwVarChar) or (aToken = gtkwVarChar2) or
-                       (aToken = gtkwNVarChar) or (aToken = gtkwBlob) or (aToken = gtkwClob) or (aToken = gtkwType)) or
-     (aIndex = 6) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
-     (aIndex = 7) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
-     (aIndex = 8) and ((aToken = gtkwAsc) or (aToken = gtkwDesc) or
-                       (aToken = gtkwAscending) or (aToken = gtkwDescending)) or
-     (aIndex = 9) and  Assigned(aToken) or
-     (aIndex = 10)and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot) or
-                       (aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
-                       (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent) or
-                       (aToken = gttkEqual) or (aToken = gttkLessThan) or (aToken = gttkGreaterThan) or
-                       (aToken = gttkLessEqual) or (aToken = gttkGreaterEqual) or
-                       (aToken = gttkNotEqual) or (aToken = gttkDiffer) or
-                       (aToken = gtkwBetween) or (aToken = gtkwNot_Between) or
-                       (aToken = gtkwIn) or (aToken = gtkwNot_In) or
-                       (aToken = gtkwLike) or (aToken = gtkwNot_Like) or
-                       (aToken = gtkwIs_Null) or (aToken = gtkwIs_Not_Null) or
-                       (aToken = gtkwExists) or (aToken = gtkwNot_Exists) or
-                       (aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
-                       (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
-                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
-     (aIndex = 11) or
-     (aIndex = 12) and Assigned(aToken) or
-     (aIndex = 13) and Assigned(aToken) or
-     (aIndex = 14) and Assigned(aToken) or
-     (aIndex = 15) and Assigned(aToken)
+//  if (aToken = gttkNone) or
+//     (aIndex = 1) and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot)) or
+//     (aIndex = 2) and ((aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
+//                       (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent)) or
+//     (aIndex = 3) and ((aToken = gttkEqual) or (aToken = gttkLessThan) or (aToken = gttkGreaterThan) or
+//                       (aToken = gttkLessEqual) or (aToken = gttkGreaterEqual) or
+//                       (aToken = gttkNotEqual) or (aToken = gttkDiffer) or
+//                       (aToken = gtkwBetween) or (aToken = gtkwNot_Between) or
+//                       (aToken = gtkwIn) or (aToken = gtkwNot_In) or
+//                       (aToken = gtkwLike) or (aToken = gtkwNot_Like) or
+//                       (aToken = gtkwIs_Null) or (aToken = gtkwIs_Not_Null) or
+//                       (aToken = gtkwExists) or (aToken = gtkwNot_Exists)) or
+//     (aIndex = 4) and ((aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
+//                       (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
+//                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
+//     (aIndex = 5) and ((aToken = gtkwBit) or (aToken = gtkwInt) or (aToken = gtkwInteger) or (aToken = gtkwTinyInt) or (aToken = gtkwSmallInt) or
+//                       (aToken = gtkwBigInt) or (aToken = gtkwInt4) or (aToken = gtkwInt8) or (aToken = gtkwFloat) or
+//                       (aToken = gtkwSingle) or (aToken = gtkwDouble) or (aToken = gtkwReal) or (aToken = gtkwDecimal) or
+//                       (aToken = gtkwNumeric) or (aToken = gtkwNumber) or (aToken = gtkwDate) or (aToken = gtkwTime) or
+//                       (aToken = gtkwDateTime) or (aToken = gtkwChar) or (aToken = gtkwVarChar) or (aToken = gtkwVarChar2) or
+//                       (aToken = gtkwNVarChar) or (aToken = gtkwBlob) or (aToken = gtkwClob) or (aToken = gtkwType)) or
+//     (aIndex = 6) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
+//     (aIndex = 7) and ((aToken = gtkwCascade) or (aToken = gtkwSet_Null)) or
+//     (aIndex = 8) and ((aToken = gtkwAsc) or (aToken = gtkwDesc) or
+//                       (aToken = gtkwAscending) or (aToken = gtkwDescending)) or
+//     (aIndex = 9) and  Assigned(aToken) or
+//     (aIndex = 10)and ((aToken = gtkwOr) or (aToken = gtkwAnd) or (aToken = gtkwNot) or
+//                       (aToken = gttkPlus) or (aToken = gttkMinus) or (aToken = gttkConcatenation) or
+//                       (aToken = gttkStar) or (aToken = gttkSlash) or (aToken = gttkPercent) or
+//                       (aToken = gttkEqual) or (aToken = gttkLessThan) or (aToken = gttkGreaterThan) or
+//                       (aToken = gttkLessEqual) or (aToken = gttkGreaterEqual) or
+//                       (aToken = gttkNotEqual) or (aToken = gttkDiffer) or
+//                       (aToken = gtkwBetween) or (aToken = gtkwNot_Between) or
+//                       (aToken = gtkwIn) or (aToken = gtkwNot_In) or
+//                       (aToken = gtkwLike) or (aToken = gtkwNot_Like) or
+//                       (aToken = gtkwIs_Null) or (aToken = gtkwIs_Not_Null) or
+//                       (aToken = gtkwExists) or (aToken = gtkwNot_Exists) or
+//                       (aToken = gttkNone) or (aToken = gtkwFrom) or (aToken = gtkwInto) or (aToken = gtkwUpdate) or
+//                       (aToken = gtkwInner) or (aToken = gtkwLeft) or (aToken = gtkwRight) or
+//                       (aToken = gtkwFull) or (aToken = gtkwCross) or (aToken = gttkComma)) or
+//     (aIndex = 11) or
+//     (aIndex = 12) and Assigned(aToken) or
+//     (aIndex = 13) and Assigned(aToken) or
+//     (aIndex = 14) and Assigned(aToken) or
+//     (aIndex = 15) and Assigned(aToken)
+  if Assigned(aToken)
   then begin
     FTokens [aIndex] := aToken;
 //  if aIndex = 9 {keyword} then FTokens[11] {keyword ext} := aToken;

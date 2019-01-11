@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 330   18-12-30 16:14 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 331   18-12-30 20:53 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1196,14 +1196,18 @@ end;
 procedure  TGtSqlFormatLister.List_DataType;
 begin
   AddStr(aNode.{DataType} Keyword);
-  if aNode.ColSize = gtsqlSizeOrPrecNotSpecified then Exit;
+//if aNode.ColSize = gtsqlSizeOrPrecNotSpecified then Exit;
+  if aNode.Int1 = gtsqlSizeOrPrecNotSpecified then Exit;
 
   AddStr(gttkLeftBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
 
-  AddStr(IntToStr(aNode.ColSize), gtlsNumber, False);
+//AddStr(IntToStr(aNode.ColSize), gtlsNumber, False);
+  AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
 
-  if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
-  if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
+//if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
+//if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
+  if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddComma;
+  if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
 
   AddStr(gttkRightBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
 end;
@@ -1438,15 +1442,18 @@ procedure TGtSqlFormatLister.List_ExprColumn;
 
         for i := 0 to lTabClause.Count - 1 do
           if lTabClause[i].Check(gtsiTableRef) or lTabClause[i].Check(gtsiDml, gtkwSelect) then begin
-            if AnsiUpperCase(lTabClause[i].AliasName) = AnsiUpperCase(aColumnPrefix) then begin
+//          if AnsiUpperCase(lTabClause[i].AliasName) = AnsiUpperCase(aColumnPrefix) then begin
+            if AnsiUpperCase(lTabClause[i].Name1) = AnsiUpperCase(aColumnPrefix) then begin
               if lQuery = aNode.GetQuery then Result := gtlsTableAlias else Result := gtlsExtQueryAliasOrTable;
 //            if CaseOpt[ gtlcTableAlias ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].AliasName;
 
               Exit;
             end else
-            if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].AliasName = '') or
+//          if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].AliasName = '') or
+            if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].Name1 = '') or
                // column prefix is a full-part of an table name ie. lejek_projekt.numer for drk.lejek_projekt
-               (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].AliasName = '') then begin
+//             (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].AliasName = '') then begin
+               (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].Name1 = '') then begin
               if lQuery = aNode.GetQuery then Result := gtlsTable else Result := gtlsExtQueryAliasOrTable;
 //            if CaseOpt[ gtlcTable ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].Name;
 
@@ -1546,7 +1553,8 @@ begin
 
   { adds alias }
   { WARN: SkipOutput was prepared to check max expressions length }
-  if (aNode.AliasName <> '') and not SkipOutput and
+//if (aNode.AliasName <> '') and not SkipOutput and
+  if (aNode.Name1 <> '') and not SkipOutput and
     ((Length(RawText) = 0) or (RawText[Length(RawText)] <> '*')) {skip alias after star expr.} then begin
 //    if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
 //      then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
@@ -1558,7 +1566,8 @@ begin
 //    if gtloExprAliasIntend in aListerOpt
 //      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
 
-    AddStr(aNode.AliasName, gtlsColumnAlias);
+//  AddStr(aNode.AliasName, gtlsColumnAlias);
+    AddStr(aNode.Name1, gtlsColumnAlias);
   end;
 
   { adds sort order }
@@ -1810,10 +1819,10 @@ begin
 
   if aNode.Keyword {DataType} = gtkwType then begin
   //AddStr(aNode.TableName, gtlsTable);
-    AddStr(aNode.Name2, gtlsTable);
+    AddStr(aNode.Name1, gtlsTable);
     AddStr(gttkDot, False);
   //AddStr(aNode.ColumnName, gtlsColumn, False);
-    AddStr(aNode.Name3, gtlsColumn, False);
+    AddStr(aNode.Name2, gtlsColumn, False);
     AddStr(gttkPercent, False);
     //AddStr(aNode.DataType, False);
     AddStr(gtkwType, False);
@@ -1827,11 +1836,15 @@ begin
 //if aNode.Identity then begin
   if aNode.KeywordExt = gtkwIdentity then begin
     AddStr(gtkwIdentity);
-    if aNode.ColIdentitySeed >0 then begin
+//  if aNode.ColIdentitySeed >0 then begin
+    if aNode.Int1 >0 then begin
       AddStr(gttkLeftBracket);
-      AddStr(IntToStr(aNode.ColIdentitySeed), gtlsNumber, False);
-      if aNode.ColIdentityInc >0 then AddComma;
-      if aNode.ColIdentityInc >0 then AddStr(IntToStr(aNode.ColIdentityInc), gtlsNumber, False);
+    //AddStr(IntToStr(aNode.ColIdentitySeed), gtlsNumber, False);
+      AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
+    //if aNode.ColIdentityInc >0 then AddComma;
+    //if aNode.ColIdentityInc >0 then AddStr(IntToStr(aNode.ColIdentityInc), gtlsNumber, False);
+      if aNode.Int2 >0 then AddComma;
+      if aNode.Int2 >0 then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
       AddStr(gttkRightBracket);
     end;
   end;
@@ -2099,11 +2112,13 @@ begin
     List(lSubQuery, aListerOpt);
 
     { query alias }
-    if aNode.AliasName <> '' then begin
+//  if aNode.AliasName <> '' then begin
+    if aNode.Name1 <> '' then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
       if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aNode.AliasName, gtlsTableAlias);
+    //AddStr(aNode.AliasName, gtlsTableAlias);
+      AddStr(aNode.Name1, gtlsTableAlias);
     end;
   end else begin
     { table name }
@@ -2118,7 +2133,8 @@ begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
       if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aNode.AliasName, gtlsTableAlias);
+    //AddStr(aNode.AliasName, gtlsTableAlias);
+      AddStr(aNode.Name1, gtlsTableAlias);
 //    end else begin
 //    //if Options[ gtstTableAsKeyword ] then begin
 //      if aNode.AliasAsToken then begin
@@ -2834,9 +2850,11 @@ begin
   end;
 
   { BNF: [TOP n] }
-  if aNode.Top > 0 then begin
+//if aNode.Top > 0 then begin
+  if aNode.Int1 > 0 then begin
     AddStr( gtkwTop );
-    AddStr( IntToStr(aNode.Top), gtlsNumber );
+  //AddStr( IntToStr(aNode.Top), gtlsNumber );
+    AddStr( IntToStr(aNode.Int1), gtlsNumber );
   end;
 
 //if Options [ gtstSelectAliasIntend ] then CalcExprAlias(aNode);
@@ -3162,11 +3180,13 @@ begin
 
       AddRightBracket(aQuery.BracketsCount - 1);
 
-    if aQuery.AliasName <> '' then begin
+  //if aQuery.AliasName <> '' then begin
+    if aQuery.Name1 <> '' then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aQuery.AliasAsToken then AddStr(gtkwAs);
       if aQuery.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aQuery.AliasName, gtlsTableAlias);
+    //AddStr(aQuery.AliasName, gtlsTableAlias);
+      AddStr(aQuery.Name1, gtlsTableAlias);
     end;
 
     List(aQuery.Find(gtsiCondTree, gtkwOn), aListerOpt);
