@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 303   18-12-30 20:57 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 304   19-01-09 18:51 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -59,7 +59,7 @@ type
   function GtSqlNodeNameToKind( aName: String ): TGtSqlNodeKind;
 
 const
-  cSqlNodeTokenMax = 15;
+  cSqlNodeTokenMax = 16;
 
 type
   TGtSqlNode = class;
@@ -128,7 +128,14 @@ type
     property        Keyword   : TGtLexToken{Def} index 9 read FTokens[9] write SetFTokens;
 //    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
 
-    property        KeywordExt: TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
+    property        KeywordExt:    TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
+  protected
+    property        KeywordAux1:   TGtLexToken      index 12 read FTokens[12] write SetFTokens;
+    property        KeywordAux2:   TGtLexToken      index 13 read FTokens[13] write SetFTokens;
+    property        KeywordAux3:   TGtLexToken      index 14 read FTokens[14] write SetFTokens;
+    property        KeywordAux4:   TGtLexToken      index 15 read FTokens[15] write SetFTokens;
+    property        KeywordAux5:   TGtLexToken      index 16 read FTokens[16] write SetFTokens;
+  public
     property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
     property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
 //  property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
@@ -148,7 +155,7 @@ type
     property        Name2                : String index 111 read GetValStr write SetValStr;
 //  property        Name3                : String index 112 read GetValStr write SetValStr;
 
-    property        Negation             : Boolean index 201 read GetValBool write SetValBool;
+//    property        Negation             : Boolean index 201 read GetValBool write SetValBool;
 //    property        Unique               : Boolean index 202 read GetValBool write SetValBool;
 //    property{Create}OrReplace            : Boolean index 203 read GetValBool write SetValBool;
 //    property        Public               : Boolean index 204 read GetValBool write SetValBool;
@@ -210,6 +217,14 @@ type
 
     function        ExprTreeOwner: TGtSqlNode;
     function        ConditionsCount: Integer;
+
+    procedure       KeywordAuxAdd     (aKeywordAux: TGtLexToken);
+    function        KeywordAuxCheck   (aKeywordAux: TGtLexToken): Boolean;
+    function        KeywordAuxCheckKwd(aKeywordAux1: TGtLexToken;
+                                       aKeywordAux2: TGtLexToken = nil;
+                                       aKeywordAux3: TGtLexToken = nil;
+                                       aKeywordAux4: TGtLexToken = nil;
+                                       aKeywordAux5: TGtLexToken = nil): TGtLexToken;
   public
     function        OwnerTableNameOrAlias: String;
 
@@ -1030,6 +1045,41 @@ begin
     { recursive call for each node }
     if aDeep then Nodes[i].ForEach ( aProc, aDeep, aKind, aKeyword, aName );
   end;
+end;
+
+{ adds auxilinary keyword }
+procedure TGtSqlNode.KeywordAuxAdd  (aKeywordAux: TGtLexToken);
+begin
+  if KeywordAuxCheck(aKeywordAux) then Exit;
+
+  if KeywordAux1 = gttkNone then KeywordAux1 := aKeywordAux else
+  if KeywordAux2 = gttkNone then KeywordAux2 := aKeywordAux else
+  if KeywordAux3 = gttkNone then KeywordAux3 := aKeywordAux else
+  if KeywordAux4 = gttkNone then KeywordAux4 := aKeywordAux else
+  if KeywordAux5 = gttkNone then KeywordAux5 := aKeywordAux else
+//raise 'Too many auxilinar keywords...'
+end;
+
+{ check for auxilinary keyword }
+function  TGtSqlNode.KeywordAuxCheck(aKeywordAux: TGtLexToken): Boolean;
+begin
+  Result := (KeywordAux1 = aKeywordAux) or (KeywordAux2 = aKeywordAux) or
+            (KeywordAux3 = aKeywordAux) or (KeywordAux4 = aKeywordAux) or
+            (KeywordAux5 = aKeywordAux) ;
+end;
+
+{ check for auxilinary keyword }
+function  TGtSqlNode.KeywordAuxCheckKwd (aKeywordAux1: TGtLexToken;
+                                         aKeywordAux2: TGtLexToken = nil;
+                                         aKeywordAux3: TGtLexToken = nil;
+                                         aKeywordAux4: TGtLexToken = nil;
+                                         aKeywordAux5: TGtLexToken = nil): TGtLexToken;
+begin
+  if Assigned(aKeywordAux1) and KeywordAuxCheck(aKeywordAux1) then Result := aKeywordAux1 else
+  if Assigned(aKeywordAux2) and KeywordAuxCheck(aKeywordAux2) then Result := aKeywordAux2 else
+  if Assigned(aKeywordAux3) and KeywordAuxCheck(aKeywordAux3) then Result := aKeywordAux3 else
+  if Assigned(aKeywordAux4) and KeywordAuxCheck(aKeywordAux4) then Result := aKeywordAux4 else
+  if Assigned(aKeywordAux5) and KeywordAuxCheck(aKeywordAux5) then Result := aKeywordAux5 else Result := nil ;
 end;
 
 end.

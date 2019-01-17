@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 331   18-12-30 20:53 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 332   19-01-09 18:51 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1561,7 +1561,8 @@ begin
 
 //    if Options[ gtstExprAsKeyword ] then AddStr(gtkwAs) else AddSpace;
 //  if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
-    if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs) else AddSpace;
+//  if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs) else AddSpace;
+    if aNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs) else AddSpace;
 
 //    if gtloExprAliasIntend in aListerOpt
 //      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
@@ -1571,7 +1572,7 @@ begin
   end;
 
   { adds sort order }
-  AddStr(aNode.KeywordAfter1 {SortOrder});
+//AddStr(aNode.KeywordAfter1 {SortOrder});
 //  if Assigned(aNode.Owner) then begin
 //      if (aNode.Owner.Kind = gtsiExprList) and (aNode.Owner.Keyword = gtkwOrder_By) then begin
 //
@@ -1585,11 +1586,13 @@ begin
 //
 //      end;
 //  end;
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwAsc, gtkwAscending, gtkwDesc, gtkwDescending));
 
   { BNF: NULLS FIRST | NULLS LAST }
-  AddStr(aNode.KeywordAfter1);
+//AddStr(aNode.KeywordAfter1);
 //  if aNode.NullsFirst then AddStr(gtkwNulls_First) else
 //  if aNode.NullsLast  then AddStr(gtkwNulls_Last);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwNulls_First, gtkwNulls_Last));
 end;
 
 { lists set expressions }
@@ -1674,7 +1677,8 @@ var lExpr, lItem: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.Negation then AddStr(gtkwNot);
+//if aNode.Negation then AddStr(gtkwNot);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwNot));
   AddLeftBracket(aNode.BracketsCount);
 
   if (aNode.Keyword {Operand} = gtkwExists) or (aNode.Keyword {Operand} = gtkwNot_Exists) then begin
@@ -1764,8 +1768,9 @@ begin
   if not Assigned(aNode) then Exit;
 
 //if aNode.NoCycle  then AddStr(gtkwNoCycle);
+//if aNode.Negation then AddStr(gtkwNot);
   if aNode.KeywordExt = gtkwNoCycle then AddStr(aNode.KeywordExt);
-  if aNode.Negation then AddStr(gtkwNot);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwNot));
   AddLeftBracket(aNode.BracketsCount);
 
   b := False;
