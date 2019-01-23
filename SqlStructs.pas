@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 304   19-01-09 18:51 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 305   19-01-10 19:05 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -129,15 +129,15 @@ type
 //    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
 
     property        KeywordExt:    TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
-  protected
+//protected
     property        KeywordAux1:   TGtLexToken      index 12 read FTokens[12] write SetFTokens;
     property        KeywordAux2:   TGtLexToken      index 13 read FTokens[13] write SetFTokens;
     property        KeywordAux3:   TGtLexToken      index 14 read FTokens[14] write SetFTokens;
     property        KeywordAux4:   TGtLexToken      index 15 read FTokens[15] write SetFTokens;
     property        KeywordAux5:   TGtLexToken      index 16 read FTokens[16] write SetFTokens;
-  public
-    property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
-    property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
+//public
+//  property        KeywordAfter1: TGtLexToken{Def} index 12 read FTokens[12] write SetFTokens;
+//  property        KeywordAfter2: TGtLexToken{Def} index 13 read FTokens[13] write SetFTokens;
 //  property        KeywordAfter3: TGtLexToken{Def} index 14 read FTokens[14] write SetFTokens;
 //  property        KeywordBefore: TGtLexToken{Def} index 15 read FTokens[15] write SetFTokens;
 
@@ -219,7 +219,12 @@ type
     function        ConditionsCount: Integer;
 
     procedure       KeywordAuxAdd     (aKeywordAux: TGtLexToken);
-    function        KeywordAuxCheck   (aKeywordAux: TGtLexToken): Boolean;
+    procedure       KeywordAuxRemove  (aKeywordAux: TGtLexToken);
+    function        KeywordAuxCheck   (aKeywordAux1: TGtLexToken;
+                                       aKeywordAux2: TGtLexToken = nil;
+                                       aKeywordAux3: TGtLexToken = nil;
+                                       aKeywordAux4: TGtLexToken = nil;
+                                       aKeywordAux5: TGtLexToken = nil): Boolean;
     function        KeywordAuxCheckKwd(aKeywordAux1: TGtLexToken;
                                        aKeywordAux2: TGtLexToken = nil;
                                        aKeywordAux3: TGtLexToken = nil;
@@ -1060,12 +1065,40 @@ begin
 //raise 'Too many auxilinar keywords...'
 end;
 
-{ check for auxilinary keyword }
-function  TGtSqlNode.KeywordAuxCheck(aKeywordAux: TGtLexToken): Boolean;
+{ removes auxilinary keyword }
+procedure TGtSqlNode.KeywordAuxRemove(aKeywordAux: TGtLexToken);
 begin
-  Result := (KeywordAux1 = aKeywordAux) or (KeywordAux2 = aKeywordAux) or
-            (KeywordAux3 = aKeywordAux) or (KeywordAux4 = aKeywordAux) or
-            (KeywordAux5 = aKeywordAux) ;
+  if KeywordAuxCheck(aKeywordAux) then Exit;
+
+  if KeywordAux1 = aKeywordAux then KeywordAux1 := gttkNone else
+  if KeywordAux2 = aKeywordAux then KeywordAux2 := gttkNone else
+  if KeywordAux3 = aKeywordAux then KeywordAux3 := gttkNone else
+  if KeywordAux4 = aKeywordAux then KeywordAux4 := gttkNone else
+  if KeywordAux5 = aKeywordAux then KeywordAux5 := gttkNone ;
+end;
+
+{ check for auxilinary keyword }
+function  TGtSqlNode.KeywordAuxCheck  (aKeywordAux1: TGtLexToken;
+                                       aKeywordAux2: TGtLexToken = nil;
+                                       aKeywordAux3: TGtLexToken = nil;
+                                       aKeywordAux4: TGtLexToken = nil;
+                                       aKeywordAux5: TGtLexToken = nil): Boolean;
+begin
+  Result := Assigned(aKeywordAux1) and ( (KeywordAux1 = aKeywordAux1) or (KeywordAux2 = aKeywordAux1) or
+                                         (KeywordAux3 = aKeywordAux1) or (KeywordAux4 = aKeywordAux1) or
+                                         (KeywordAux5 = aKeywordAux1))or
+            Assigned(aKeywordAux2) and ( (KeywordAux1 = aKeywordAux2) or (KeywordAux2 = aKeywordAux2) or
+                                         (KeywordAux3 = aKeywordAux2) or (KeywordAux4 = aKeywordAux2) or
+                                         (KeywordAux5 = aKeywordAux2))or
+            Assigned(aKeywordAux3) and ( (KeywordAux1 = aKeywordAux3) or (KeywordAux2 = aKeywordAux3) or
+                                         (KeywordAux3 = aKeywordAux3) or (KeywordAux4 = aKeywordAux3) or
+                                         (KeywordAux5 = aKeywordAux3))or
+            Assigned(aKeywordAux4) and ( (KeywordAux1 = aKeywordAux4) or (KeywordAux2 = aKeywordAux4) or
+                                         (KeywordAux3 = aKeywordAux4) or (KeywordAux4 = aKeywordAux4) or
+                                         (KeywordAux5 = aKeywordAux4))or
+            Assigned(aKeywordAux5) and ( (KeywordAux1 = aKeywordAux5) or (KeywordAux2 = aKeywordAux5) or
+                                         (KeywordAux3 = aKeywordAux5) or (KeywordAux4 = aKeywordAux5) or
+                                         (KeywordAux5 = aKeywordAux5));
 end;
 
 { check for auxilinary keyword }

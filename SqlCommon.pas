@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 35    18-12-14 21:29 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 36    19-01-10 19:05 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -403,6 +403,9 @@ var
   { ---- O ---- }
   gtkwOn_Commit,        gtkwOn_Commit_Preserve_Rows,               gtkwOn_Commit_Delete_Rows,
   gtkwOn_Delete,        gtkwOn_Demand,        gtkwOn_Update,       gtkwOrder_By,
+  gtkwOn_Delete_Cascade,gtkwOn_Delete_Restrict,                    gtkwOn_Delete_Set_Null,
+  gtkwOn_Update_Cascade,gtkwOn_Update_Restrict,                    gtkwOn_Update_Set_Null,
+
   { ---- P ---- }
   gtkwPreserve_Rows,    gtkwPrimary_Key,      gtkwPurge_RecycleBin,
   { ---- Q ---- }
@@ -1027,7 +1030,14 @@ begin
   gtkwOn_Commit_Delete_Rows  := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwCommit,    gtkwDelete,   gtkwRows );
   gtkwOn_Demand              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDemand );
   gtkwOn_Delete              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete );
+  gtkwOn_Delete_Cascade      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete,    gtkwCascade );
+  gtkwOn_Delete_Restrict     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete,    gtkwRestrict );
+  gtkwOn_Delete_Set_Null     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwDelete,    gtkwSet,      gtkwNull );
   gtkwOn_Update              := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate );
+  gtkwOn_Update_Cascade      := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate,    gtkwCascade );
+  gtkwOn_Update_Restrict     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate,    gtkwRestrict );
+  gtkwOn_Update_Set_Null     := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOn,        gtkwUpdate,    gtkwSet,      gtkwNull );
+
   gtkwOrder_By               := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwOrder,     gtkwBy );
   { ---- P ---- }
   gtkwPreserve_Rows          := LexKeywordTokenDefs.AddToken( '', '', gtttKeyword, gtkwPreserve,  gtkwRows );

@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 332   19-01-09 18:51 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 333   19-01-10 19:05 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1872,7 +1872,8 @@ begin
 //    gtopNull:    AddStr(gtkwNull);
 //    gtopNotNull: AddStr(gtkwNot_Null);
 //  end;
-  AddStr(aNode.KeywordAfter1);
+//AddStr(aNode.KeywordAfter1);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwNull, gtkwNot_Null));
 
   lUnique := aNode.Find(gtsiDDL, gtkwCreate_Index);
   if Assigned(lUnique) and lUnique.KeywordExt.HasSubToken(gtkwUnique) then AddStr(gtkwUnique);
@@ -1997,22 +1998,39 @@ begin
   end;
 
 //if aNode.OnDelete <> gttkNone then begin
-  if aNode.KeywordAfter1 <> gttkNone then begin
+//if aNode.KeywordAfter1 <> gttkNone then begin
+//  if aNode.KeywordAuxCheck(gtkwOn_Delete_Preserve) then begin
+//    if gtloAlterTableConstraint in aListerOpt
+//      then AddClause(gtkwOn_Delete)
+//      else AddStr(gtkwOn_Delete);
+//  //AddStr(aNode.OnDelete);
+//    AddStr(aNode.KeywordAfter1);
+//  end;
+ if aNode.KeywordAuxCheck(gtkwOn_Delete_Restrict, gtkwOn_Delete_Cascade, gtkwOn_Delete_Set_Null) then begin
     if gtloAlterTableConstraint in aListerOpt
       then AddClause(gtkwOn_Delete)
       else AddStr(gtkwOn_Delete);
-  //AddStr(aNode.OnDelete);
-    AddStr(aNode.KeywordAfter1);
-  end;
+   if aNode.KeywordAuxCheck(gtkwOn_Delete_Restrict) then AddStr(gtkwRestrict) else
+   if aNode.KeywordAuxCheck(gtkwOn_Delete_Cascade)  then AddStr(gtkwCascade)  else
+   if aNode.KeywordAuxCheck(gtkwOn_Delete_Set_Null) then AddStr(gtkwSet_Null);
+ end;
 
 //if aNode.OnUpdate <> gttkNone then begin
-  if aNode.KeywordAfter2 <> gttkNone then begin
+//  if aNode.KeywordAfter2 <> gttkNone then begin
+//    if gtloAlterTableConstraint in aListerOpt
+//      then AddClause(gtkwOn_Update)
+//      else AddStr(gtkwOn_Update);
+//  //AddStr(aNode.OnUpdate);
+//    AddStr(aNode.KeywordAfter2);
+//  end;
+ if aNode.KeywordAuxCheck(gtkwOn_Update_Restrict, gtkwOn_Update_Cascade, gtkwOn_Update_Set_Null) then begin
     if gtloAlterTableConstraint in aListerOpt
       then AddClause(gtkwOn_Update)
       else AddStr(gtkwOn_Update);
-  //AddStr(aNode.OnUpdate);
-    AddStr(aNode.KeywordAfter2);
-  end;
+   if aNode.KeywordAuxCheck(gtkwOn_Update_Restrict) then AddStr(gtkwRestrict) else
+   if aNode.KeywordAuxCheck(gtkwOn_Update_Cascade)  then AddStr(gtkwCascade)  else
+   if aNode.KeywordAuxCheck(gtkwOn_Update_Set_Null) then AddStr(gtkwSet_Null);
+ end;
 end;
 
 { lists index }
@@ -2121,7 +2139,8 @@ begin
     if aNode.Name1 <> '' then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
-      if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+    //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+      AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aNode.AliasName, gtlsTableAlias);
       AddStr(aNode.Name1, gtlsTableAlias);
     end;
@@ -2137,7 +2156,8 @@ begin
 //  if not lDoIntend then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
-      if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+    //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+      AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aNode.AliasName, gtlsTableAlias);
       AddStr(aNode.Name1, gtlsTableAlias);
 //    end else begin
@@ -2341,12 +2361,13 @@ begin
 
   AddClause(gttkRightBracket);
 
-  AddStr(aNode.KeywordAfter1);
+//  AddStr(aNode.KeywordAfter1);
 //  if aNode.OnCommitPreserveRows or aNode.OnCommitDeleteRows then begin
 //    AddStr(gtkwOn_Commit);
 //    if aNode.OnCommitPreserveRows then AddStr(gtkwPreserve_Rows) else
 //    if aNode.OnCommitDeleteRows   then AddStr(gtkwDelete_Rows);
 //  end;
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwOn_Commit_Preserve_Rows, gtkwOn_Commit_Delete_Rows));
 
   NewLineIntend := lIntend;
 //ML_ColumnName := 0;
@@ -2362,8 +2383,10 @@ begin
 
 //if aNode.Cascade then AddStr(gtkwCascade_Constraints);
 //if aNode.Purge   then AddStr(gtkwPurge);
-  AddStr(aNode.KeywordAfter1);
-  AddStr(aNode.KeywordAfter2);
+//AddStr(aNode.KeywordAfter1);
+//AddStr(aNode.KeywordAfter2);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwCascade_Constraints));
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwPurge));
 end;
 
 { lists ADD COLUMN clause }
@@ -2449,7 +2472,8 @@ begin
   AddStr(aNode.Name, gtlsConstraint);
 
 //if aNode.Cascade then AddStr(gtkwCascade);
-  if aNode.KeywordAfter1 = gtkwCascade then AddStr(gtkwCascade);
+//if aNode.KeywordAfter1 = gtkwCascade then AddStr(gtkwCascade);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwCascade));
 end;
 
 { lists RENAME TABLE clause }
@@ -2615,8 +2639,9 @@ begin
 
 //  if aNode.Enable then AddStr(gtkwEnable) else
 //  if aNode.Disable then AddStr(gtkwDisable);
-  if aNode.KeywordAfter1 = gtkwEnable then AddStr(gtkwEnable) else
-  if aNode.KeywordAfter1 = gtkwDisable then AddStr(gtkwDisable);
+//  if aNode.KeywordAfter1 = gtkwEnable then AddStr(gtkwEnable) else
+//  if aNode.KeywordAfter1 = gtkwDisable then AddStr(gtkwDisable);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwEnable, gtkwDisable));
 end;
 
 { lists CREATE SEQUENCE }
@@ -2663,7 +2688,8 @@ begin
 
 //if aNode.Materialized then begin
 //if aNode.KeywordExt.HasSubToken(gtkwMaterialized) then begin
-  if Assigned(aNode.KeywordAfter1) and aNode.KeywordAfter1.HasSubToken(gtkwRefresh) then begin
+//if Assigned(aNode.KeywordAfter1) and aNode.KeywordAfter1.HasSubToken(gtkwRefresh) then begin
+  if aNode.KeywordAuxCheck(gtkwRefresh) then begin
 //    if aNode.Force or aNode.OnDemand then AddStr(gtkwRefresh);
 //    if aNode.Force then AddStr(gtkwForce);
 //    if aNode.OnDemand then AddStr(gtkwOn_Demand);
@@ -2890,8 +2916,9 @@ begin
 
   List_Clause_Expr(aNode, aListerOpt, gtkwFor_Update_Of, ClauseAppendCondition);
 
-  AddStr(aNode.KeywordAfter1);
+//AddStr(aNode.KeywordAfter1);
 //if aNode.NoWait then AddStr(gtkwNoWait);
+  AddStr(aNode.KeywordAuxCheckKwd(gtkwNoWait));
 end;
 
 { lists UNION | MINUS | INTERSECT }
@@ -3189,7 +3216,8 @@ begin
     if aQuery.Name1 <> '' then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aQuery.AliasAsToken then AddStr(gtkwAs);
-      if aQuery.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+    //if aQuery.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
+      AddStr(aQuery.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aQuery.AliasName, gtlsTableAlias);
       AddStr(aQuery.Name1, gtlsTableAlias);
     end;
@@ -3321,7 +3349,8 @@ begin
 
 //    if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
       //if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
-        if aNode.QueryList[i].KeywordAfter1.HasSubToken(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
+      //if aNode.QueryList[i].KeywordAfter1.HasSubToken(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
+        if aNode.QueryList[i].KeywordAuxCheck(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
         //if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
           AddStr( gttkSemicolon, False );
         end;
