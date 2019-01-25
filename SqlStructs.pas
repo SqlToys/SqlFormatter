@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 305   19-01-10 19:05 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 306   19-01-10 21:27 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -168,9 +168,9 @@ type
 //    property        NoCycle              : Boolean index 211 read GetValBool write SetValBool;
 //  //property        OuterMark1           : Boolean index 212 read GetValBool write SetValBool;
 //  //property        OuterMark2           : Boolean index 213 read GetValBool write SetValBool;
-    property        ExprMinus            : Boolean index 214 read GetValBool write SetValBool;
-    property        ExprReverseOp        : Boolean index 215 read GetValBool write SetValBool;
-    property        ExprReverseOp2       : Boolean index 216 read GetValBool write SetValBool;
+//  property        ExprMinus            : Boolean index 214 read GetValBool write SetValBool;
+//  property        ExprReverseOp        : Boolean index 215 read GetValBool write SetValBool;
+//  property        ExprReverseOp2       : Boolean index 216 read GetValBool write SetValBool;
 //    property        ExprPrior            : Boolean index 217 read GetValBool write SetValBool;
 //    property        Enable               : Boolean index 218 read GetValBool write SetValBool;
 //    property        Disable              : Boolean index 219 read GetValBool write SetValBool;

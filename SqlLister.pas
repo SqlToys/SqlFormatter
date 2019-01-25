@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 333   19-01-10 19:05 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 334   19-01-10 21:26 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1247,19 +1247,30 @@ begin
     Exit;
   end;
 
-  if aNode.Check(gtsiExpr, gttkNumber) then s := strif(aNode.ExprMinus, gttkMinus.TokenText) + aNode.Name
-  else
-  if aNode.Check(gtsiExpr, gttkIdentifier) then
-                         if UpperCase(aNode.Name) = gtkwNull.TokenText
-                           then s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
-                                       {UpperLowerStr(}aNode.Name{, CaseOpt[ gtlcKeyword ])}
-                           else s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
-                                       aNode.Name
-  else
-  if aNode.Check(gtsiExpr, gttkParameterName) then
-                         s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
-                                aNode.Name
-  else
+//  if aNode.Check(gtsiExpr, gttkParameterName) then
+//                         s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
+//                                aNode.Name
+//  else
+  if aNode.Check(gtsiExpr, gttkNumber) then begin
+  //s := strif(aNode.ExprMinus, gttkMinus.TokenText) + aNode.Name
+    if aNode.KeywordAuxCheck(gttkMinus) then s := gttkMinus.TokenText;
+    s := aNode.Name;
+  end else
+  if aNode.Check(gtsiExpr, gttkIdentifier) then begin
+//                         if UpperCase(aNode.Name) = gtkwNull.TokenText
+//                           then s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
+//                                       {UpperLowerStr(}aNode.Name{, CaseOpt[ gtlcKeyword ])}
+//                           else s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
+//                                       aNode.Name
+    if aNode.KeywordAuxCheck(gttkMinus) then s := gttkMinus.TokenText;
+    s := aNode.Name;
+  end else
+  if aNode.Check(gtsiExpr, gttkParameterName) then begin
+//                         s :=   strif(aNode.ExprMinus, gttkMinus.TokenText) +
+//                                aNode.Name
+    if aNode.KeywordAuxCheck(gttkMinus) then s := gttkMinus.TokenText;
+    s := aNode.Name;
+  end else
   if aNode.Check(gtsiExpr, gtkwVarchar) or aNode.Check(gtsiExpr, gttkFunParameter) or
      aNode.Check(gtsiExpr, gttkAnotherExpr) then s := aNode.Name ;
 
@@ -1533,11 +1544,13 @@ begin
   for i := 0 to aNode.Count - 1 do
     if (aNode[i].Kind in [gtsiExpr, gtsiExprTree]) or aNode[i].Check(gtsiDml, gtkwSelect) then begin
       if i > 0 then begin
-        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkPlus) then AddStr(gttkMinus) else
-        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkSlash) else
-        if (aNode[i].ExprReverseOp2)and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkPercent)
+//        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkPlus) then AddStr(gttkMinus) else
+//        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkSlash) else
+//        if (aNode[i].ExprReverseOp2)and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkPercent)
+        if (aNode.Keyword {Operand} = gttkPlus) and aNode.KeywordAuxCheck(gttkMinus)  then AddStr(gttkMinus) else
+        if (aNode.Keyword {Operand} = gttkStar) and aNode.KeywordAuxCheck(gttkSlash)  then AddStr(gttkSlash) else
+        if (aNode.Keyword {Operand} = gttkStar) and aNode.KeywordAuxCheck(gttkPercent)then AddStr(gttkPercent)
         else AddStr(aNode.Keyword {Operand});
-
 //      aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
       end;
 
