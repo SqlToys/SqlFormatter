@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 334   19-01-10 21:26 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 335   19-01-11 20:12 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1725,13 +1725,16 @@ begin
 
     { operator }
     if (aNode.Keyword {Operand} = gttkEqual) then begin
-      if aNode.OuterMark1Oracle then begin
+//    if aNode.OuterMark1Oracle then begin
+      if aNode.KeywordExt = gttkBracketPlusBracket then begin
         AddStr(gttkBracketPlusBracket);
         AddStr(gttkEqual);
-      end else
-      if aNode.OuterMark1MSSQL
-        then AddStr(gttkStarEqual)
-        else AddStr(gttkEqual);
+      end else begin
+//      if aNode.OuterMark1MSSQL
+//        then AddStr(gttkStarEqual)
+//        else AddStr(gttkEqual);
+        AddStr(aNode.KeywordExt);
+      end;
     end else
     if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) or
        (aNode.Keyword {Operand} = gtkwLike)    or (aNode.Keyword {Operand} = gtkwNot_Like) or
@@ -1740,14 +1743,16 @@ begin
       else AddStr(aNode.Keyword {Operand});
 
     { right expression }
-    if aNode.OuterMark2MSSQL and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
+//  if aNode.OuterMark2MSSQL and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlMicrosoftSql)} then AddStr(gttkEqualStar);
 //    if (gtloCondEqualSwap in aListerOpt) and (aNode.Keyword {Operand} = gttkEqual)
 //      then lItem := aNode.Find(gtsiNone, nil, '1')
 //      else
     lItem := aNode.Find(gtsiNone, nil, '2');
 
     List(lItem, aListerOpt {- [gtloOnLeftSideIntend]});
-    if aNode.OuterMark2Oracle and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)} then AddStr(gttkBracketPlusBracket);
+//  if aNode.OuterMark2Oracle and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)}
+    if (aNode.KeywordExt = gttkBracketPlusBracket) and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)}
+      then AddStr(gttkBracketPlusBracket);
 
     { additional expression }
     if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) then begin
@@ -2826,6 +2831,7 @@ end;
 { lists SELECT clause }
 procedure TGtSqlFormatLister.List_Select;
 var lMaxLineLength: Integer;
+    lNode: TGtSqlNode;
 
   { calculates }
 //  procedure CalcExprAlias(aNode: TGtSqlNode);
@@ -2895,10 +2901,13 @@ begin
 
   { BNF: [TOP n] }
 //if aNode.Top > 0 then begin
-  if aNode.Int1 > 0 then begin
+//if aNode.Int1 > 0 then begin
+  lNode := aNode.Find(gtsiNone, gtkwTop);
+  if Assigned(lNode) then begin
     AddStr( gtkwTop );
   //AddStr( IntToStr(aNode.Top), gtlsNumber );
-    AddStr( IntToStr(aNode.Int1), gtlsNumber );
+  //AddStr( IntToStr(aNode.Int1), gtlsNumber );
+    AddStr( lNode.Name, gtlsNumber );
   end;
 
 //if Options [ gtstSelectAliasIntend ] then CalcExprAlias(aNode);

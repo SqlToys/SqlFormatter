@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 306   19-01-10 21:27 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 307   19-01-11 20:12 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -183,10 +183,10 @@ type
 //    property        OnCommitPreserveRows : Boolean index 226 read GetValBool write SetValBool;
 //    property        OnCommitDeleteRows   : Boolean index 227 read GetValBool write SetValBool;
 //    property        Semicolon            : Boolean index 228 read GetValBool write SetValBool;
-    property        OuterMark1Oracle     : Boolean index 229 read GetValBool write SetValBool;
-    property        OuterMark1MSSQL      : Boolean index 230 read GetValBool write SetValBool;
-    property        OuterMark2Oracle     : Boolean index 231 read GetValBool write SetValBool;
-    property        OuterMark2MSSQL      : Boolean index 232 read GetValBool write SetValBool;
+ //   property        OuterMark1Oracle     : Boolean index 229 read GetValBool write SetValBool;
+//    property        OuterMark1MSSQL      : Boolean index 230 read GetValBool write SetValBool;
+//    property        OuterMark2Oracle     : Boolean index 231 read GetValBool write SetValBool;
+//    property        OuterMark2MSSQL      : Boolean index 232 read GetValBool write SetValBool;
 //    property        AliasAsToken         : Boolean index 233 read GetValBool write SetValBool;
 
 //  property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
@@ -516,72 +516,85 @@ end;
 function TGtSqlNode.GetValName(aIndex: Integer): String;
 begin
   case aIndex of
-    1: Result := 'LogicOp';
-    2: Result := 'ExprOp';
-    3: Result := 'CompOp';
-    4: Result := 'JoinOp';
-    5: Result := 'DataType';
-    6: Result := 'OnDelete';
-    7: Result := 'OnUpdate';
-    8: Result := 'SortOrder';
+//    1: Result := 'LogicOp';
+//    2: Result := 'ExprOp';
+//    3: Result := 'CompOp';
+//    4: Result := 'JoinOp';
+//    5: Result := 'DataType';
+//    6: Result := 'OnDelete';
+//    7: Result := 'OnUpdate';
+//    8: Result := 'SortOrder';
     9: Result := 'Keyword';
+   11: Result := 'KeywordExt';
+   12: Result := 'KeywordAux1';
+   13: Result := 'KeywordAux2';
+   14: Result := 'KeywordAux3';
+   15: Result := 'KeywordAux4';
+   16: Result := 'KeywordAux5';
 
-    101: Result := 'OldName';
-    102: Result := 'NewName';
-    103: Result := 'AliasName';
-    104: Result := 'CollateName';
-    105: Result := 'CondEscape';
-    106: Result := 'ObjectName';
-    107: Result := 'TableName';
-    108: Result := 'ColumnName';
-    109: Result := 'KeepName';
+//    101: Result := 'OldName';
+//    102: Result := 'NewName';
+//    103: Result := 'AliasName';
+//    104: Result := 'CollateName';
+//    105: Result := 'CondEscape';
+//    106: Result := 'ObjectName';
+//    107: Result := 'TableName';
+//    108: Result := 'ColumnName';
+//    109: Result := 'KeepName';
 
-    201: Result := 'Negation';
-    202: Result := 'Unique';
-    203: Result := 'OrReplace';
-    204: Result := 'Public';
-    205: Result := 'Global';
-    206: Result := 'Temporary';
-    207: Result := 'Identity';
-    208: Result := 'Distinct';
-    209: Result := 'NoWait';
-    210: Result := 'Materialized';
-    211: Result := 'NoCycle';
-//  212: Result := 'OuterMark1';
-//  213: Result := 'OuterMark2';
-    214: Result := 'ExprMinus';
-    215: Result := 'ExprReverseOp';
-    216: Result := 'ExprReverseOp2';
-    217: Result := 'ExprPrior';
-    218: Result := 'Enable';
-    219: Result := 'Disable';
-    220: Result := 'Cascade';
-    221: Result := 'NullsFirst';
-    222: Result := 'NullsLast';
-    223: Result := 'Purge';
-    224: Result := 'OnDemand';
-    225: Result := 'Force';
-    226: Result := 'OnCommitPreserveRows';
-    227: Result := 'OnCommitDeleteRows';
-    228: Result := 'Semicolon';
-    229: Result := 'OuterMark1Oracle';
-    230: Result := 'OuterMark1MSSQL';
-    231: Result := 'OuterMark2Oracle';
-    232: Result := 'OuterMark2MSSQL';
-    233: Result := 'AliasAsToken';
-    234: Result := 'JoinOuterKeyword';
-    235: Result := 'JoinInnerKeyword';
+    110: Result := 'Name1';
+    111: Result := 'Name2';
+    112: Result := 'Name3';
+
+//    201: Result := 'Negation';
+//    202: Result := 'Unique';
+//    203: Result := 'OrReplace';
+//    204: Result := 'Public';
+//    205: Result := 'Global';
+//    206: Result := 'Temporary';
+//    207: Result := 'Identity';
+//    208: Result := 'Distinct';
+//    209: Result := 'NoWait';
+//    210: Result := 'Materialized';
+//    211: Result := 'NoCycle';
+////  212: Result := 'OuterMark1';
+////  213: Result := 'OuterMark2';
+//    214: Result := 'ExprMinus';
+//    215: Result := 'ExprReverseOp';
+//    216: Result := 'ExprReverseOp2';
+//    217: Result := 'ExprPrior';
+//    218: Result := 'Enable';
+//    219: Result := 'Disable';
+//    220: Result := 'Cascade';
+//    221: Result := 'NullsFirst';
+//    222: Result := 'NullsLast';
+//    223: Result := 'Purge';
+//    224: Result := 'OnDemand';
+//    225: Result := 'Force';
+//    226: Result := 'OnCommitPreserveRows';
+//    227: Result := 'OnCommitDeleteRows';
+//    228: Result := 'Semicolon';
+//    229: Result := 'OuterMark1Oracle';
+//    230: Result := 'OuterMark1MSSQL';
+//    231: Result := 'OuterMark2Oracle';
+//    232: Result := 'OuterMark2MSSQL';
+//    233: Result := 'AliasAsToken';
+//    234: Result := 'JoinOuterKeyword';
+//    235: Result := 'JoinInnerKeyword';
+
     236: Result := 'NewLineBefore';
-    237: Result := 'NewLineAfter';
+//    237: Result := 'NewLineAfter';
     238: Result := 'EmptyLineBefore';
     239: Result := 'EmptyLineAfter';
 
-    301: Result := 'ColSize';
-    302: Result := 'ColIdentitySeed';
-    303: Result := 'ColIdentityInc';
-    304: Result := 'Top';
-    305: Result := 'ColPrec';
+//    301: Result := 'ColSize';
+//    302: Result := 'ColIdentitySeed';
+//    303: Result := 'ColIdentityInc';
+//    304: Result := 'Top';
+//    305: Result := 'ColPrec';
     306: Result := 'BracketsCount';
+    310: Result := 'Int1';
+    311: Result := 'Int2';
   end;
 end;
 
