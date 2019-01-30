@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 335   19-01-11 20:12 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 336   19-01-12 13:44 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -126,6 +126,7 @@ type
     procedure   AddStr    (aToken: TGtLexToken{Def}; aAddClearSpace: Boolean = True); overload;
     procedure   AddStr    (aToken: TGtLexToken{Def}; aStyle: TGtLexTokenStyle;
                            aAddClearSpace: Boolean = True; aSingleParam: Boolean = False); overload;
+    procedure   AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 
     procedure   BeginFormattedFile;
     procedure   EndFormattedFile;
@@ -704,6 +705,16 @@ begin
   if not Assigned(aToken) or (aToken = gttkNone) then Exit;
 
   AddStr(aToken, aToken.TokenStyle, aAddClearSpace);
+end;
+
+{ adds colored keyword and name with gien style }
+procedure TGtSqlProtoLister.AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+begin
+  if not Assigned(aNode) then Exit;
+
+  { maybe KeywordExt should be used }
+  AddStr(aNode.Keyword);
+  AddStr(aNode.Name, aStyle);
 end;
 
 { adds colored string }
@@ -1535,6 +1546,7 @@ end;
 { lists expression tree }
 procedure TGtSqlFormatLister.List_ExprTree;
 var i: Integer;
+    lNode: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
@@ -1566,8 +1578,10 @@ begin
 
   { adds alias }
   { WARN: SkipOutput was prepared to check max expressions length }
+  lNode := aNode.Find(gtsiNone, gtkwAs);
 //if (aNode.AliasName <> '') and not SkipOutput and
-  if (aNode.Name1 <> '') and not SkipOutput and
+//if (aNode.Name1 <> '') and not SkipOutput and
+  if Assigned(lNode)     and not SkipOutput and
     ((Length(RawText) = 0) or (RawText[Length(RawText)] <> '*')) {skip alias after star expr.} then begin
 //    if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
 //      then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
@@ -1575,13 +1589,15 @@ begin
 //    if Options[ gtstExprAsKeyword ] then AddStr(gtkwAs) else AddSpace;
 //  if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
 //  if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs) else AddSpace;
-    if aNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs) else AddSpace;
+//  if aNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs) else AddSpace;
+    if lNode.KeywordExt = gtkwAs then AddStr(gtkwAs) else AddSpace;
 
 //    if gtloExprAliasIntend in aListerOpt
 //      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
 
 //  AddStr(aNode.AliasName, gtlsColumnAlias);
-    AddStr(aNode.Name1, gtlsColumnAlias);
+//  AddStr(aNode.Name1, gtlsColumnAlias);
+    AddStr(lNode.Name, gtlsColumnAlias);
   end;
 
   { adds sort order }
@@ -1760,19 +1776,22 @@ begin
       List(aNode.Find(gtsiNone, nil, '3'), aListerOpt {- [gtloOnLeftSideIntend, gtloOnRightSideIntend]});
     end else
   //if ((aNode.Keyword {Operand} = gtkwLike) or (aNode.Keyword {Operand} = gtkwNot_Like)) and (aNode.CondEscape <> '') then begin
-    if ((aNode.Keyword {Operand} = gtkwLike) or (aNode.Keyword {Operand} = gtkwNot_Like)) and (aNode.Name2 <> '') then begin
-      AddStr(gtkwEscape);
-    //AddStr(aNode.CondEscape, gtlsString);
-      AddStr(aNode.Name2, gtlsString);
+  //if ((aNode.Keyword {Operand} = gtkwLike) or (aNode.Keyword {Operand} = gtkwNot_Like)) and (aNode.Name2 <> '') then begin
+    if ((aNode.Keyword {Operand} = gtkwLike) or (aNode.Keyword {Operand} = gtkwNot_Like)) then begin
+      //AddStr(gtkwEscape);
+      //AddStr(aNode.CondEscape, gtlsString);
+      //AddStr(aNode.Name2, gtlsString);
+      AddStrKeywordName( aNode.Find(gtsiNone, gtkwEscape), gtlsString);
     end;
 
     { collate }
   //if aNode.CollateName <> '' then begin
-    if aNode.Name1 <> '' then begin
-      AddStr(gtkwCollate);
-    //AddStr(aNode.CollateName, gtlsString);
-      AddStr(aNode.Name1, gtlsString);
-    end;
+//    if aNode.Name1 <> '' then begin
+//      AddStr(gtkwCollate);
+//    //AddStr(aNode.CollateName, gtlsString);
+//      AddStr(aNode.Name1, gtlsString);
+//    end;
+    AddStrKeywordName( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
   end;
 
   AddRightBracket(aNode.BracketsCount);
@@ -1873,12 +1892,13 @@ begin
   end;
 
 //if aNode.CollateName <> '' then begin
-  if aNode.Name1 <> '' then begin
-    AddStr(gtkwCollate);
-    AddSpace;
-  //AddStr(aNode.CollateName, gtlsIdentifier);
-    AddStr(aNode.Name1, gtlsIdentifier);
-  end;
+//  if aNode.Name1 <> '' then begin
+//    AddStr(gtkwCollate);
+//    AddSpace;
+//  //AddStr(aNode.CollateName, gtlsIdentifier);
+//    AddStr(aNode.Name1, gtlsIdentifier);
+//  end;
+  AddStrKeywordName( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
 
   lDefault := aNode.Find(gtsiExprTree);
   if Assigned(lDefault) then begin
@@ -2006,7 +2026,7 @@ begin
   lKey := aNode.Find(gtsiConstraint, gtkwReferences);
   if Assigned(lKey) then begin
   //AddStr(lKey.ObjectName, gtlsTable);
-    AddStr(lKey.Name1, gtlsTable);
+    AddStr(lKey.Name, gtlsTable);
 
     if lKey.Count > 0 then begin
       AddStr(gttkLeftBracket);
@@ -2119,7 +2139,7 @@ end;
 
 { lists table reference }
 procedure TGtSqlFormatLister.List_TabRef;
-var lSubQuery: TGtSqlNode;
+var lSubQuery, lNode: TGtSqlNode;
 //  lDoIntend: Boolean;
 begin
   if not Assigned(aNode) then Exit;
@@ -2153,13 +2173,17 @@ begin
     List(lSubQuery, aListerOpt);
 
     { query alias }
+    lNode := aNode.Find(gtsiNone, gtkwAs);
 //  if aNode.AliasName <> '' then begin
-    if aNode.Name1 <> '' then begin
+//  if aNode.Name1 <> '' then begin
+    if Assigned(lNode) then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
     //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
+    //AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
+      AddStr(aNode.KeywordExt);
     //AddStr(aNode.AliasName, gtlsTableAlias);
+    //AddStr(aNode.Name1, gtlsTableAlias);
       AddStr(aNode.Name1, gtlsTableAlias);
     end;
   end else begin
@@ -2502,10 +2526,11 @@ begin
 
   if not (gtloSameAsPrevClause in aListerOpt) then AddClause(gtkwRename);
   //AddStr(aNode.OldName, gtlsTable);
-  AddStr(aNode.Name1, gtlsTable);
+  //AddStr(aNode.Name1, gtlsTable);
   AddStr(gtkwTo);
   //AddStr(aNode.NewName, gtlsTable);
-  AddStr(aNode.Name2, gtlsTable);
+  //AddStr(aNode.Name2, gtlsTable);
+  AddStr(aNode.Name, gtlsTable);
 end;
 
 { lists RENAME COLUMN clause }
@@ -2516,10 +2541,16 @@ begin
 
   if not (gtloSameAsPrevClause in aListerOpt) then AddClause(gtkwRename_Column);
   //AddStr(aNode.OldName, gtlsColumn);
-  AddStr(aNode.Name1, gtlsColumn);
-  AddStr(gtkwTo);
-  //AddStr(aNode.NewName, gtlsColumn);
-  AddStr(aNode.Name2, gtlsColumn);
+  //AddStr(aNode.Name1, gtlsColumn);
+  AddStr(aNode.Name, gtlsColumn);
+
+  aNode := aNode.Find(gtsiNone, gtkwTo);
+  if Assigned(aNode) then begin
+    AddStr(gtkwTo);
+    //AddStr(aNode.NewName, gtlsColumn);
+    //AddStr(aNode.Name2, gtlsColumn);
+    AddStr(aNode.Name, gtlsColumn);
+  end;
 end;
 
 { lists ALTER TABLE statement }
@@ -2567,7 +2598,7 @@ begin
          aNode[i].Check(gtsiClauseAlter, gtkwModify)         then List_AlterModifyColumn  (aNode[i], {lTreeNode,} aListerOpt) else
       if aNode[i].Check(gtsiClauseAlter, gtkwAdd_Constraint) then List_AlterAddConstraint (aNode[i], {lTreeNode,} aListerOpt) else
       if aNode[i].Check(gtsiClauseAlter, gtkwDrop_Constraint)then List_AlterDropConstraint(aNode[i], {lTreeNode,} aListerOpt) else
-      if aNode[i].Check(gtsiClauseAlter, gtkwRename_Table)   then List_AlterRenameTable   (aNode[i], {lTreeNode,} aListerOpt) else
+      if aNode[i].Check(gtsiClauseAlter, gtkwRename_To)      then List_AlterRenameTable   (aNode[i], {lTreeNode,} aListerOpt) else
       if aNode[i].Check(gtsiClauseAlter, gtkwRename_Column)  then List_AlterRenameColumn  (aNode[i], {lTreeNode,} aListerOpt) else
       if aNode[i].Check(gtsiClauseAlter, gttkComma)          then begin
 
@@ -2580,7 +2611,7 @@ begin
           (lPrevClause.Keyword = gtkwModify)         then List_AlterModifyColumn  (aNode[i], {lTreeNode,} aListerOpt) else
         if lPrevClause.Keyword = gtkwAdd_Constraint  then List_AlterAddConstraint (aNode[i], {lTreeNode,} aListerOpt) else
         if lPrevClause.Keyword = gtkwDrop_Constraint then List_AlterDropConstraint(aNode[i], {lTreeNode,} aListerOpt) else
-        if lPrevClause.Keyword = gtkwRename_Table    then List_AlterRenameTable   (aNode[i], {lTreeNode,} aListerOpt) else
+        if lPrevClause.Keyword = gtkwRename_To       then List_AlterRenameTable   (aNode[i], {lTreeNode,} aListerOpt) else
         if lPrevClause.Keyword = gtkwRename_Column   then List_AlterRenameColumn  (aNode[i], {lTreeNode,} aListerOpt) ;
       end;
 
@@ -2600,9 +2631,11 @@ begin
 //    else AddClause(gtkwCreate_Index);
 
   AddStr(aNode.Name, gtlsIdentifier);
-  AddStr(gtkwOn);
-//AddStr(aNode.ObjectName, gtlsTable);
-  AddStr(aNode.Name1, gtlsTable);
+
+//  AddStr(gtkwOn);
+////AddStr(aNode.ObjectName, gtlsTable);
+//  AddStr(aNode.Name1, gtlsTable);
+  AddStrKeywordName( aNode.Find(gtsiNone, gtkwOn), gtlsTable);
 
   AddStr(gttkLeftBracket);
   List_ExprList(aNode, aListerOpt);
@@ -2616,11 +2649,14 @@ begin
 
   List_Clause_Name(aNode, aListerOpt, gtkwDrop_Index, nil, aNode.Name, gtlsIdentifier, gtlsDdlDrop);
 
+  aNode := aNode.Find(gtsiNone, gtkwOn);
+  if Assigned(aNode) then begin
 //if aNode.ObjectName <> '' then begin
-  if aNode.Name1 <> '' then begin
+//if aNode.Name1 <> '' then begin
     AddStr(gtkwOn);
   //AddStr(aNode.ObjectName, gtlsTable);
-    AddStr(aNode.Name1, gtlsTable);
+  //AddStr(aNode.Name1, gtlsTable);
+    AddStr(aNode.Name, gtlsTable);
   end;
 end;
 
@@ -2749,9 +2785,12 @@ begin
 //  end;
 
   AddStr(aNode.Name, gtlsSynonym);
-  AddStr(gtkwFor);
-//AddStr(aNode.ObjectName, gtlsIdentifier);
-  AddStr(aNode.Name1, gtlsIdentifier);
+
+//  AddStr(gtkwFor);
+////AddStr(aNode.ObjectName, gtlsIdentifier);
+//  AddStr(aNode.Name1, gtlsIdentifier);
+
+  AddStrKeywordName( aNode.Find(gtsiNone, gtkwFor), gtlsIdentifier);
 end;
 
 { lists GRANT statement }
