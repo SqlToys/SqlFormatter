@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 336   19-01-12 13:44 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 337   19-01-13 12:35 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -126,7 +126,9 @@ type
     procedure   AddStr    (aToken: TGtLexToken{Def}; aAddClearSpace: Boolean = True); overload;
     procedure   AddStr    (aToken: TGtLexToken{Def}; aStyle: TGtLexTokenStyle;
                            aAddClearSpace: Boolean = True; aSingleParam: Boolean = False); overload;
+    procedure   AddStrName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
     procedure   AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+    procedure   AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 
     procedure   BeginFormattedFile;
     procedure   EndFormattedFile;
@@ -707,13 +709,29 @@ begin
   AddStr(aToken, aToken.TokenStyle, aAddClearSpace);
 end;
 
-{ adds colored keyword and name with gien style }
+{ adds colored name with given style }
+procedure TGtSqlProtoLister.AddStrName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+begin
+  if not Assigned(aNode) then Exit;
+
+  AddStr(aNode.Name, aStyle);
+end;
+
+{ adds colored keyword and name with given style }
 procedure TGtSqlProtoLister.AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 begin
   if not Assigned(aNode) then Exit;
 
-  { maybe KeywordExt should be used }
   AddStr(aNode.Keyword);
+  AddStr(aNode.Name, aStyle);
+end;
+
+{ adds colored keyword and name with given style }
+procedure TGtSqlProtoLister.AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+begin
+  if not Assigned(aNode) then Exit;
+
+  AddStr(aNode.KeywordExt);
   AddStr(aNode.Name, aStyle);
 end;
 
@@ -1409,7 +1427,7 @@ end;
 
 { lists expression function }
 procedure TGtSqlFormatLister.List_ExprFunction;
-var lExprList: TGtSqlNode;
+var lExprList, lNode: TGtSqlNode;
 begin
   { BNF: functions & COUNT }
   if aNode.Check(gtsiExpr, gtkwCount) or aNode.Check(gtsiExpr, gtkwDistinct)
@@ -1432,14 +1450,17 @@ begin
   AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
 
   { ORACLE: KEEP DENSE RANK }
+  lNode := aNode.Find(gtsiNone, gtkwKeep);
+  if Assigned(lNode) then begin
 //if {(Dialect = gtdlOracle) and} (aNode.KeepName <> '') then begin
-  if {(Dialect = gtdlOracle) and} (aNode.Name1 <> '') then begin
+//if {(Dialect = gtdlOracle) and} (aNode.Name1 <> '') then begin
     AddStr(gtkwKeep);
     AddLeftBracket;
     AddStr(gtkwDenseRank);
   //AddStr(aNode.KeepName, gtlsAggrFunction);
-    AddStr(aNode.Name1, gtlsAggrFunction);
-    List_Clause_Expr(aNode.Find(gtsiExprList, gtkwOrder_By),
+  //AddStr(aNode.Name1, gtlsAggrFunction);
+    AddStr(lNode.Name, gtlsAggrFunction);
+    List_Clause_Expr(lNode.Find(gtsiExprList, gtkwOrder_By),
                      aListerOpt {+ [gtloSkipOneExprOnLine]}, gtkwOrder_By, True {ClauseAppendCondition});
     AddRightBracket;
   end;
@@ -1450,7 +1471,7 @@ procedure TGtSqlFormatLister.List_ExprColumn;
 
     function FindStyleForColumnPrefix(var aColumnPrefix: String): TGtLexTokenStyle;
     var i{, lDeep}: Integer;
-        lQuery, lTabClause: TGtSqlNode;
+        lQuery, lTabClause, lAlias: TGtSqlNode;
     begin
       Result := gtlsError;
       if aColumnPrefix = '' then Exit;
@@ -1464,18 +1485,24 @@ procedure TGtSqlFormatLister.List_ExprColumn;
 
         for i := 0 to lTabClause.Count - 1 do
           if lTabClause[i].Check(gtsiTableRef) or lTabClause[i].Check(gtsiDml, gtkwSelect) then begin
+            lAlias := lTabClause[i].Find(gtsiNone, gtkwAs);
 //          if AnsiUpperCase(lTabClause[i].AliasName) = AnsiUpperCase(aColumnPrefix) then begin
-            if AnsiUpperCase(lTabClause[i].Name1) = AnsiUpperCase(aColumnPrefix) then begin
+          //if AnsiUpperCase(lTabClause[i].Name1) = AnsiUpperCase(aColumnPrefix) then begin
+            if Assigned(lAlias) and (AnsiUpperCase(lAlias.Name) = AnsiUpperCase(aColumnPrefix)) then begin
               if lQuery = aNode.GetQuery then Result := gtlsTableAlias else Result := gtlsExtQueryAliasOrTable;
 //            if CaseOpt[ gtlcTableAlias ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].AliasName;
 
               Exit;
             end else
 //          if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].AliasName = '') or
-            if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].Name1 = '') or
+          //if (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix)) and (lTabClause[i].Name1 = '') or
                // column prefix is a full-part of an table name ie. lejek_projekt.numer for drk.lejek_projekt
 //             (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].AliasName = '') then begin
-               (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].Name1 = '') then begin
+             //(Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) and (lTabClause[i].Name1 = '') then begin
+            if not Assigned(lAlias) and (
+              (AnsiUpperCase(lTabClause[i].Name) = AnsiUpperCase(aColumnPrefix))  or
+              (Pos('.'+AnsiUpperCase(aColumnPrefix), AnsiUpperCase(lTabClause[i].Name)) > 0) ) then begin
+
               if lQuery = aNode.GetQuery then Result := gtlsTable else Result := gtlsExtQueryAliasOrTable;
 //            if CaseOpt[ gtlcTable ] = gtcoFirstUseCase then aColumnPrefix := lTabClause[i].Name;
 
@@ -1839,7 +1866,7 @@ end;
 
 { lists column }
 procedure TGtSqlFormatLister.List_ColumnDef;
-var lUnique, lDefault: TGtSqlNode;
+var lUnique, lDefault, lNode: TGtSqlNode;
     {lLen,} i: Integer;
 //  lIntend: Boolean;
 begin
@@ -1861,10 +1888,17 @@ begin
 
   if aNode.Keyword {DataType} = gtkwType then begin
   //AddStr(aNode.TableName, gtlsTable);
-    AddStr(aNode.Name1, gtlsTable);
-    AddStr(gttkDot, False);
-  //AddStr(aNode.ColumnName, gtlsColumn, False);
-    AddStr(aNode.Name2, gtlsColumn, False);
+  //AddStr(aNode.Name1, gtlsTable);
+    lNode := aNode.Find(gtsiNone, gttkTableName);
+    if Assigned(lNode) then begin
+      AddStr(lNode.Name, gtlsTable);
+      AddStr(gttkDot, False);
+    //AddStr(aNode.ColumnName, gtlsColumn, False);
+    //AddStr(aNode.Name2, gtlsColumn, False);
+      lNode := lNode.Find(gtsiNone, gttkColumnName);
+      if Assigned(lNode) then AddStr(aNode.Name, gtlsColumn);
+    end;
+
     AddStr(gttkPercent, False);
     //AddStr(aNode.DataType, False);
     AddStr(gtkwType, False);
@@ -2181,10 +2215,10 @@ begin
     //if aNode.AliasAsToken then AddStr(gtkwAs);
     //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
     //AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
-      AddStr(aNode.KeywordExt);
+      AddStr(lNode.KeywordExt);
     //AddStr(aNode.AliasName, gtlsTableAlias);
     //AddStr(aNode.Name1, gtlsTableAlias);
-      AddStr(aNode.Name1, gtlsTableAlias);
+      AddStr(lNode.Name, gtlsTableAlias);
     end;
   end else begin
     { table name }
@@ -2195,13 +2229,15 @@ begin
     //       and (Length(aNode.AliasName) < MaxAliasNameToIntend);
 
     { table alias, +1 because of identifier extra space }
+    AddStrKeywordExtName(aNode.Find(gtsiNone, gtkwAs), gtlsTableAlias);
+
 //  if not lDoIntend then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aNode.AliasAsToken then AddStr(gtkwAs);
     //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
+    //AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aNode.AliasName, gtlsTableAlias);
-      AddStr(aNode.Name1, gtlsTableAlias);
+    //AddStr(aNode.Name1, gtlsTableAlias);
 //    end else begin
 //    //if Options[ gtstTableAsKeyword ] then begin
 //      if aNode.AliasAsToken then begin
@@ -3132,7 +3168,7 @@ procedure TGtSqlFormatLister.List_DML;
 var lIntend{, i, lQueryLines}: Integer;
     lSkipClauseNewLine{, lLongQuery}: Boolean;
     lKeywordStyle: TGtLexTokenStyle;
-    lItem: TGtSqlNode;
+    lItem, lNode: TGtSqlNode;
 begin
   if not Assigned(aQuery) then Exit;
   lIntend := NewLineIntend;
@@ -3216,9 +3252,9 @@ begin
   if aQuery.Check(gtsiDml, gtkwInsert) then  List_Fields     (aQuery.Find(gtssClauseFields),             aListerOpt);
   if aQuery.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aQuery.Find(gtsiClauseTables, gtkwUpdate), aListerOpt);
   if aQuery.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwSelect) and
-  // (aQuery.ObjectName <> '')         then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.ObjectName, gtlsTable);
-     (aQuery.Name1 <> '')              then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.Name1,      gtlsTable);
+//  if aQuery.Check(gtsiDml, gtkwSelect) and
+//  // (aQuery.ObjectName <> '')         then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.ObjectName, gtlsTable);
+//     (aQuery.Name1 <> '')              then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.Name1,      gtlsTable);
   if aQuery.Check(gtsiDml, gtkwInsert) then  List_Values     (aQuery.Find(gtsiExprList, gtkwValues), aListerOpt);
   if aQuery.Check(gtsiDml, gtkwUpdate) then  List_SetExprList(aQuery.Find(gtsiSetExprList, nil), aListerOpt);
 
@@ -3274,13 +3310,17 @@ begin
       AddRightBracket(aQuery.BracketsCount - 1);
 
   //if aQuery.AliasName <> '' then begin
-    if aQuery.Name1 <> '' then begin
+  //if aQuery.Name1 <> '' then begin
+    lNode := aQuery.Find(gtsiNone, gtkwAs);
+    if Assigned(lNode) then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aQuery.AliasAsToken then AddStr(gtkwAs);
     //if aQuery.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
-      AddStr(aQuery.KeywordAuxCheckKwd(gtkwAs));
+    //AddStr(aQuery.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aQuery.AliasName, gtlsTableAlias);
-      AddStr(aQuery.Name1, gtlsTableAlias);
+    //AddStr(aQuery.Name1, gtlsTableAlias);
+      AddStr(lNode.KeywordExt);
+      AddStr(lNode.Name, gtlsTableAlias);
     end;
 
     List(aQuery.Find(gtsiCondTree, gtkwOn), aListerOpt);

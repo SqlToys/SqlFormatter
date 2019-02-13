@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 307   19-01-11 20:12 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 308   19-01-13 12:35 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -151,8 +151,8 @@ type
 //  property        ColumnName           : String index 108 read GetValStr write SetValStr;
 //  property        KeepName             : String index 109 read GetValStr write SetValStr;
 
-    property        Name1                : String index 110 read GetValStr write SetValStr;
-    property        Name2                : String index 111 read GetValStr write SetValStr;
+//  property        Name1                : String index 110 read GetValStr write SetValStr;
+//  property        Name2                : String index 111 read GetValStr write SetValStr;
 //  property        Name3                : String index 112 read GetValStr write SetValStr;
 
 //    property        Negation             : Boolean index 201 read GetValBool write SetValBool;
@@ -853,7 +853,7 @@ end;
 
 {}
 function TGtSqlNode.OwnerTableNameOrAlias: String;
-var lOwner: TGtSqlNode;
+var lOwner, lAlias: TGtSqlNode;
 begin
   Result := '';
   lOwner := FindOwner(gtsiTableRef);
@@ -862,9 +862,11 @@ begin
 
 //if lOwner.AliasName <> ''
 //  then Result := lOwner.AliasName
-  if lOwner.Name1 <> ''
-    then Result := lOwner.Name1
-    else Result := lOwner.Name;
+//  if lOwner.Name1 <> ''
+//    then Result := lOwner.Name1
+//    else Result := lOwner.Name;
+  lAlias := lOwner.Find(gtsiNone, gtkwAs);
+  if Assigned(lAlias) then Result := lAlias.Name else Result := lOwner.Name;
 end;
 
 { sets FTokens property }
