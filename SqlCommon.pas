@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 36    19-01-10 19:05 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 37    19-01-13 13:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -314,7 +314,8 @@ var
   gtkwOption,         gtkwOr,             gtkwOrder,          gtkwOthers,
   gtkwOut,            gtkwOutput,         gtkwOuter,          gtkwOver,
   { ---- P ---- }
-  gtkwPartition,      gtkwPassword,       gtkwPragma,         gtkwPreserve,
+  gtkwPartition,      gtkwPassword,       gtkwPragma,
+  gtkwPrec,           gtkwPreserve,
   gtkwPrimary,
   gtkwPrint,          gtkwPrior,          gtkwProcedure,      gtkwPublic,
   gtkwPurge,
@@ -328,7 +329,7 @@ var
   gtkwRight,          gtkwRollback,       gtkwRow,            gtkwRows,
   { ---- S ---- }
   gtkwSave,           gtkwSavepoint,      gtkwSchema,         gtkwSelect,
-  gtkwSet,            gtkwSequence,       gtkwSign,           gtkwSingle,
+  gtkwSet,            gtkwSequence,       gtkwSign,           gtkwSingle,       gtkwSize,
   gtkwShrink,
   gtkwSmallint,       gtkwSome,           gtkwStart,          gtkwStop,
   gtkwStructure,      gtkwSynonym,        gtkwSpace,
@@ -840,6 +841,7 @@ begin
   gtkwPartition             := LexKeywordTokenDefs.AddToken( 'PARTITION',   '', gtttKeyword );
   gtkwPassword              := LexKeywordTokenDefs.AddToken( 'PASSWORD',    '', gtttKeyword );
   gtkwPragma                := LexKeywordTokenDefs.AddToken( 'PRAGMA',      '', gtttKeyword );
+  gtkwPrec                  := LexKeywordTokenDefs.AddToken( 'PREC',        '', gtttKeyword, gtlsDatatype );
   gtkwPreserve              := LexKeywordTokenDefs.AddToken( 'PRESERVE',    '', gtttKeyword );
   gtkwPrimary               := LexKeywordTokenDefs.AddToken( 'PRIMARY',     '', gtttKeyword );
   gtkwPrint                 := LexKeywordTokenDefs.AddToken( 'PRINT',       '', gtttKeyword );
@@ -877,6 +879,7 @@ begin
   gtkwShrink                := LexKeywordTokenDefs.AddToken( 'SHRINK',      '', gtttKeyword );
   gtkwSign                  := LexKeywordTokenDefs.AddToken( 'SIGN',        '', gtttKeyword );
   gtkwSingle                := LexKeywordTokenDefs.AddToken( 'SINGLE',      '', gtttKeyword, gtlsDatatype );
+  gtkwSize                  := LexKeywordTokenDefs.AddToken( 'SIZE',        '', gtttKeyword, gtlsDatatype );
   gtkwSmallint              := LexKeywordTokenDefs.AddToken( 'SMALLINT',    '', gtttKeyword, gtlsDatatype );
   gtkwSome                  := LexKeywordTokenDefs.AddToken( 'SOME',        '', gtttKeyword );
   gtkwSpace                 := LexKeywordTokenDefs.AddToken( 'SPACE',       '', gtttKeyword );

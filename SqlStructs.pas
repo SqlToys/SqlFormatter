@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 308   19-01-13 12:35 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 309   19-01-13 13:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -204,8 +204,8 @@ type
 //  property        ColPrec              : Integer index 305 read GetValInt  write SetValInt;
     property        BracketsCount        : Integer index 306 read GetValInt  write SetValInt;
 
-    property        Int1                 : Integer index 310 read GetValInt  write SetValInt;
-    property        Int2                 : Integer index 311 read GetValInt  write SetValInt;
+//  property        Int1                 : Integer index 310 read GetValInt  write SetValInt;
+//  property        Int2                 : Integer index 311 read GetValInt  write SetValInt;
   public // service methods
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;

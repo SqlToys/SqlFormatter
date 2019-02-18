@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 337   19-01-13 12:35 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 338   19-01-13 13:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1223,22 +1223,32 @@ end;
 
 { lists data type }
 procedure  TGtSqlFormatLister.List_DataType;
+var lNode: TGtSqlNode;
 begin
   AddStr(aNode.{DataType} Keyword);
 //if aNode.ColSize = gtsqlSizeOrPrecNotSpecified then Exit;
-  if aNode.Int1 = gtsqlSizeOrPrecNotSpecified then Exit;
+//if aNode.Int1 = gtsqlSizeOrPrecNotSpecified then Exit;
 
-  AddStr(gttkLeftBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
+  lNode := aNode.Find(gtsiNone, gtkwSize);
+  if Assigned(lNode) then begin
+    AddStr(gttkLeftBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
 
-//AddStr(IntToStr(aNode.ColSize), gtlsNumber, False);
-  AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
+  //AddStr(IntToStr(aNode.ColSize), gtlsNumber, False);
+  //AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
+    AddStr(lNode.Name, gtlsNumber, False);
 
-//if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
-//if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
-  if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddComma;
-  if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
+    lNode := lNode.Find(gtsiNone, gtkwPrec);
+    if Assigned(lNode) then begin
+    //if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
+    //if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
+    //if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddComma;
+    //if aNode.Int2 <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
+      AddComma;
+      AddStr(lNode.Name, gtlsNumber, False);
+    end;
 
-  AddStr(gttkRightBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
+    AddStr(gttkRightBracket, False{not Options[gtstSpaceInsideBracketsSkipDatatype]});
+  end;
 end;
 
 { lists expression }
@@ -1912,15 +1922,24 @@ begin
 //if aNode.Identity then begin
   if aNode.KeywordExt = gtkwIdentity then begin
     AddStr(gtkwIdentity);
+    lNode := aNode.Find(gtsiNone, gtkwSize);
 //  if aNode.ColIdentitySeed >0 then begin
-    if aNode.Int1 >0 then begin
+//  if aNode.Int1 >0 then begin
+    if Assigned(lNode) then begin
       AddStr(gttkLeftBracket);
     //AddStr(IntToStr(aNode.ColIdentitySeed), gtlsNumber, False);
-      AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
+    //AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
+      AddStr(lNode.Name, gtlsNumber, False);
     //if aNode.ColIdentityInc >0 then AddComma;
     //if aNode.ColIdentityInc >0 then AddStr(IntToStr(aNode.ColIdentityInc), gtlsNumber, False);
-      if aNode.Int2 >0 then AddComma;
-      if aNode.Int2 >0 then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
+
+      lNode := lNode.Find(gtsiNone, gtkwPrec);
+      if Assigned(lNode) then begin
+      //if aNode.Int2 >0 then AddComma;
+      //if aNode.Int2 >0 then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
+        AddComma;
+        AddStr(lNode.Name, gtlsNumber, False);
+      end;
       AddStr(gttkRightBracket);
     end;
   end;
