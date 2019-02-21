@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 309   19-01-13 13:17 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 310   19-01-13 15:22 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -69,7 +69,7 @@ type
   TGtSqlNode = class (TGtLexNode)
   private
     FKind: TGtSqlNodeKind;
-    FValues: TStringList;
+  //FValues: TStringList;
     FTokens: array [1..cSqlNodeTokenMax] of TGtLexToken{Def};
 
     function        GetOwner_SqlNode: TGtSqlNode; //virtual;
@@ -82,22 +82,22 @@ type
 
     function        OwnerOfAnotherKind(aKind: TGtSqlNodeKind): TGtSqlNode;
 
-    function        GetValStr (aIndex: Integer): String;
-    procedure       SetValStr (aIndex: Integer; aValue: String);
-    function        GetValBool(aIndex: Integer): Boolean;
-    procedure       SetValBool(aIndex: Integer; aValue: Boolean);
-    function        GetValInt (aIndex: Integer): Integer;
-    procedure       SetValInt (aIndex: Integer; aValue: Integer);
+  //function        GetValStr (aIndex: Integer): String;
+  //procedure       SetValStr (aIndex: Integer; aValue: String);
+  //function        GetValBool(aIndex: Integer): Boolean;
+  //procedure       SetValBool(aIndex: Integer; aValue: Boolean);
+  //function        GetValInt (aIndex: Integer): Integer;
+  //procedure       SetValInt (aIndex: Integer; aValue: Integer);
 
   //procedure       RemoveVal (aIndex: Integer);
   public
-    function        GetValName(aIndex: Integer): String;
-    function        GetNameIndex(aName: String): Integer;
-    procedure       SetValueByName(aName, aValue: String);
+  //function        GetValName(aIndex: Integer): String;
+  //function        GetNameIndex(aName: String): Integer;
+  //procedure       SetValueByName(aName, aValue: String);
   public // general SQL Item methods
     constructor     Create(aOwner: TGtItem); override;
     constructor     Create(aOwner: TGtItem; aKind: TGtSqlNodeKind; aName: String=''); overload; virtual;
-    destructor      Destroy; override;
+  //destructor      Destroy; override;
 
     function        NewNode(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def}=nil; aName: String=''): TGtSqlNode; virtual;
 
@@ -112,7 +112,7 @@ type
     property        Kind: TGtSqlNodeKind read FKind write SetSqlItemKind;
     property        Nodes[Index: Integer]: TGtSqlNode read GetNode; default;
 
-    property        Values: TStringList read FValues;
+  //property        Values: TStringList read FValues;
   public // function specific methods
 //  Nullable: TGtSqlNullableOption;
 
@@ -192,17 +192,17 @@ type
 //  property        JoinOuterKeyword     : Boolean index 234 read GetValBool write SetValBool;
 //  property        JoinInnerKeyword     : Boolean index 235 read GetValBool write SetValBool;
 
-    property        NewLineBefore        : Boolean index 236 read GetValBool write SetValBool;
+//  property        NewLineBefore        : Boolean index 236 read GetValBool write SetValBool;
 //  property        NewLineAfter         : Boolean index 237 read GetValBool write SetValBool;
-    property        EmptyLineBefore      : Boolean index 238 read GetValBool write SetValBool;
-    property        EmptyLineAfter       : Boolean index 239 read GetValBool write SetValBool;
+//  property        EmptyLineBefore      : Boolean index 238 read GetValBool write SetValBool;
+//  property        EmptyLineAfter       : Boolean index 239 read GetValBool write SetValBool;
 
 //  property        ColSize              : Integer index 301 read GetValInt  write SetValInt;
 //  property        ColIdentitySeed      : Integer index 302 read GetValInt  write SetValInt;
 //  property        ColIdentityInc       : Integer index 303 read GetValInt  write SetValInt;
 //  property        Top                  : Integer index 304 read GetValInt  write SetValInt;
 //  property        ColPrec              : Integer index 305 read GetValInt  write SetValInt;
-    property        BracketsCount        : Integer index 306 read GetValInt  write SetValInt;
+//  property        BracketsCount        : Integer index 306 read GetValInt  write SetValInt;
 
 //  property        Int1                 : Integer index 310 read GetValInt  write SetValInt;
 //  property        Int2                 : Integer index 311 read GetValInt  write SetValInt;
@@ -387,7 +387,7 @@ var i: Integer;
 begin
   inherited Create(aOwner);
 
-  FValues := nil;
+//FValues := nil;
 
   Inc(GtSqlNodeCount);
 
@@ -407,10 +407,10 @@ begin
 end;
 
 { class destructor }
-destructor TGtSqlNode.Destroy;
-begin
-  if Assigned(FValues) then FreeAndNil(FValues);
-end;
+//destructor TGtSqlNode.Destroy;
+//begin
+//  if Assigned(FValues) then FreeAndNil(FValues);
+//end;
 
 { creates new node }
 function TGtSqlNode.NewNode;
@@ -436,67 +436,67 @@ begin
 end;
 
 { gets property value }
-function  TGtSqlNode.GetValStr(aIndex: Integer): String;
-begin
-  Result := '';
-  if Assigned(FValues) then Result := FValues.Values[ IntToStr(aIndex) ];
-//if Assigned(FValues) then Result := FValues.Values[ GetValName(aIndex) ];
-
-  if aIndex > 500 then Result := Owner.GetValStr(aIndex);
-end;
+//function  TGtSqlNode.GetValStr(aIndex: Integer): String;
+//begin
+//  Result := '';
+//  if Assigned(FValues) then Result := FValues.Values[ IntToStr(aIndex) ];
+////if Assigned(FValues) then Result := FValues.Values[ GetValName(aIndex) ];
+//
+//  if aIndex > 500 then Result := Owner.GetValStr(aIndex);
+//end;
 
 { sets property value }
-procedure TGtSqlNode.SetValStr(aIndex: Integer; aValue: String);
-begin
-  if aValue = '' then begin
-    if not Assigned(FValues) then Exit;
-//  if FValues.IndexOfName( IntToStr(aIndex) ) = -1 then Exit;
-//  if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
-  end;
-
-  if not Assigned(FValues) then FValues := TStringList.Create(True);
-
-  FValues.Values[ IntToStr(aIndex) ] := aValue;
-//FValues.Values[ GetValName(aIndex) ] := aValue;
-end;
+//procedure TGtSqlNode.SetValStr(aIndex: Integer; aValue: String);
+//begin
+//  if aValue = '' then begin
+//    if not Assigned(FValues) then Exit;
+////  if FValues.IndexOfName( IntToStr(aIndex) ) = -1 then Exit;
+////  if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
+//  end;
+//
+//  if not Assigned(FValues) then FValues := TStringList.Create(True);
+//
+//  FValues.Values[ IntToStr(aIndex) ] := aValue;
+////FValues.Values[ GetValName(aIndex) ] := aValue;
+//end;
 
 { gets boolean property value }
-function  TGtSqlNode.GetValBool (aIndex: Integer): Boolean;
-begin
-  Result := GetValStr(aIndex) = '1';
-end;
+//function  TGtSqlNode.GetValBool (aIndex: Integer): Boolean;
+//begin
+//  Result := GetValStr(aIndex) = '1';
+//end;
 
 { sets boolean property value }
-procedure TGtSqlNode.SetValBool (aIndex: Integer; aValue: Boolean);
-begin
-//  if aValue = False then begin
-//    if not Assigned(FValues) then Exit;
-//    if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
-//  end;
-
-  if aValue then SetValStr(aIndex, '1') else SetValStr(aIndex, '');
-end;
+//procedure TGtSqlNode.SetValBool (aIndex: Integer; aValue: Boolean);
+//begin
+////  if aValue = False then begin
+////    if not Assigned(FValues) then Exit;
+////    if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
+////  end;
+//
+//  if aValue then SetValStr(aIndex, '1') else SetValStr(aIndex, '');
+//end;
 
 { gets int property value }
-function  TGtSqlNode.GetValInt (aIndex: Integer): Integer;
-begin
-  try
-    Result := StrToInt( GetValStr(aIndex) );
-  except
-    Result := 0;
-  end;
-end;
+//function  TGtSqlNode.GetValInt (aIndex: Integer): Integer;
+//begin
+//  try
+//    Result := StrToInt( GetValStr(aIndex) );
+//  except
+//    Result := 0;
+//  end;
+//end;
 
 { sets int property value }
-procedure TGtSqlNode.SetValInt (aIndex: Integer; aValue: Integer);
-begin
-//  if aValue = 0 then begin
-//    if not Assigned(FValues) then Exit;
-//    if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
-//  end;
-
-  if aValue = 0 then SetValStr(aIndex, '') else SetValStr(aIndex, IntToStr(aValue));
-end;
+//procedure TGtSqlNode.SetValInt (aIndex: Integer; aValue: Integer);
+//begin
+////  if aValue = 0 then begin
+////    if not Assigned(FValues) then Exit;
+////    if FValues.IndexOfName( GetValName(aIndex) ) = -1 then Exit;
+////  end;
+//
+//  if aValue = 0 then SetValStr(aIndex, '') else SetValStr(aIndex, IntToStr(aValue));
+//end;
 
 { removes value from list }
 //procedure TGtSqlNode.RemoveVal (aIndex: Integer);
@@ -513,131 +513,131 @@ end;
 //end;
 
 { returns property name }
-function TGtSqlNode.GetValName(aIndex: Integer): String;
-begin
-  case aIndex of
-//    1: Result := 'LogicOp';
-//    2: Result := 'ExprOp';
-//    3: Result := 'CompOp';
-//    4: Result := 'JoinOp';
-//    5: Result := 'DataType';
-//    6: Result := 'OnDelete';
-//    7: Result := 'OnUpdate';
-//    8: Result := 'SortOrder';
-    9: Result := 'Keyword';
-   11: Result := 'KeywordExt';
-   12: Result := 'KeywordAux1';
-   13: Result := 'KeywordAux2';
-   14: Result := 'KeywordAux3';
-   15: Result := 'KeywordAux4';
-   16: Result := 'KeywordAux5';
-
-//    101: Result := 'OldName';
-//    102: Result := 'NewName';
-//    103: Result := 'AliasName';
-//    104: Result := 'CollateName';
-//    105: Result := 'CondEscape';
-//    106: Result := 'ObjectName';
-//    107: Result := 'TableName';
-//    108: Result := 'ColumnName';
-//    109: Result := 'KeepName';
-
-    110: Result := 'Name1';
-    111: Result := 'Name2';
-    112: Result := 'Name3';
-
-//    201: Result := 'Negation';
-//    202: Result := 'Unique';
-//    203: Result := 'OrReplace';
-//    204: Result := 'Public';
-//    205: Result := 'Global';
-//    206: Result := 'Temporary';
-//    207: Result := 'Identity';
-//    208: Result := 'Distinct';
-//    209: Result := 'NoWait';
-//    210: Result := 'Materialized';
-//    211: Result := 'NoCycle';
-////  212: Result := 'OuterMark1';
-////  213: Result := 'OuterMark2';
-//    214: Result := 'ExprMinus';
-//    215: Result := 'ExprReverseOp';
-//    216: Result := 'ExprReverseOp2';
-//    217: Result := 'ExprPrior';
-//    218: Result := 'Enable';
-//    219: Result := 'Disable';
-//    220: Result := 'Cascade';
-//    221: Result := 'NullsFirst';
-//    222: Result := 'NullsLast';
-//    223: Result := 'Purge';
-//    224: Result := 'OnDemand';
-//    225: Result := 'Force';
-//    226: Result := 'OnCommitPreserveRows';
-//    227: Result := 'OnCommitDeleteRows';
-//    228: Result := 'Semicolon';
-//    229: Result := 'OuterMark1Oracle';
-//    230: Result := 'OuterMark1MSSQL';
-//    231: Result := 'OuterMark2Oracle';
-//    232: Result := 'OuterMark2MSSQL';
-//    233: Result := 'AliasAsToken';
-//    234: Result := 'JoinOuterKeyword';
-//    235: Result := 'JoinInnerKeyword';
-
-    236: Result := 'NewLineBefore';
-//    237: Result := 'NewLineAfter';
-    238: Result := 'EmptyLineBefore';
-    239: Result := 'EmptyLineAfter';
-
-//    301: Result := 'ColSize';
-//    302: Result := 'ColIdentitySeed';
-//    303: Result := 'ColIdentityInc';
-//    304: Result := 'Top';
-//    305: Result := 'ColPrec';
-    306: Result := 'BracketsCount';
-    310: Result := 'Int1';
-    311: Result := 'Int2';
-  end;
-end;
+//function TGtSqlNode.GetValName(aIndex: Integer): String;
+//begin
+//  case aIndex of
+////    1: Result := 'LogicOp';
+////    2: Result := 'ExprOp';
+////    3: Result := 'CompOp';
+////    4: Result := 'JoinOp';
+////    5: Result := 'DataType';
+////    6: Result := 'OnDelete';
+////    7: Result := 'OnUpdate';
+////    8: Result := 'SortOrder';
+//    9: Result := 'Keyword';
+//   11: Result := 'KeywordExt';
+//   12: Result := 'KeywordAux1';
+//   13: Result := 'KeywordAux2';
+//   14: Result := 'KeywordAux3';
+//   15: Result := 'KeywordAux4';
+//   16: Result := 'KeywordAux5';
+//
+////    101: Result := 'OldName';
+////    102: Result := 'NewName';
+////    103: Result := 'AliasName';
+////    104: Result := 'CollateName';
+////    105: Result := 'CondEscape';
+////    106: Result := 'ObjectName';
+////    107: Result := 'TableName';
+////    108: Result := 'ColumnName';
+////    109: Result := 'KeepName';
+//
+//    110: Result := 'Name1';
+//    111: Result := 'Name2';
+//    112: Result := 'Name3';
+//
+////    201: Result := 'Negation';
+////    202: Result := 'Unique';
+////    203: Result := 'OrReplace';
+////    204: Result := 'Public';
+////    205: Result := 'Global';
+////    206: Result := 'Temporary';
+////    207: Result := 'Identity';
+////    208: Result := 'Distinct';
+////    209: Result := 'NoWait';
+////    210: Result := 'Materialized';
+////    211: Result := 'NoCycle';
+//////  212: Result := 'OuterMark1';
+//////  213: Result := 'OuterMark2';
+////    214: Result := 'ExprMinus';
+////    215: Result := 'ExprReverseOp';
+////    216: Result := 'ExprReverseOp2';
+////    217: Result := 'ExprPrior';
+////    218: Result := 'Enable';
+////    219: Result := 'Disable';
+////    220: Result := 'Cascade';
+////    221: Result := 'NullsFirst';
+////    222: Result := 'NullsLast';
+////    223: Result := 'Purge';
+////    224: Result := 'OnDemand';
+////    225: Result := 'Force';
+////    226: Result := 'OnCommitPreserveRows';
+////    227: Result := 'OnCommitDeleteRows';
+////    228: Result := 'Semicolon';
+////    229: Result := 'OuterMark1Oracle';
+////    230: Result := 'OuterMark1MSSQL';
+////    231: Result := 'OuterMark2Oracle';
+////    232: Result := 'OuterMark2MSSQL';
+////    233: Result := 'AliasAsToken';
+////    234: Result := 'JoinOuterKeyword';
+////    235: Result := 'JoinInnerKeyword';
+//
+//    236: Result := 'NewLineBefore';
+////    237: Result := 'NewLineAfter';
+//    238: Result := 'EmptyLineBefore';
+//    239: Result := 'EmptyLineAfter';
+//
+////    301: Result := 'ColSize';
+////    302: Result := 'ColIdentitySeed';
+////    303: Result := 'ColIdentityInc';
+////    304: Result := 'Top';
+////    305: Result := 'ColPrec';
+//    306: Result := 'BracketsCount';
+//    310: Result := 'Int1';
+//    311: Result := 'Int2';
+//  end;
+//end;
 
 { returns value name as its index }
-function TGtSqlNode.GetNameIndex(aName: String): Integer;
-var i: Integer;
-begin
-  i:= 1;
-  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
-  if aName = GetValName(i) then begin
-    Result := i;
-    Exit;
-  end;
-
-  i:= 101;
-  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
-  if aName = GetValName(i) then begin
-    Result := i;
-    Exit;
-  end;
-
-  i:= 201;
-  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
-  if aName = GetValName(i) then begin
-    Result := i;
-    Exit;
-  end;
-
-  i:= 301;
-  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
-  if aName = GetValName(i) then begin
-    Result := i;
-    Exit;
-  end;
-
-  Result := 0;
-end;
+//function TGtSqlNode.GetNameIndex(aName: String): Integer;
+//var i: Integer;
+//begin
+//  i:= 1;
+//  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
+//  if aName = GetValName(i) then begin
+//    Result := i;
+//    Exit;
+//  end;
+//
+//  i:= 101;
+//  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
+//  if aName = GetValName(i) then begin
+//    Result := i;
+//    Exit;
+//  end;
+//
+//  i:= 201;
+//  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
+//  if aName = GetValName(i) then begin
+//    Result := i;
+//    Exit;
+//  end;
+//
+//  i:= 301;
+//  while (GetValName(i) <> '') and (GetValName(i) <> aName) do Inc(i);
+//  if aName = GetValName(i) then begin
+//    Result := i;
+//    Exit;
+//  end;
+//
+//  Result := 0;
+//end;
 
 { sets node value }
-procedure TGtSqlNode.SetValueByName(aName, aValue: String);
-begin
-  SetValStr( GetNameIndex( aName ), aValue );
-end;
+//procedure TGtSqlNode.SetValueByName(aName, aValue: String);
+//begin
+//  SetValStr( GetNameIndex( aName ), aValue );
+//end;
 
 { sets item kind }
 procedure TGtSqlNode.SetSqlItemKind;

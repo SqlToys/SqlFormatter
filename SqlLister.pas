@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 338   19-01-13 13:17 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 339   19-01-13 15:22 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -172,8 +172,13 @@ type
     procedure  AddComma; virtual;
     procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
 
-    procedure  AddLeftBracket(aCount: Integer=1);
-    procedure  AddRightBracket(aCount: Integer=1);
+    procedure  AddLeftBracket(aCount: Integer=1); overload;
+    procedure  AddRightBracket(aCount: Integer=1); overload;
+
+    procedure  AddLeftBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
+    procedure  AddRightBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
+
+    procedure  AddNewLine(aNode: TGtSqlNode; aToken: TGtLexToken);
 
     function   ClauseAppendCondition: Boolean;
   public
@@ -1091,6 +1096,52 @@ begin
   for i := 1 to aCount do AddStr(gttkRightBracket);
 end;
 
+{ adds left bracket }
+procedure TGtSqlFormatLister.AddLeftBracket(aNode: TGtSqlNode; aOneLess: Boolean = False);
+var lNode: TGtSqlNode;
+    lcnt: Integer;
+begin
+  if not Assigned(aNode) then Exit;
+
+  lNode := aNode.Find(gtsiNone, gttkLeftBracket);
+  if not Assigned(lNode) then Exit;
+
+//if lNode.Name = '' then AddLeftBracket else AddLeftBracket(StrToInt(lNode.Name));
+
+  lcnt := 1;
+  if lNode.Name <> '' then lcnt := StrToInt(lNode.Name);
+  if aOneLess then lcnt := lcnt - 1;
+
+  AddLeftBracket(lcnt);
+end;
+
+{ adds right bracket }
+procedure TGtSqlFormatLister.AddRightBracket(aNode: TGtSqlNode; aOneLess: Boolean = False);
+var lNode: TGtSqlNode;
+    lcnt: Integer;
+begin
+  if not Assigned(aNode) then Exit;
+
+  lNode := aNode.Find(gtsiNone, gttkLeftBracket);
+  if not Assigned(lNode) then Exit;
+
+//if lNode.Name = '' then AddRightBracket else AddRightBracket(StrToInt(lNode.Name));
+
+  lcnt := 1;
+  if lNode.Name <> '' then lcnt := StrToInt(lNode.Name);
+  if aOneLess then lcnt := lcnt - 1;
+
+  AddRightBracket(lcnt);
+end;
+
+{ adds NewLine when NewLineBefore node is found }
+procedure TGtSqlFormatLister.AddNewLine(aNode: TGtSqlNode; aToken: TGtLexToken);
+begin
+  if not Assigned(aNode) then Exit;
+//if Assigned(aNode.Find(gtsiNone, aToken)) then AddClause;
+  if aNode.KeywordAuxCheck(gttkNewLineBefore) then AddClause;
+end;
+
 { checks if clause should appends to prev token }
 function TGtSqlFormatLister.ClauseAppendCondition;
 begin
@@ -1278,11 +1329,13 @@ begin
     Exit;
   end;
 
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   if aNode.Check(gtsiExpr, gttkColumnName) or aNode.Check(gtsiExpr, gttkStar) then begin
     List_ExprColumn(aNode, aListerOpt);
-    AddRightBracket(aNode.BracketsCount);
+  //AddRightBracket(aNode.BracketsCount);
+    AddRightBracket(aNode);
     Exit;
   end;
 
@@ -1332,7 +1385,8 @@ begin
     List(aNode.Find(gtsiExprTree), aListerOpt);
   end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 
   { wrong ON COND intend.sql, breakpoint condition: gtloOnRightSideIntend in aListerOpt }
 //  if (gtloOnLeftSideIntend in aListerOpt) and (Length(s) < ML_LeftOnExprPrefix + ML_LeftOnExprColumn + 1) // +1 due to dot
@@ -1352,7 +1406,8 @@ begin
 //aListerOpt := aListerOpt + [ gtloSkipOneExprOnLine {, gtloSkipSubCaseFormat, gtloSkipOneCondOnLine} ];
 
 //if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-  if aNode.NewLineBefore then AddClause;
+//if aNode.NewLineBefore then AddClause;
+  AddNewLine(aNode, gttkNewLineBefore);
   AddStr(gtkwCase);
 
   { [expression] }
@@ -1367,12 +1422,14 @@ begin
 
       if Assigned(lCaseExpr) then begin
         lNode := aNode[i].Find(gtsiExprTree, gtkwWhen);
-        if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+      //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+        AddNewLine(aNode, gttkNewLineBefore);
         AddStr(gtkwWhen);
         List_ExprTree(lNode, aListerOpt);
       end else begin
         lNode := aNode[i].Find(gtsiCondTree, gtkwWhen);
-        if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+      //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+        AddNewLine(lNode, gttkNewLineBefore);
         AddStr(gtkwWhen);
         List_CondTree(lNode, aListerOpt);
       end;
@@ -1381,7 +1438,8 @@ begin
 //    AddStr(gtkwThen);
 
       lNode := aNode[i].Find(gtsiExprTree, gtkwThen);
-      if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+    //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
+      AddNewLine(lNode, gttkNewLineBefore);
       AddStr(gtkwThen);
       List_ExprTree(lNode, aListerOpt);
     end;
@@ -1390,14 +1448,18 @@ begin
   lElseExpr := aNode.Find(gtsiExprTree, gtkwElse);
   if Assigned(lElseExpr) then begin
   //if Options[ gtstCaseElseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-    if lElseExpr.NewLineBefore then AddClause;
+  //if lElseExpr.NewLineBefore then AddClause;
+    AddNewLine(lElseExpr, gttkNewLineBefore);
     AddStr(gtkwElse);
     List_ExprTree(lElseExpr, aListerOpt);
   end;
 
 //if Options[ gtstCaseEndAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
-  if Assigned(lNode) and lNode.NewLineBefore or
-     Assigned(lElseExpr) and lElseExpr.NewLineBefore then AddClause;
+//if Assigned(lNode) and lNode.NewLineBefore or
+//   Assigned(lElseExpr) and lElseExpr.NewLineBefore then AddClause;
+  AddNewLine(lNode, gttkNewLineBefore);
+  AddNewLine(lElseExpr, gttkNewLineBefore);
+
   AddStr(gtkwEnd);
 end;
 
@@ -1564,7 +1626,8 @@ var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   lFirst := True;
   for i := 0 to aNode.Count - 1 do
@@ -1577,7 +1640,8 @@ begin
       lFirst := False;
     end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 end;
 
 { lists expression tree }
@@ -1587,7 +1651,8 @@ var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   { list sub-expressions }
   for i := 0 to aNode.Count - 1 do
@@ -1611,7 +1676,8 @@ begin
         else List(aNode[i], aListerOpt); // - [{gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
     end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 
   { adds alias }
   { WARN: SkipOutput was prepared to check max expressions length }
@@ -1745,7 +1811,8 @@ begin
 
 //if aNode.Negation then AddStr(gtkwNot);
   AddStr(aNode.KeywordAuxCheckKwd(gtkwNot));
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   if (aNode.Keyword {Operand} = gtkwExists) or (aNode.Keyword {Operand} = gtkwNot_Exists) then begin
     AddStr(aNode.Keyword {Operand});
@@ -1831,7 +1898,8 @@ begin
     AddStrKeywordName( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
   end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 end;
 
 { lists condition tree }
@@ -1845,7 +1913,8 @@ begin
 //if aNode.Negation then AddStr(gtkwNot);
   if aNode.KeywordExt = gtkwNoCycle then AddStr(aNode.KeywordExt);
   AddStr(aNode.KeywordAuxCheckKwd(gtkwNot));
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   b := False;
   for i := 0 to aNode.Count - 1 do
@@ -1871,7 +1940,8 @@ begin
       b := True;
     end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 end;
 
 { lists column }
@@ -1973,7 +2043,8 @@ begin
   for i := 0 to aNode.Count - 1 do begin
     if (aNode[i].Kind = gtsiConstraint) then begin
     //if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
-      if aNode[i].NewLineBefore then AddClause;
+    //if aNode[i].NewLineBefore then AddClause;
+      AddNewLine(aNode[i], gttkNewLineBefore);
       List_Constraint(aNode[i], aListerOpt + [gtloSingleColumn]);
 //    if aNode[i].NewLineAfter then AddCurrLine;
     end;
@@ -2408,8 +2479,9 @@ begin
       //if not Options[ gtstColumnConstraint ] or not aNode[j].SingleColumnConstraint then begin
 //      if (cnt2 = 0) and Options [ gtstCreateTable_EmptyLineBefComplexConstr ]
 //          then AddCurrLine;
-        if (cnt2 = 0) and aNode[j].EmptyLineBefore
-            then AddEmptyLine;
+      //if (cnt2 = 0) and aNode[j].EmptyLineBefore
+      //    then AddEmptyLine;
+        if (cnt2 = 0) then AddNewLine(aNode[j], gttkEmptyLineBefore);
 
         if cnt > 0 then begin
 //          if Options[ gtstCommaAtNewLine ] then begin
@@ -2496,7 +2568,8 @@ begin
 
   if not (gtloSameAsPrevClause in aListerOpt) then AddClause(aNode.Keyword);
 
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   lFirst := True;
   for i := 0 to aNode.Count - 1 do
@@ -2506,7 +2579,8 @@ begin
       lFirst := False;
     end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 end;
 
 { lists DROP COLUMN clause }
@@ -2530,7 +2604,8 @@ begin
 
   if not (gtloSameAsPrevClause in aListerOpt) then AddClause(aNode.Keyword);
 
-  AddLeftBracket(aNode.BracketsCount);
+//AddLeftBracket(aNode.BracketsCount);
+  AddLeftBracket(aNode);
 
   lFirst := True;
   for i := 0 to aNode.Count - 1 do
@@ -2540,7 +2615,8 @@ begin
       lFirst := False;
     end;
 
-  AddRightBracket(aNode.BracketsCount);
+//AddRightBracket(aNode.BracketsCount);
+  AddRightBracket(aNode);
 end;
 
 { lists ADD CONSTRAINT clause }
@@ -2903,7 +2979,8 @@ procedure TGtSqlFormatLister.List_Clause_Expr;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+//if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
 
   AddClause(aClauseToken, aClauseAppend);
 
@@ -2915,7 +2992,8 @@ procedure TGtSqlFormatLister.List_Clause_Cond;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+//if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
 
   AddClause(aClauseToken, aClauseAppend);
 
@@ -2978,10 +3056,11 @@ begin
 
   { add new line before clause }
 //if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and
-  if aNode.EmptyLineBefore and not SkipClauseNewLine //and
+//if aNode.EmptyLineBefore and not SkipClauseNewLine //and
 //   ((SubQueryLevel = 0) or
 //    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
 //     aNode.GetQuery.Owner.Check(gtsiDml, gtkwInsert)
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine //and
     then AddEmptyLine;
 
   AddClause(gtkwSelect, ClauseAppendCondition);
@@ -3051,7 +3130,8 @@ begin
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
 //if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
-  if aNode.EmptyLineBefore then AddCurrLine;
+//if aNode.EmptyLineBefore then AddCurrLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddCurrLine;
 
   lSkipClauseNewLine := SkipClauseNewLine;
   SkipClauseNewLine := True;
@@ -3070,7 +3150,8 @@ begin
   if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
 //if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
-  if aNode.EmptyLineAfter then AddCurrLine;
+//if aNode.EmptyLineAfter then AddCurrLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineAfter) then AddCurrLine;
 
   FirstClause := True;
 
@@ -3128,7 +3209,8 @@ var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+//if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
 
 //lMaxTableName         := ML_TableName;
 //lMaxAliasName         := ML_AliasName;
@@ -3213,7 +3295,8 @@ begin
                  ClauseAppendCondition,
                  aQuery.Owner.Check(gtsiExprTree) or aQuery.Owner.Check(gtsiCond) or aQuery.Owner.Check(gtsiCondTree));
 
-      AddLeftBracket(aQuery.BracketsCount - 1);
+    //AddLeftBracket(aQuery.BracketsCount - 1);
+      AddLeftBracket(aQuery, True);
     end;
 
     { subquery at new line when in FROM/JOIN, IN condition, SELECT expr }
@@ -3326,7 +3409,8 @@ begin
 
       AddClause(nil, gttkRightBracket, ClauseAppendCondition);
 
-      AddRightBracket(aQuery.BracketsCount - 1);
+    //AddRightBracket(aQuery.BracketsCount - 1);
+      AddRightBracket(aQuery, True);
 
   //if aQuery.AliasName <> '' then begin
   //if aQuery.Name1 <> '' then begin

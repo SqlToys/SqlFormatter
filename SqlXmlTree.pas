@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 14    19-01-10 19:05 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 15    19-01-13 15:22 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -92,9 +92,9 @@ var lSL: TStringList;
       if Assigned(aNode.KeywordAux4) and (aNode.KeywordAux4 <> gttkNone) then s := s + ' KeywordAux4="' + XmlQuote(aNode.KeywordAux4.TokenText)+ '"';
       if Assigned(aNode.KeywordAux5) and (aNode.KeywordAux5 <> gttkNone) then s := s + ' KeywordAux5="' + XmlQuote(aNode.KeywordAux5.TokenText)+ '"';
 
-      if Assigned(aNode.Values) then
-        for i := 0 to aNode.Values.Count -1 do
-          s := s + ' ' + aNode.GetValName( StrToInt(aNode.Values.Names[i]) ) + '="' + XmlQuote(aNode.Values.ValueFromIndex[i]) + '"';
+//      if Assigned(aNode.Values) then
+//        for i := 0 to aNode.Values.Count -1 do
+//          s := s + ' ' + aNode.GetValName( StrToInt(aNode.Values.Names[i]) ) + '="' + XmlQuote(aNode.Values.ValueFromIndex[i]) + '"';
 
 //      if (not aFullList) and (aNode.Count = 1) and (s = '') and (aNode.Kind in [gtsiExprTree, gtsiCondTree]) then begin
 //        NodeToXml(aNode[0]);
