@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 310   19-01-13 15:22 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 311   19-01-13 20:39 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -27,9 +27,9 @@ function  JoinOperatorToToken( jo: TGtLexToken{Def}; InnerPreff: Boolean = False
 {-------------------------------- Options Types -------------------------------}
 
 type
-  TGtSqlBracketOption     = ( gtopInsideBrackets,  gtopNotInsideBrackets     );
-  TGtSqlNegationOption    = ( gtopNegation,        gtopNotNegation           );
-  TGtSqlNullableOption    = ( gtopNullNotSpecified,gtopNull, gtopNotNull     );
+//TGtSqlBracketOption     = ( gtopInsideBrackets,  gtopNotInsideBrackets     );
+//TGtSqlNegationOption    = ( gtopNegation,        gtopNotNegation           );
+//TGtSqlNullableOption    = ( gtopNullNotSpecified,gtopNull, gtopNotNull     );
 
 {---------------------------------- SQL Item ----------------------------------}
 
@@ -72,15 +72,15 @@ type
   //FValues: TStringList;
     FTokens: array [1..cSqlNodeTokenMax] of TGtLexToken{Def};
 
-    function        GetOwner_SqlNode: TGtSqlNode; //virtual;
-    procedure       SetOwner_SqlNode(aOwner: TGtSqlNode); //virtual;
+    function        GetNodeOwner: TGtSqlNode; //virtual;
+    procedure       SetNodeOwner(aOwner: TGtSqlNode); //virtual;
 
-    procedure       SetSqlItemKind   (aKind: TGtSqlNodeKind);
+  //procedure       SetKind   (aKind: TGtSqlNodeKind);
     function        FindByKind(aKind: TGtSqlNodeKind; aNode: TGtSqlNode=nil): TGtSqlNode;
 
     procedure       SetFTokens(aIndex: Integer; aToken: TGtLexToken{Def}); //virtual;
 
-    function        OwnerOfAnotherKind(aKind: TGtSqlNodeKind): TGtSqlNode;
+  //function        OwnerOfAKind(aKind: TGtSqlNodeKind): TGtSqlNode;
 
   //function        GetValStr (aIndex: Integer): String;
   //procedure       SetValStr (aIndex: Integer; aValue: String);
@@ -107,9 +107,9 @@ type
     function        Find     (aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String=''; aNode: TGtSqlNode=nil): TGtSqlNode;
     function        FindOwner(aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String=''): TGtSqlNode;
 
-    property        Owner: TGtSqlNode read GetOwner_SqlNode write SetOwner_SqlNode;
+    property        Owner: TGtSqlNode read GetNodeOwner  write SetNodeOwner;
 
-    property        Kind: TGtSqlNodeKind read FKind write SetSqlItemKind;
+    property        Kind: TGtSqlNodeKind read FKind write FKind;
     property        Nodes[Index: Integer]: TGtSqlNode read GetNode; default;
 
   //property        Values: TStringList read FValues;
@@ -210,13 +210,13 @@ type
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;
     function        IsSubQuery: Boolean;
-    function        IsShortQuery: Boolean;
+  //function        IsShortQuery: Boolean;
     function        IsClauseKeyword: Boolean;
     function        GetExtQuery: TGtSqlNode;
-    function        TablesCount: Integer;
+  //function        TablesCount: Integer;
 
     function        ExprTreeOwner: TGtSqlNode;
-    function        ConditionsCount: Integer;
+  //function        ConditionsCount: Integer;
 
     procedure       KeywordAuxAdd     (aKeywordAux: TGtLexToken);
     procedure       KeywordAuxRemove  (aKeywordAux: TGtLexToken);
@@ -234,14 +234,14 @@ type
     function        OwnerTableNameOrAlias: String;
 
     function        ExprHasReferenceTo(aColPrefix: String): Boolean;
-    function        CondHasReferenceTo(aColPrefix: String): Boolean;
-    procedure       OnCondMoveRefsFirst(aColPrefix: String);
+  //function        CondHasReferenceTo(aColPrefix: String): Boolean;
+  //procedure       OnCondMoveRefsFirst(aColPrefix: String);
 
-    procedure       CalcConditionArgsLen(var ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
-                                             ML_RightOnExprPrefix, ML_RightOnExprColumn: Integer);
-    procedure       CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
-                                    aLinesLimit: Integer; aSeparateLines: Boolean;
-                                    var aLongQuery: Boolean; var aQueryLines: Integer); overload;
+//    procedure       CalcConditionArgsLen(var ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
+//                                             ML_RightOnExprPrefix, ML_RightOnExprColumn: Integer);
+//    procedure       CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
+//                                    aLinesLimit: Integer; aSeparateLines: Boolean;
+//                                    var aLongQuery: Boolean; var aQueryLines: Integer); overload;
 
     procedure       ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = False;
                               aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken{Def}=nil; aName: String='' ); overload;
@@ -391,7 +391,8 @@ begin
 
   Inc(GtSqlNodeCount);
 
-  SetSqlItemKind( gtsiNone );
+//SetKind( gtsiNone );
+  Kind := gtsiNone;
 
 //Nullable := gtopNullNotSpecified; //True; // TODO: database default value ??
 
@@ -403,7 +404,8 @@ constructor TGtSqlNode.Create(aOwner: TGtItem; aKind: TGtSqlNodeKind; aName: Str
 begin
   inherited Create(aOwner, aName);
 
-  SetSqlItemKind( aKind );
+//SetKind( aKind );
+  Kind := aKind;
 end;
 
 { class destructor }
@@ -417,12 +419,12 @@ function TGtSqlNode.NewNode;
 begin
   Result := TGtSqlNode.Create(Self, aName);
 
-  Result.SetSqlItemKind( aKind );
+  Result.Kind := aKind ;
   Result.Keyword := aKeyword;
 end;
 
 { gets owner of sql item }
-function  TGtSqlNode.GetOwner_SqlNode: TGtSqlNode;
+function  TGtSqlNode.GetNodeOwner: TGtSqlNode;
 begin
   if inherited Owner is TGtSqlNode
     then Result := inherited Owner as TGtSqlNode
@@ -430,7 +432,7 @@ begin
 end;
 
 { sets new owner for sql item }
-procedure TGtSqlNode.SetOwner_SqlNode(aOwner: TGtSqlNode);
+procedure TGtSqlNode.SetNodeOwner(aOwner: TGtSqlNode);
 begin
   SetOwner(aOwner);
 end;
@@ -640,10 +642,10 @@ end;
 //end;
 
 { sets item kind }
-procedure TGtSqlNode.SetSqlItemKind;
-begin
-  FKind := aKind;
-end;
+//procedure TGtSqlNode.SetKind;
+//begin
+//  FKind := aKind;
+//end;
 
 { gets item }
 function TGtSqlNode.GetNode;
@@ -751,42 +753,42 @@ begin
 end;
 
 { returns true if this query is a short query }
-function TGtSqlNode.IsShortQuery: Boolean;
-begin
-  Result := False; // True; // TEST ONLY !!!
-
-  if not Check(gtsiDml) then begin
-    if Assigned(Owner) then Result := Owner.IsShortQuery;
-    Exit;
-  end;
-
-//    lQueryLines := 0;
-
-//  if Check(gtsiDml, gtkwSelect) then CalcClauseLines(gtsiExprList, gtkwSelect,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtssClauseFields, nil {?},      10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect)   then  aQuery.CalcClauseLines(gtsiExprList, gtkwInto,       10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtsiExprList, gtkwValues,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwUpdate) then  aQuery.CalcClauseLines(gtsiSetExprList, nil, 10, True {???},                   lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwDelete) or aQuery.Check(gtsiDml, gtkwUpdate) then  begin
-//      aQuery.CalcClauseLines(gtsiClauseTables, gtkwFrom, 6, True {???}, lLongQuery, lQueryLines);
-//      lItem := aQuery.Find(gtsiClauseTables, gtkwFrom);
-//      if Assigned(lItem) then
-//        for i := 0 to lItem.Count - 1 do
-//          lItem[i].CalcClauseLines(gtsiCondTree, gtkwOn, 6, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-//    end;
-//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwWhere,              10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwConnect_By,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwStart_With,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwGroup_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-//       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwHaving,             10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
-//    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwOrder_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+//function TGtSqlNode.IsShortQuery: Boolean;
+//begin
+//  Result := False; // True; // TEST ONLY !!!
 //
-//    lLongQuery := lLongQuery or (lQueryLines > MaxShortQueryLines);
-end;
+//  if not Check(gtsiDml) then begin
+//    if Assigned(Owner) then Result := Owner.IsShortQuery;
+//    Exit;
+//  end;
+//
+////    lQueryLines := 0;
+//
+////  if Check(gtsiDml, gtkwSelect) then CalcClauseLines(gtsiExprList, gtkwSelect,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtssClauseFields, nil {?},      10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect)   then  aQuery.CalcClauseLines(gtsiExprList, gtkwInto,       10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwInsert) then  aQuery.CalcClauseLines(gtsiExprList, gtkwValues,     10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwUpdate) then  aQuery.CalcClauseLines(gtsiSetExprList, nil, 10, True {???},                   lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwDelete) or aQuery.Check(gtsiDml, gtkwUpdate) then  begin
+////      aQuery.CalcClauseLines(gtsiClauseTables, gtkwFrom, 6, True {???}, lLongQuery, lQueryLines);
+////      lItem := aQuery.Find(gtsiClauseTables, gtkwFrom);
+////      if Assigned(lItem) then
+////        for i := 0 to lItem.Count - 1 do
+////          lItem[i].CalcClauseLines(gtsiCondTree, gtkwOn, 6, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+////    end;
+////    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+////       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwWhere,              10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+////       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwConnect_By,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+////       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwStart_With,          10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwGroup_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
+////       aQuery.Check(gtsiDml, gtkwDelete) then  aQuery.CalcClauseLines(gtsiCondTree, gtkwHaving,             10, Options[ gtstOneCondOnLine ], lLongQuery, lQueryLines);
+////    if aQuery.Check(gtsiDml, gtkwSelect) then  aQuery.CalcClauseLines(gtsiExprList, gtkwOrder_By,    10, Options[ gtstOneExprOnLine ], lLongQuery, lQueryLines);
+////
+////    lLongQuery := lLongQuery or (lQueryLines > MaxShortQueryLines);
+//end;
 
 { returns true if node keyword is an clause keyword }
 function TGtSqlNode.IsClauseKeyword: Boolean;
@@ -807,15 +809,15 @@ begin
 end;
 
 { returns number of tables used by query in UPDATE, INSERT, FROM clauses }
-function TGtSqlNode.TablesCount: Integer;
-var i: Integer;
-begin
-  Result := 0;
-
-  for i := 0 to Count - 1 do
-    if Nodes[i].Kind = gtsiClauseTables
-      then Inc(Result, Nodes[i].Count);
-end;
+//function TGtSqlNode.TablesCount: Integer;
+//var i: Integer;
+//begin
+//  Result := 0;
+//
+//  for i := 0 to Count - 1 do
+//    if Nodes[i].Kind = gtsiClauseTables
+//      then Inc(Result, Nodes[i].Count);
+//end;
 
 { returns top level owner of an expr tree }
 function TGtSqlNode.ExprTreeOwner: TGtSqlNode;
@@ -823,33 +825,34 @@ begin
   Result := nil;
   if Self.Kind <> gtsiExprTree then Exit;
 
-  Result := OwnerOfAnotherKind(gtsiExprTree);
+//Result := OwnerOfAKind(gtsiExprTree);
+  Result := FindOwner(gtsiExprTree);
 end;
 
 { drills down cond tree to count single conditions }
-function TGtSqlNode.ConditionsCount: Integer;
-var i: Integer;
-begin
-  Result := 0;
-
-  case Self.Kind of
-    gtsiCond     : Result := 1;
-    gtsiCondTree : for i := 0 to Self.Count - 1 do
-                     Inc(Result, Self[i].ConditionsCount);
-  end;
-end;
+//function TGtSqlNode.ConditionsCount: Integer;
+//var i: Integer;
+//begin
+//  Result := 0;
+//
+//  case Self.Kind of
+//    gtsiCond     : Result := 1;
+//    gtsiCondTree : for i := 0 to Self.Count - 1 do
+//                     Inc(Result, Self[i].ConditionsCount);
+//  end;
+//end;
 
 { drills up to find owner with another Kind than given }
-function TGtSqlNode.OwnerOfAnotherKind(aKind: TGtSqlNodeKind): TGtSqlNode;
-var lOwner: TGtSqlNode;
-begin
-  Result := nil;
-  lOwner := Self.Owner;
-  while not Assigned(Result) and Assigned(lOwner) and (lOwner is TGtSqlNode) do
-    if lOwner.Kind = aKind
-      then lOwner := lOwner.Owner
-      else Result := lOwner;
-end;
+//function TGtSqlNode.OwnerOfAKind(aKind: TGtSqlNodeKind): TGtSqlNode;
+//var lOwner: TGtSqlNode;
+//begin
+//  Result := nil;
+//  lOwner := Self.Owner;
+//  while not Assigned(Result) and Assigned(lOwner) and (lOwner is TGtSqlNode) do
+//    if lOwner.Kind = aKind
+//      then lOwner := lOwner.Owner
+//      else Result := lOwner;
+//end;
 
 {}
 function TGtSqlNode.OwnerTableNameOrAlias: String;
@@ -949,110 +952,110 @@ begin
 end;
 
 { checks if condition has reference to column of given table or alias name }
-function TGtSqlNode.CondHasReferenceTo(aColPrefix: String): Boolean;
-var lNode: TGtSqlNode;
-begin
-  Result := False;
-  if aColPrefix = '' then Exit;
-  if not Check(gtsiCond) then Exit;
-  if (Keyword {Operand} = gtkwExists) or (Keyword {Operand} = gtkwNot_Exists) then Exit;
-
-  lNode := Find(gtsiNone, nil, '1');
-  if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
-  if Result then Exit;
-
-  lNode := Find(gtsiNone, nil, '2');
-  if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
-  if Result then Exit;
-
-  if ((Keyword {Operand} = gtkwBetween) or (Keyword {Operand} = gtkwNot_Between)) then begin
-    lNode := Find(gtsiNone, nil, '3');
-    if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
-  end;
-end;
+//function TGtSqlNode.CondHasReferenceTo(aColPrefix: String): Boolean;
+//var lNode: TGtSqlNode;
+//begin
+//  Result := False;
+//  if aColPrefix = '' then Exit;
+//  if not Check(gtsiCond) then Exit;
+//  if (Keyword {Operand} = gtkwExists) or (Keyword {Operand} = gtkwNot_Exists) then Exit;
+//
+//  lNode := Find(gtsiNone, nil, '1');
+//  if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
+//  if Result then Exit;
+//
+//  lNode := Find(gtsiNone, nil, '2');
+//  if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
+//  if Result then Exit;
+//
+//  if ((Keyword {Operand} = gtkwBetween) or (Keyword {Operand} = gtkwNot_Between)) then begin
+//    lNode := Find(gtsiNone, nil, '3');
+//    if Assigned(lNode) then Result := lNode.ExprHasReferenceTo(aColPrefix);
+//  end;
+//end;
 
 { ON cond - moves to end conditions wo reference to given table or alias name }
-procedure TGtSqlNode.OnCondMoveRefsFirst(aColPrefix: String);
-var i: Integer;
-begin
-  if aColPrefix = '' then Exit;
-  if not Check(gtsiCondTree, gtkwOn) and not Check(gtsiCondTree, gtkwUsing) and not Check(gtsiCond) and not Check(gtsiCondTree) then Exit;
-
-  if Check(gtsiCond) and not CondHasReferenceTo(aColPrefix) then begin
-    Owner.RemoveItem(Self);
-    Owner.AddItem(Self);
-  end else
-  if Check(gtsiCondTree, gtkwOn) or Check(gtsiCondTree, gtkwUsing) or Check(gtsiCondTree) then begin
-    for i := 0 to Count - 1 do
-      Self[i].OnCondMoveRefsFirst(aColPrefix);
-  end;
-end;
+//procedure TGtSqlNode.OnCondMoveRefsFirst(aColPrefix: String);
+//var i: Integer;
+//begin
+//  if aColPrefix = '' then Exit;
+//  if not Check(gtsiCondTree, gtkwOn) and not Check(gtsiCondTree, gtkwUsing) and not Check(gtsiCond) and not Check(gtsiCondTree) then Exit;
+//
+//  if Check(gtsiCond) and not CondHasReferenceTo(aColPrefix) then begin
+//    Owner.RemoveItem(Self);
+//    Owner.AddItem(Self);
+//  end else
+//  if Check(gtsiCondTree, gtkwOn) or Check(gtsiCondTree, gtkwUsing) or Check(gtsiCondTree) then begin
+//    for i := 0 to Count - 1 do
+//      Self[i].OnCondMoveRefsFirst(aColPrefix);
+//  end;
+//end;
 
 { calculates condition args len }
-procedure TGtSqlNode.CalcConditionArgsLen(var ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
-                                              ML_RightOnExprPrefix, ML_RightOnExprColumn: Integer);
-var lNode: TGtSqlNode;
-    i: Integer;
-    b: Boolean;
-    s1, s2: String;
-begin
-  if Kind = gtsiCond then begin
-    lNode := Find(gtsiNone, nil, '1');
-    while Assigned(lNode) and (lNode.Kind = gtsiExprTree) and (lNode.Count = 1) do lNode := lNode[0];
-    if Assigned(lNode) and lNode.Check(gtsiExpr, gttkColumnName) then begin
-      strBreakOnLast('.', lNode.Name, s1, s2);
-
-      if Length(s1) > ML_LeftOnExprPrefix then ML_LeftOnExprPrefix := Length(s1);
-      if Length(s2) > ML_LeftOnExprColumn then ML_LeftOnExprColumn := Length(s2);
-    end;
-
-    lNode := Find(gtsiNone, nil, '2');
-    while Assigned(lNode) and (lNode.Kind = gtsiExprTree) and (lNode.Count = 1) do lNode := lNode[0];
-    if Assigned(lNode) and lNode.Check(gtsiExpr, gttkColumnName) then begin
-      strBreakOnLast('.', lNode.Name, s1, s2);
-
-      if Length(s1) > ML_RightOnExprPrefix then ML_RightOnExprPrefix := Length(s1);
-      if Length(s2) > ML_RightOnExprColumn then ML_RightOnExprColumn := Length(s2);
-    end;
-  end else
-  if Kind = gtsiCondTree then begin
-    b := False;
-    for i := 0 to Count - 1 do
-      if not b then begin
-        Self[i].CalcConditionArgsLen(ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
-                                     ML_RightOnExprPrefix, ML_RightOnExprColumn);
-        b := True;
-      end;
-  end;
-end;
+//procedure TGtSqlNode.CalcConditionArgsLen(var ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
+//                                              ML_RightOnExprPrefix, ML_RightOnExprColumn: Integer);
+//var lNode: TGtSqlNode;
+//    i: Integer;
+//    b: Boolean;
+//    s1, s2: String;
+//begin
+//  if Kind = gtsiCond then begin
+//    lNode := Find(gtsiNone, nil, '1');
+//    while Assigned(lNode) and (lNode.Kind = gtsiExprTree) and (lNode.Count = 1) do lNode := lNode[0];
+//    if Assigned(lNode) and lNode.Check(gtsiExpr, gttkColumnName) then begin
+//      strBreakOnLast('.', lNode.Name, s1, s2);
+//
+//      if Length(s1) > ML_LeftOnExprPrefix then ML_LeftOnExprPrefix := Length(s1);
+//      if Length(s2) > ML_LeftOnExprColumn then ML_LeftOnExprColumn := Length(s2);
+//    end;
+//
+//    lNode := Find(gtsiNone, nil, '2');
+//    while Assigned(lNode) and (lNode.Kind = gtsiExprTree) and (lNode.Count = 1) do lNode := lNode[0];
+//    if Assigned(lNode) and lNode.Check(gtsiExpr, gttkColumnName) then begin
+//      strBreakOnLast('.', lNode.Name, s1, s2);
+//
+//      if Length(s1) > ML_RightOnExprPrefix then ML_RightOnExprPrefix := Length(s1);
+//      if Length(s2) > ML_RightOnExprColumn then ML_RightOnExprColumn := Length(s2);
+//    end;
+//  end else
+//  if Kind = gtsiCondTree then begin
+//    b := False;
+//    for i := 0 to Count - 1 do
+//      if not b then begin
+//        Self[i].CalcConditionArgsLen(ML_LeftOnExprPrefix, ML_LeftOnExprColumn,
+//                                     ML_RightOnExprPrefix, ML_RightOnExprColumn);
+//        b := True;
+//      end;
+//  end;
+//end;
 
 { calculates approx. no of lines for clause }
-procedure TGtSqlNode.CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
-                                     aLinesLimit: Integer; aSeparateLines: Boolean;
-                                     var aLongQuery: Boolean; var aQueryLines: Integer);
-var lNode: TGtSqlNode;
-    cnt: Integer;
-begin
-  if not aSeparateLines then Exit;
-
-  lNode := Find(aKind, aKeyword);
-  if not Assigned(lNode) then Exit;
-
-  case lNode.Kind of
-    gtsiExprList : begin
-      aLongQuery := aLongQuery or (lNode.Count > aLinesLimit) and (aLinesLimit > 0);
-      Inc(aQueryLines, lNode.Count);
-    end;
-    gtsiCond, gtsiCondTree: begin
-      cnt := lNode.ConditionsCount;
-
-      aLongQuery := aLongQuery or (cnt > aLinesLimit) and (aLinesLimit > 0);
-      Inc(aQueryLines, cnt);
-
-      if Check(gtsiCondTree, gtkwOn) then Dec(aQueryLines);
-    end;
-  end;
-end;
+//procedure TGtSqlNode.CalcClauseLines(aKind: TGtSqlNodeKind; aKeyword: TGtLexToken{Def};
+//                                     aLinesLimit: Integer; aSeparateLines: Boolean;
+//                                     var aLongQuery: Boolean; var aQueryLines: Integer);
+//var lNode: TGtSqlNode;
+//    cnt: Integer;
+//begin
+//  if not aSeparateLines then Exit;
+//
+//  lNode := Find(aKind, aKeyword);
+//  if not Assigned(lNode) then Exit;
+//
+//  case lNode.Kind of
+//    gtsiExprList : begin
+//      aLongQuery := aLongQuery or (lNode.Count > aLinesLimit) and (aLinesLimit > 0);
+//      Inc(aQueryLines, lNode.Count);
+//    end;
+//    gtsiCond, gtsiCondTree: begin
+//      cnt := lNode.ConditionsCount;
+//
+//      aLongQuery := aLongQuery or (cnt > aLinesLimit) and (aLinesLimit > 0);
+//      Inc(aQueryLines, cnt);
+//
+//      if Check(gtsiCondTree, gtkwOn) then Dec(aQueryLines);
+//    end;
+//  end;
+//end;
 
 { calls aProc for each node in aNode list }
 procedure TGtSqlNode.ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = False;
