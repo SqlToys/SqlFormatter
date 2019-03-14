@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 339   19-01-13 15:22 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 340   19-01-21 15:17 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1309,7 +1309,8 @@ begin
   if not Assigned(aNode) then Exit;
 
 //if aNode.ExprPrior then AddStr(gtkwPrior);
-  if aNode.KeywordExt = gtkwPrior then AddStr(gtkwPrior);
+//if aNode.KeywordExt = gtkwPrior then AddStr(gtkwPrior);
+  if aNode.KeywordAuxCheck(gtkwPrior) then AddStr(gtkwPrior);
 
   if aNode.Check(gtsiExpr, gtkwCase) then begin
     List_ExprCase (aNode, aListerOpt);
@@ -1693,7 +1694,8 @@ begin
 //  if aNode.AliasAsToken then AddStr(gtkwAs) else AddSpace;
 //  if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs) else AddSpace;
 //  if aNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs) else AddSpace;
-    if lNode.KeywordExt = gtkwAs then AddStr(gtkwAs) else AddSpace;
+//  if lNode.KeywordExt = gtkwAs then AddStr(gtkwAs) else AddSpace;
+    if lNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs) else AddSpace;
 
 //    if gtloExprAliasIntend in aListerOpt
 //      then AddSpace(ML_ExprAlias - Length(aNode.AliasName) + 1);
@@ -1911,7 +1913,8 @@ begin
 
 //if aNode.NoCycle  then AddStr(gtkwNoCycle);
 //if aNode.Negation then AddStr(gtkwNot);
-  if aNode.KeywordExt = gtkwNoCycle then AddStr(aNode.KeywordExt);
+//if aNode.KeywordExt = gtkwNoCycle then AddStr(aNode.KeywordExt);
+  if aNode.KeywordAuxCheck(gtkwNoCycle) then AddStr(gtkwNoCycle);
   AddStr(aNode.KeywordAuxCheckKwd(gtkwNot));
 //AddLeftBracket(aNode.BracketsCount);
   AddLeftBracket(aNode);
@@ -2305,7 +2308,8 @@ begin
     //if aNode.AliasAsToken then AddStr(gtkwAs);
     //if aNode.KeywordAfter1 = gtkwAs then AddStr(gtkwAs);
     //AddStr(aNode.KeywordAuxCheckKwd(gtkwAs));
-      AddStr(lNode.KeywordExt);
+    //AddStr(lNode.KeywordExt);
+      if lNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs);
     //AddStr(aNode.AliasName, gtlsTableAlias);
     //AddStr(aNode.Name1, gtlsTableAlias);
       AddStr(lNode.Name, gtlsTableAlias);
@@ -2319,7 +2323,12 @@ begin
     //       and (Length(aNode.AliasName) < MaxAliasNameToIntend);
 
     { table alias, +1 because of identifier extra space }
-    AddStrKeywordExtName(aNode.Find(gtsiNone, gtkwAs), gtlsTableAlias);
+  //AddStrKeywordExtName(aNode.Find(gtsiNone, gtkwAs), gtlsTableAlias);
+    lNode := aNode.Find(gtsiNone, gtkwAs);
+    if Assigned(lNode) then begin
+      if lNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs);
+      AddStr(lNode.Name, gtlsTableAlias);
+    end;
 
 //  if not lDoIntend then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
@@ -2371,19 +2380,20 @@ begin
 
   { list: CREATE [[GLOBAL] TEMPORARY] TABLE table-name }
 //if aNode.Temporary then begin
-  if aNode.KeywordExt.HasSubToken(gtkwTemporary) then begin
-  //if aNode.Global then begin
-    if aNode.KeywordExt.HasSubToken(gtkwGlobal) then begin
-      AddClause(gtkwCreate_Global);
-      AddStr(gtkwTemporary_Table);
-    end else begin
-      AddClause(gtkwCreate);
-      AddStr(gtkwTemporary_Table);
-    end;
-  end else begin
-    AddClause(gtkwCreate_Table);
-  end;
-  AddStr(aNode.Name, gtlsTable);
+//  if aNode.KeywordExt.HasSubToken(gtkwTemporary) then begin
+//  //if aNode.Global then begin
+//    if aNode.KeywordExt.HasSubToken(gtkwGlobal) then begin
+//      AddClause(gtkwCreate_Global);
+//      AddStr(gtkwTemporary_Table);
+//    end else begin
+//      AddClause(gtkwCreate);
+//      AddStr(gtkwTemporary_Table);
+//    end;
+//  end else begin
+//    AddClause(gtkwCreate_Table);
+//  end;
+//AddStr(aNode.Name, gtlsTable);
+  AddStrKeywordExtName(aNode, gtlsTable);
 
   { BNF: [AS SELECT ...] }
   lItem := aNode.Find(gtsiDml, gtkwSelect);
@@ -3066,8 +3076,9 @@ begin
   AddClause(gtkwSelect, ClauseAppendCondition);
 
   { BNF: [DISTINCT] }
-  if aNode.KeywordExt = gtkwDistinct then begin
+//if aNode.KeywordExt = gtkwDistinct then begin
 //if aNode.Distinct then begin
+  if aNode.KeywordAuxCheck(gtkwDistinct) then begin
     AddStr( gtkwDistinct );
     if aNode.Count > 1 then AddClause( gttkNone );
   end;
@@ -3422,7 +3433,8 @@ begin
     //AddStr(aQuery.KeywordAuxCheckKwd(gtkwAs));
     //AddStr(aQuery.AliasName, gtlsTableAlias);
     //AddStr(aQuery.Name1, gtlsTableAlias);
-      AddStr(lNode.KeywordExt);
+    //AddStr(lNode.KeywordExt);
+      if lNode.KeywordAuxCheck(gtkwAs) then AddStr(gtkwAs);
       AddStr(lNode.Name, gtlsTableAlias);
     end;
 

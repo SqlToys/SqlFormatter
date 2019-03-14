@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 311   19-01-13 20:39 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 312   19-01-21 15:18 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -129,6 +129,10 @@ type
 //    property        Operand   : TGtLexToken{Def} index 10 read FTokens[10] write SetFTokens;
 
     property        KeywordExt:    TGtLexToken{Def} index 11 read FTokens[11] write SetFTokens;
+
+    // KeywordExt shoud be used to extend meaning of Keyword.
+    // As Keyword should be used to point node class type, KeywordExt should be used to point what keyword was exactly used.
+    // In other cases KeywordAux should be used.
 //protected
     property        KeywordAux1:   TGtLexToken      index 12 read FTokens[12] write SetFTokens;
     property        KeywordAux2:   TGtLexToken      index 13 read FTokens[13] write SetFTokens;
