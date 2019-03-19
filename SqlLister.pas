@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 340   19-01-21 15:17 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 341   19-01-22 11:52 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1727,6 +1727,11 @@ begin
 //  if aNode.NullsFirst then AddStr(gtkwNulls_First) else
 //  if aNode.NullsLast  then AddStr(gtkwNulls_Last);
   AddStr(aNode.KeywordAuxCheckKwd(gtkwNulls_First, gtkwNulls_Last));
+
+  { ORACLE outer join mark }
+  if aNode.KeywordAuxCheck(gttkBracketPlusBracket) then begin
+    AddStr(gttkBracketPlusBracket);
+  end;
 end;
 
 { lists set expressions }
@@ -1848,15 +1853,15 @@ begin
     { operator }
     if (aNode.Keyword {Operand} = gttkEqual) then begin
 //    if aNode.OuterMark1Oracle then begin
-      if aNode.KeywordExt = gttkBracketPlusBracket then begin
-        AddStr(gttkBracketPlusBracket);
-        AddStr(gttkEqual);
-      end else begin
+//    if aNode.KeywordExt = gttkBracketPlusBracket then begin
+//      AddStr(gttkBracketPlusBracket);
+//      AddStr(gttkEqual);
+//    end else begin
 //      if aNode.OuterMark1MSSQL
 //        then AddStr(gttkStarEqual)
 //        else AddStr(gttkEqual);
         AddStr(aNode.KeywordExt);
-      end;
+//    end;
     end else
     if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) or
        (aNode.Keyword {Operand} = gtkwLike)    or (aNode.Keyword {Operand} = gtkwNot_Like) or
@@ -1873,8 +1878,8 @@ begin
 
     List(lItem, aListerOpt {- [gtloOnLeftSideIntend]});
 //  if aNode.OuterMark2Oracle and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)}
-    if (aNode.KeywordExt = gttkBracketPlusBracket) and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)}
-      then AddStr(gttkBracketPlusBracket);
+//    if (aNode.KeywordExt = gttkBracketPlusBracket) and (aNode.Keyword {Operand} = gttkEqual) {and (Dialect = gtdlOracle)}
+//      then AddStr(gttkBracketPlusBracket);
 
     { additional expression }
     if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) then begin
