@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 341   19-01-22 11:52 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 342   19-01-23 20:16 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -168,6 +168,9 @@ type
     procedure  AddCurrLine; override;
     procedure  AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False); overload;
     procedure  AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
+                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
+    procedure  AddClauseNode(aNode:TGtSqlNode; aAppend: Boolean = False); overload;
+    procedure  AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken{Def};
                          aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
     procedure  AddComma; virtual;
     procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
@@ -978,13 +981,31 @@ begin
   AddSpace(NewLineIntend);
 end;
 
-{ adds clause to saved script }
+{ adds clause to script }
 procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False);
 begin
   AddClause(aClause, nil, aAppend);
 end;
 
-{ adds clause to saved script }
+{ adds clause to script }
+procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aAppend: Boolean = False);
+begin
+  AddClauseNode( aNode, nil, aAppend );
+end;
+
+{ adds clause to script }
+procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken{Def};
+                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False);
+begin
+  if not Assigned(aNode) then Exit;
+
+  if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
+    then AddClause(aNode.Keyword, nil, aAppend, aRemoveClauseBodySpace)
+    else AddClause(aNode.KeywordExt, nil, aAppend, aRemoveClauseBodySpace);
+end;
+
+
+{ adds clause to script }
 procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
                                        aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False);
 
@@ -1662,11 +1683,21 @@ begin
 //        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkPlus) then AddStr(gttkMinus) else
 //        if (aNode[i].ExprReverseOp) and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkSlash) else
 //        if (aNode[i].ExprReverseOp2)and (aNode.Keyword {Operand} = gttkStar) then AddStr(gttkPercent)
-        if (aNode.Keyword {Operand} = gttkPlus) and aNode.KeywordAuxCheck(gttkMinus)  then AddStr(gttkMinus) else
-        if (aNode.Keyword {Operand} = gttkStar) and aNode.KeywordAuxCheck(gttkSlash)  then AddStr(gttkSlash) else
-        if (aNode.Keyword {Operand} = gttkStar) and aNode.KeywordAuxCheck(gttkPercent)then AddStr(gttkPercent)
-        else AddStr(aNode.Keyword {Operand});
+
+//        if (aNode.Keyword {Operand} = gttkPlus) and aNode[i].KeywordAuxCheck(gttkMinus)  then AddStr(gttkMinus) else
+//        if (aNode.Keyword {Operand} = gttkStar) and aNode[i].KeywordAuxCheck(gttkSlash)  then AddStr(gttkSlash) else
+//        if (aNode.Keyword {Operand} = gttkStar) and aNode[i].KeywordAuxCheck(gttkPercent)then AddStr(gttkPercent)
+//        else AddStr(aNode.Keyword {Operand});
+
 //      aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
+
+         if aNode[i].KeywordAuxCheck(gttkPlus) then begin
+           if aNode[i].KeywordAuxCheck(gttkMinus) then AddStr(gttkMinus) else AddStr(gttkPlus);
+         end else
+         if aNode[i].KeywordAuxCheck(gttkStar) then begin
+           if aNode[i].KeywordAuxCheck(gttkSlash) then AddStr(gttkSlash) else
+           if aNode[i].KeywordAuxCheck(gttkPercent) then AddStr(gttkPercent) else AddStr(gttkStar);
+         end else AddStr(gttkConcatenation);
       end;
 
       if aNode[i].Check(gtsiExprTree) or
@@ -2296,7 +2327,8 @@ begin
   if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
     then
   //else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ), ClauseAppendCondition );
-    else AddClause( aNode.KeywordExt, ClauseAppendCondition );
+  //else AddClause( aNode.KeywordExt, ClauseAppendCondition );
+    else AddClauseNode( aNode, ClauseAppendCondition );
 
   { table name or query }
   lSubQuery := aNode.Find(gtsiDml, gtkwSelect);
