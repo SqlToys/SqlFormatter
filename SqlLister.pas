@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 342   19-01-23 20:16 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 343   19-01-25 21:25 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -128,6 +128,7 @@ type
                            aAddClearSpace: Boolean = True; aSingleParam: Boolean = False); overload;
     procedure   AddStrName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
     procedure   AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+    procedure   AddStrKeywordExt(aNode: TGtSqlNode);
     procedure   AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 
     procedure   BeginFormattedFile;
@@ -735,11 +736,23 @@ begin
 end;
 
 { adds colored keyword and name with given style }
+procedure TGtSqlProtoLister.AddStrKeywordExt(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+
+  if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
+    then AddStr(aNode.Keyword)
+    else AddStr(aNode.KeywordExt);
+end;
+
+{ adds colored keyword and name with given style }
 procedure TGtSqlProtoLister.AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 begin
   if not Assigned(aNode) then Exit;
 
-  AddStr(aNode.KeywordExt);
+  if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
+    then AddStr(aNode.Keyword)
+    else AddStr(aNode.KeywordExt);
   AddStr(aNode.Name, aStyle);
 end;
 
@@ -1891,7 +1904,7 @@ begin
 //      if aNode.OuterMark1MSSQL
 //        then AddStr(gttkStarEqual)
 //        else AddStr(gttkEqual);
-        AddStr(aNode.KeywordExt);
+        AddStrKeywordExt(aNode);
 //    end;
     end else
     if (aNode.Keyword {Operand} = gtkwBetween) or (aNode.Keyword {Operand} = gtkwNot_Between) or
@@ -1961,7 +1974,7 @@ begin
       if b then begin
       //if Options[ gtstOneCondOnLine ] and not (gtloSkipOneCondOnLine in aListerOpt)
       //  then AddClause(aNode.Keyword {Operand})
-          {else} AddStr(aNode.Keyword {Operand});
+          {else} AddStr(aNode.KeywordExt {Operand});
       end;
 
 //      if not b then begin
