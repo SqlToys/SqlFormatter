@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 343   19-01-25 21:25 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 344   19-01-26 14:06 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -301,7 +301,7 @@ type
 
     procedure  List_Tables             (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
-    procedure  List_DML                (aQuery:TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
+    procedure  List_DML                (aNode:TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
     procedure  List_NotRecognized      (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
@@ -3332,12 +3332,12 @@ var lIntend{, i, lQueryLines}: Integer;
     lKeywordStyle: TGtLexTokenStyle;
     lItem, lNode: TGtSqlNode;
 begin
-  if not Assigned(aQuery) then Exit;
+  if not Assigned(aNode) then Exit;
   lIntend := NewLineIntend;
   lSkipClauseNewLine := SkipClauseNewLine;
   SkipClauseNewLine := False;
 
-  if aQuery.IsSubQuery then Inc(SubQueryLevel);
+  if aNode.IsSubQuery then Inc(SubQueryLevel);
 
   lKeywordStyle := FKeywordStyle;
 //  if (FKeywordStyle = gtlsKeyword) or not Options[gtstExtQueryKeywordStyle] then begin
@@ -3348,22 +3348,22 @@ begin
 //  end;
 
   { subquery wrapper }
-  if aQuery.IsSubQuery and not(aQuery.Owner.Check(gtsiUnions) or aQuery.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
+  if aNode.IsSubQuery and not(aNode.Owner.Check(gtsiUnions) or aNode.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
-    if (aQuery.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
-      AddClause( JoinOperatorToToken( aQuery.Keyword {Operand} ),
+    if (aNode.KeywordExt {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
+      AddClause( {JoinOperatorToToken(} aNode.KeywordExt {Operand} {)},
                  gttkLeftBracket,
                  ClauseAppendCondition,
-                 aQuery.Owner.Check(gtsiExprTree) or aQuery.Owner.Check(gtsiCond) or aQuery.Owner.Check(gtsiCondTree));
+                 aNode.Owner.Check(gtsiExprTree) or aNode.Owner.Check(gtsiCond) or aNode.Owner.Check(gtsiCondTree));
 
     //AddLeftBracket(aQuery.BracketsCount - 1);
-      AddLeftBracket(aQuery, True);
+      AddLeftBracket(aNode, True);
     end;
 
     { subquery at new line when in FROM/JOIN, IN condition, SELECT expr }
-    if aQuery.Owner.Check(gtsiClauseTables) or aQuery.Owner.Check(gtsiCond) or aQuery.Owner.Check(gtsiCondTree) or
-       (aQuery.Owner.Kind = gtsiExprTree) and Assigned((aQuery.Owner.ExprTreeOwner))
-       and not aQuery.Owner.ExprTreeOwner.Check(gtsiExprList, gtkwSelect)
+    if aNode.Owner.Check(gtsiClauseTables) or aNode.Owner.Check(gtsiCond) or aNode.Owner.Check(gtsiCondTree) or
+       (aNode.Owner.Kind = gtsiExprTree) and Assigned((aNode.Owner.ExprTreeOwner))
+       and not aNode.Owner.ExprTreeOwner.Check(gtsiExprList, gtkwSelect)
       then AddClause(nil);
 
     AddSpace;
@@ -3410,46 +3410,46 @@ begin
 //  end;
 
   { DML essential }
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_Select     (aQuery.Find(gtsiExprList, gtkwSelect),     aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_TabRef     (aQuery.Find(gtsiTableRef),                 aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_Fields     (aQuery.Find(gtssClauseFields),             aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aQuery.Find(gtsiClauseTables, gtkwUpdate), aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Select     (aNode.Find(gtsiExprList, gtkwSelect),     aListerOpt);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_TabRef     (aNode.Find(gtsiTableRef),                 aListerOpt);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Fields     (aNode.Find(gtssClauseFields),             aListerOpt);
+  if aNode.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aNode.Find(gtsiClauseTables, gtkwUpdate), aListerOpt);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto, ClauseAppendCondition);
 //  if aQuery.Check(gtsiDml, gtkwSelect) and
 //  // (aQuery.ObjectName <> '')         then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.ObjectName, gtlsTable);
 //     (aQuery.Name1 <> '')              then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.Name1,      gtlsTable);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_Values     (aQuery.Find(gtsiExprList, gtkwValues), aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwUpdate) then  List_SetExprList(aQuery.Find(gtsiSetExprList, nil), aListerOpt);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Values     (aNode.Find(gtsiExprList, gtkwValues), aListerOpt);
+  if aNode.Check(gtsiDml, gtkwUpdate) then  List_SetExprList(aNode.Find(gtsiSetExprList, nil), aListerOpt);
 
   { DELETE expr-list vs DELETE FROM }
-  if aQuery.Check(gtsiDml, gtkwDelete) then begin
-    lItem := aQuery.Find(gtsiExprList, gtkwDelete);
+  if aNode.Check(gtsiDml, gtkwDelete) then begin
+    lItem := aNode.Find(gtsiExprList, gtkwDelete);
 
     if not Assigned(lItem) then begin
       AddClause       (gtkwDelete_From, ClauseAppendCondition);
-      List_Tables     (aQuery.Find(gtsiClauseTables, gtkwFrom), aListerOpt + [gtloSkipFrom]);
+      List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt + [gtloSkipFrom]);
     end else begin
       AddClause       (gtkwDelete, ClauseAppendCondition);
       List_ExprList   (lItem, aListerOpt);
-      List_Tables     (aQuery.Find(gtsiClauseTables, gtkwFrom), aListerOpt);
+      List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt);
     end;
   end;
 
-  if aQuery.Check(gtsiDml, gtkwSelect) or
-     aQuery.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aQuery.Find(gtsiClauseTables, gtkwFrom),   aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-     aQuery.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aQuery.Find(gtsiCondTree, gtkwWhere),      aListerOpt, gtkwWhere, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-     aQuery.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aQuery.Find(gtsiCondTree, gtkwConnect_By), aListerOpt, gtkwConnect_By, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-     aQuery.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aQuery.Find(gtsiCondTree, gtkwStart_With), aListerOpt, gtkwStart_With, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwGroup_By),   aListerOpt, gtkwGroup_By, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwSelect) or aQuery.Check(gtsiDml, gtkwUpdate) or
-     aQuery.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aQuery.Find(gtsiCondTree, gtkwHaving),     aListerOpt, gtkwHaving, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_DML        (aQuery.Find(gtsiDml, gtkwSelect),          aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_SetOp      (aQuery.Find{ByKind} (gtsiUnions),          aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwSelect) then  begin
-    lItem := aQuery.Find(gtsiExprList, gtkwOrder_By);
+  if aNode.Check(gtsiDml, gtkwSelect) or
+     aNode.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom),   aListerOpt);
+  if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwWhere),      aListerOpt, gtkwWhere, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwConnect_By), aListerOpt, gtkwConnect_By, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwStart_With), aListerOpt, gtkwStart_With, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwGroup_By),   aListerOpt, gtkwGroup_By, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwHaving),     aListerOpt, gtkwHaving, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_DML        (aNode.Find(gtsiDml, gtkwSelect),          aListerOpt);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_SetOp      (aNode.Find{ByKind} (gtsiUnions),          aListerOpt);
+  if aNode.Check(gtsiDml, gtkwSelect) then  begin
+    lItem := aNode.Find(gtsiExprList, gtkwOrder_By);
     if Assigned(lItem) then begin
       // odstêp identyczny jak dla UNION
 //      if Options[ gtstEmptyLineAroundUnion ] and Assigned(aQuery.Find{ByKind} (gtsiUnions)) then AddEmptyLine;
@@ -3457,13 +3457,13 @@ begin
       List_Clause_Expr(lItem, aListerOpt, gtkwOrder_By, ClauseAppendCondition);
     end;
   end;
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_ForUpdate  (aQuery.Find(gtsiExprList, gtkwFor_Update), aListerOpt);
-  if aQuery.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwLimit),      aListerOpt, gtkwLimit, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwReturning),  aListerOpt, gtkwReturning, ClauseAppendCondition);
-  if aQuery.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aQuery.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto,      ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_ForUpdate  (aNode.Find(gtsiExprList, gtkwFor_Update), aListerOpt);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwLimit),      aListerOpt, gtkwLimit, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwReturning),  aListerOpt, gtkwReturning, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto,      ClauseAppendCondition);
 
   { subquery wrapper }
-  if aQuery.IsSubQuery and not(aQuery.Owner.Check(gtsiUnions) or aQuery.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
+  if aNode.IsSubQuery and not(aNode.Owner.Check(gtsiUnions) or aNode.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
     NewLineIntend := lIntend;
     SkipClauseNewLine := lSkipClauseNewLine;
@@ -3471,11 +3471,11 @@ begin
       AddClause(nil, gttkRightBracket, ClauseAppendCondition);
 
     //AddRightBracket(aQuery.BracketsCount - 1);
-      AddRightBracket(aQuery, True);
+      AddRightBracket(aNode, True);
 
   //if aQuery.AliasName <> '' then begin
   //if aQuery.Name1 <> '' then begin
-    lNode := aQuery.Find(gtsiNone, gtkwAs);
+    lNode := aNode.Find(gtsiNone, gtkwAs);
     if Assigned(lNode) then begin
     //if Options[ gtstTableAsKeyword ] then AddStr(gtkwAs);
     //if aQuery.AliasAsToken then AddStr(gtkwAs);
@@ -3488,12 +3488,12 @@ begin
       AddStr(lNode.Name, gtlsTableAlias);
     end;
 
-    List(aQuery.Find(gtsiCondTree, gtkwOn), aListerOpt);
-    List(aQuery.Find(gtsiCondTree, gtkwUsing), aListerOpt);
+    List(aNode.Find(gtsiCondTree, gtkwOn), aListerOpt);
+    List(aNode.Find(gtsiCondTree, gtkwUsing), aListerOpt);
   end;
 
   FKeywordStyle := lKeywordStyle;
-  if aQuery.IsSubQuery then Dec(SubQueryLevel);
+  if aNode.IsSubQuery then Dec(SubQueryLevel);
 end;
 
 { lists not recognized }

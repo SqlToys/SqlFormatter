@@ -175,37 +175,37 @@ end;
 {------------------------------- Test functions -------------------------------}
 procedure GtSqlTestRun;
 begin
-  TestQuery( 'select 1 from dual' );
-
-  { date: 2010-08-12, file: 2010 First Test.sql }
-  TestQuery( 'USE comit ;' );
-  TestQuery( 'GO ;' );
-
-  TestQuery( 'SELECT pole FROM tabela;' );
-  TestQuery( 'SELECT 1;' );
-  TestQuery( 'SELECT ''string'';' );
-  TestQuery( 'SELECT pole1, pole2, pole3 FROM tabela;' );
-  TestQuery( 'SELECT ISNULL(pole,'''') FROM tabela;' );
-
-  TestQuery( 'SELECT pole1 /*, pole2*/ FROM tabela;' );
-  TestQuery( 'SELECT pole1 --, pole2'#13#10'FROM tabela;' );
-
-  TestQuery( 'SELECT 1+1;' );
-  TestQuery( 'SELECT ISNULL (pole1 /*, 0*/,1 ) + ISNULL (pole2,0);' );
-
-  TestQuery( 'SELECT * FROM tabela;' );
-  TestQuery( 'SELECT * FROM tab1 , tab2;' );
-  TestQuery( 'SELECT * FROM tab1 JOIN tab2;' );
-  TestQuery( 'SELECT * FROM tab1 LEFT /*comment*/ JOIN tab2;' );
-  TestQuery( 'SELECT * FROM tab1 LEFT JOIN tab2 USING(id);' );
-  TestQuery( 'SELECT * FROM tab1 LEFT JOIN tab2 ON tab1.id = tab2.id AND tab1.b=1 WHERE tab1.a=3 AND tab2.c=4 GROUP BY tab1.a;' );
-  TestQuery( 'SELECT * FROM tab1, tab2;' );
-  TestQuery( 'SELECT * FROM ( SELECT * FROM tab1 );' );
-  TestQuery( 'SELECT * FROM ( SELECT * FROM tab1 ) AS tab2;' );
-  TestQuery( 'SELECT * FROM dbo.tab1;' );
-  TestQuery( 'SELECT a+1 AS a1 FROM tab1;' );
-  TestQuery( 'UPDATE tab1 SET a=1, b=2;' );
-  TestQuery( 'UPDATE tab1 SET a=x FROM tab2;' );
+//  TestQuery( 'select 1 from dual' );
+//
+//  { date: 2010-08-12, file: 2010 First Test.sql }
+//  TestQuery( 'USE comit ;' );
+//  TestQuery( 'GO ;' );
+//
+//  TestQuery( 'SELECT pole FROM tabela;' );
+//  TestQuery( 'SELECT 1;' );
+//  TestQuery( 'SELECT ''string'';' );
+//  TestQuery( 'SELECT pole1, pole2, pole3 FROM tabela;' );
+//  TestQuery( 'SELECT ISNULL(pole,'''') FROM tabela;' );
+//
+//  TestQuery( 'SELECT pole1 /*, pole2*/ FROM tabela;' );
+//  TestQuery( 'SELECT pole1 --, pole2'#13#10'FROM tabela;' );
+//
+//  TestQuery( 'SELECT 1+1;' );
+//  TestQuery( 'SELECT ISNULL (pole1 /*, 0*/,1 ) + ISNULL (pole2,0);' );
+//
+//  TestQuery( 'SELECT * FROM tabela;' );
+//  TestQuery( 'SELECT * FROM tab1 , tab2;' );
+//  TestQuery( 'SELECT * FROM tab1 JOIN tab2;' );
+//  TestQuery( 'SELECT * FROM tab1 LEFT /*comment*/ JOIN tab2;' );
+//  TestQuery( 'SELECT * FROM tab1 LEFT JOIN tab2 USING(id);' );
+//  TestQuery( 'SELECT * FROM tab1 LEFT JOIN tab2 ON tab1.id = tab2.id AND tab1.b=1 WHERE tab1.a=3 AND tab2.c=4 GROUP BY tab1.a;' );
+//  TestQuery( 'SELECT * FROM tab1, tab2;' );
+//  TestQuery( 'SELECT * FROM ( SELECT * FROM tab1 );' );
+//  TestQuery( 'SELECT * FROM ( SELECT * FROM tab1 ) AS tab2;' );
+//  TestQuery( 'SELECT * FROM dbo.tab1;' );
+//  TestQuery( 'SELECT a+1 AS a1 FROM tab1;' );
+//  TestQuery( 'UPDATE tab1 SET a=1, b=2;' );
+//  TestQuery( 'UPDATE tab1 SET a=x FROM tab2;' );
   TestQuery( 'INSERT INTO tab1 (a, b) VALUES(1,''a'');' );
   TestQuery( 'INSERT INTO tab1 (a, b) SELECT a, b FROM tab2;' );
   TestQuery( 'SELECT 1 AS X FROM DUAL UNION ALL SELECT 2 FROM DUAL;' );

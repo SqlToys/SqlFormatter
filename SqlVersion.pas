@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlVersion.pas 369   19-01-25 21:25 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlVersion.pas 370   19-01-26 14:07 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2012.09.16                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlVersion;
