@@ -103,7 +103,7 @@ end;
 
 function VER_BUILD: string;
 begin
-  Result := '779'; // current build
+  Result := '781'; // current build
 end;
 
 end.

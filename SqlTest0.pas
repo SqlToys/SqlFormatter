@@ -206,44 +206,44 @@ begin
 //  TestQuery( 'SELECT a+1 AS a1 FROM tab1;' );
 //  TestQuery( 'UPDATE tab1 SET a=1, b=2;' );
 //  TestQuery( 'UPDATE tab1 SET a=x FROM tab2;' );
-  TestQuery( 'INSERT INTO tab1 (a, b) VALUES(1,''a'');' );
-  TestQuery( 'INSERT INTO tab1 (a, b) SELECT a, b FROM tab2;' );
-  TestQuery( 'SELECT 1 AS X FROM DUAL UNION ALL SELECT 2 FROM DUAL;' );
-
-  TestQuery( 'SELECT 1;SELECT 2;' );
-
-  { date: 2012-01-28, file: MinQueries.sql }
-  TestQuery( '/* Demo pe³nego b³êdów parsera SQL v0.3 */' );
-  TestQuery( '/* aktualnie do dzia³ania wymaga podania DDL-i dla tabel.*/' );
-  TestQuery( '/* Highlighter dedykowany dla PlusMemo - do poprawki.*/' );
-
-  TestQuery( 'CREATE TABLE emp_table ( deptno INT, empname VARCHAR(100) );' );
-  TestQuery( 'CREATE TABLE dept_table ( deptno INT, deptname VARCHAR(100) );' );
-
-  TestQuery( 'SELECT empname Employee, deptname Department, emp_table.deptno AS DepartamentNo, deptno AmbigousDeptNo FROM emp_table, dept_table WHERE emp_table.deptno (+) = dept_table.deptno;' );
-  TestQuery( 'SELECT empname Employee, deptname Department, deptno Ambigous FROM emp_table, dept_table T6 WHERE emp_table.deptno (+) = T6.deptno;' );
-
-  TestQuery( 'CREATE TABLE sm ( id INT, name VARCHAR(100) );' );
-  TestQuery( 'SELECT * FROM sm;' );
-
-  TestQuery( 'SELECT * FROM Dict;' );
-
-  { date: 2012-02-13, file: AdvQueries.sql }
-  TestQuery( 'CREATE TABLE tabelka1 ( pole1 INTEGER, pole2 VARCHAR(11) );' );
-  TestQuery( 'CREATE TABLE tabelka2 ( pole1 INTEGER, pole2 VARCHAR(11), pole3 DECIMAL(10,5) );' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD pole4 INT, pole5 INT NULL;' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD WHERE INT;' );
-
-  TestQuery( 'ALTER TABLE tabelka1 ADD CONSTRAINT tabelka1_PK PRIMARY KEY (pole1);' );
-  TestQuery( 'ALTER TABLE tabelka1 DROP COLUMN pole1;' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_PK PRIMARY KEY (pole1);' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole1;' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_FK FOREIGN KEY (pole2) REFERENCES tabelka1 (pole1) ON DELETE CASCADE ON UPDATE SET NULL;' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole2;' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_CK CHECK (pole5 > 0);' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
-  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_UK UNIQUE (pole5);' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
+//  TestQuery( 'INSERT INTO tab1 (a, b) VALUES(1,''a'');' );
+//  TestQuery( 'INSERT INTO tab1 (a, b) SELECT a, b FROM tab2;' );
+//  TestQuery( 'SELECT 1 AS X FROM DUAL UNION ALL SELECT 2 FROM DUAL;' );
+//
+//  TestQuery( 'SELECT 1;SELECT 2;' );
+//
+//  { date: 2012-01-28, file: MinQueries.sql }
+//  TestQuery( '/* Demo pe³nego b³êdów parsera SQL v0.3 */' );
+//  TestQuery( '/* aktualnie do dzia³ania wymaga podania DDL-i dla tabel.*/' );
+//  TestQuery( '/* Highlighter dedykowany dla PlusMemo - do poprawki.*/' );
+//
+//  TestQuery( 'CREATE TABLE emp_table ( deptno INT, empname VARCHAR(100) );' );
+//  TestQuery( 'CREATE TABLE dept_table ( deptno INT, deptname VARCHAR(100) );' );
+//
+//  TestQuery( 'SELECT empname Employee, deptname Department, emp_table.deptno AS DepartamentNo, deptno AmbigousDeptNo FROM emp_table, dept_table WHERE emp_table.deptno (+) = dept_table.deptno;' );
+//  TestQuery( 'SELECT empname Employee, deptname Department, deptno Ambigous FROM emp_table, dept_table T6 WHERE emp_table.deptno (+) = T6.deptno;' );
+//
+//  TestQuery( 'CREATE TABLE sm ( id INT, name VARCHAR(100) );' );
+//  TestQuery( 'SELECT * FROM sm;' );
+//
+//  TestQuery( 'SELECT * FROM Dict;' );
+//
+//  { date: 2012-02-13, file: AdvQueries.sql }
+//  TestQuery( 'CREATE TABLE tabelka1 ( pole1 INTEGER, pole2 VARCHAR(11) );' );
+//  TestQuery( 'CREATE TABLE tabelka2 ( pole1 INTEGER, pole2 VARCHAR(11), pole3 DECIMAL(10,5) );' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD pole4 INT, pole5 INT NULL;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD WHERE INT;' );
+//
+//  TestQuery( 'ALTER TABLE tabelka1 ADD CONSTRAINT tabelka1_PK PRIMARY KEY (pole1);' );
+//  TestQuery( 'ALTER TABLE tabelka1 DROP COLUMN pole1;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_PK PRIMARY KEY (pole1);' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole1;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_FK FOREIGN KEY (pole2) REFERENCES tabelka1 (pole1) ON DELETE CASCADE ON UPDATE SET NULL;' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole2;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_CK CHECK (pole5 > 0);' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_UK UNIQUE (pole5);' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
   TestQuery( 'ALTER TABLE tabelka2 MODIFY pole2 /*5*/ VARCHAR(10) NOT NULL;' );
   TestQuery( 'ALTER TABLE tabelka2 MODIFY pole5 VARCHAR(10) NOT NULL;' );
   TestQuery( 'ALTER TABLE tabelka2 ALTER COLUMN pole5 VARCHAR(20) NULL;' );
