@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 344   19-01-26 14:06 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 345   19-01-27 20:22 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -2338,7 +2338,7 @@ begin
 //    end;
   end else
   if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
-    then
+    then aNode := aNode
   //else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ), ClauseAppendCondition );
   //else AddClause( aNode.KeywordExt, ClauseAppendCondition );
     else AddClauseNode( aNode, ClauseAppendCondition );
@@ -2662,7 +2662,7 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlModify;
 
-  if not (gtloSameAsPrevClause in aListerOpt) then AddClause(aNode.Keyword);
+  if not (gtloSameAsPrevClause in aListerOpt) then AddClause(aNode.KeywordExt);
 
 //AddLeftBracket(aNode.BracketsCount);
   AddLeftBracket(aNode);
@@ -3423,16 +3423,17 @@ begin
 
   { DELETE expr-list vs DELETE FROM }
   if aNode.Check(gtsiDml, gtkwDelete) then begin
-    lItem := aNode.Find(gtsiExprList, gtkwDelete);
+//  lItem := aNode.Find(gtsiExprList, gtkwDelete);
 
-    if not Assigned(lItem) then begin
-      AddClause       (gtkwDelete_From, ClauseAppendCondition);
-      List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt + [gtloSkipFrom]);
-    end else begin
+//    if not Assigned(lItem) then begin
+//      AddClause       (gtkwDelete_From, ClauseAppendCondition);
+//      List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt + [gtloSkipFrom]);
+//    end else begin
       AddClause       (gtkwDelete, ClauseAppendCondition);
-      List_ExprList   (lItem, aListerOpt);
+    //List_ExprList   (lItem, aListerOpt);
+      List_ExprList   (aNode.Find(gtsiExprList, gtkwDelete), aListerOpt);
       List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt);
-    end;
+//    end;
   end;
 
   if aNode.Check(gtsiDml, gtkwSelect) or

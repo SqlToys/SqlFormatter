@@ -244,101 +244,101 @@ begin
 //  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
 //  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_UK UNIQUE (pole5);' );
 //  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
-  TestQuery( 'ALTER TABLE tabelka2 MODIFY pole2 /*5*/ VARCHAR(10) NOT NULL;' );
-  TestQuery( 'ALTER TABLE tabelka2 MODIFY pole5 VARCHAR(10) NOT NULL;' );
-  TestQuery( 'ALTER TABLE tabelka2 ALTER COLUMN pole5 VARCHAR(20) NULL;' );
-
-  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_CK2 CHECK (pole6 > 0);' );
-
-  TestQuery( 'ALTER TABLE tabelka2 ADD ( pole6 INT, pole7 INT );' );
-  TestQuery( 'ALTER TABLE tabelka2 MODIFY ( pole6 VARCHAR(10), pole7 VARCHAR(10) );' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP ( pole6, pole7 );' );
-
-  TestQuery( 'CREATE INDEX IX_tabelka_pole4 ON tabelka2 ( pole4 );' );
-  TestQuery( 'CREATE UNIQUE INDEX IX_tabelka_pole5 ON tabelka2 ( pole5 );' );
-  TestQuery( 'DROP INDEX IX_tabelka_pole5;' );
-
-  TestQuery( 'ALTER TABLE tabelka1 DROP CONSTRAINT tabelka1_PK;' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_FK;' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_CK;' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_UK;' );
-
-  TestQuery( 'ALTER TABLE tabelka2 DROP pole4;' );
-  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
-
-  TestQuery( 'ALTER TABLE tabelka2 RENAME TO tabelka3;' );
-  TestQuery( 'ALTER TABLE tabelka2 RENAME COLUMN pole3 TO pole9;' );
-  TestQuery( 'ALTER TABLE tabelka3 RENAME COLUMN pole3 TO pole9;' );
-
-  TestQuery( 'SELECT A.pole2 FROM tabelka2 A JOIN tabelka1 AS B ON B.pole1 = A.pole2;' );
-  TestQuery( 'SELECT * FROM tabelka2 A JOIN tabelka1 AS B ON B.pole1 = A.pole2;' );
-
-  TestQuery( 'DROP TABLE tabelka1;' );
-  TestQuery( 'DROP TABLE tabelka2;' );
-
-  TestQuery( 'CREATE TABLE emp ( deptno INT, empno INT, empname VARCHAR(50) );' );
-  TestQuery( 'CREATE TABLE dept ( deptno INT, deptname VARCHAR(50) );' );
-  TestQuery( 'SELECT 1, deptno, * FROM emp;' );
-  TestQuery( 'SELECT e.* FROM emp e, dept d;' );
-  TestQuery( 'INSERT INTO emp ( deptno ) VALUES ( 1 );' );
-  TestQuery( 'INSERT INTO emp ( deptno ) SELECT deptno FROM emp;' );
-  TestQuery( 'DELETE FROM emp;' );
-
-  TestQuery( 'UPDATE emp SET deptno = 1, empname = empname + ''DEPT=2'' WHERE deptno = 2;' );
-  TestQuery( 'SELECT deptno FROM emp;' );
-  TestQuery( 'UPDATE emp SET deptno = deptno FROM dept WHERE deptno = 1;  --Ambigous' );
-  TestQuery( 'DELETE FROM emp JOIN dept ON dept.deptno = emp.deptno;' );
-
-  TestQuery( 'SELECT * FROM emp LEFT JOIN dept ON emp.deptno = dept.deptno;' );
-  TestQuery( 'SELECT T1.deptno, T1.deptname, T2.empno, T2.empname FROM dept T1, emp T2 WHERE T1.deptno=T2.deptno;' );
-  TestQuery( 'SELECT deptname				--, COUNT(empno)'#13#10 +
-             'FROM   dept D'#13#10 +
-             'JOIN   emp E ON E.deptno = D.deptno'#13#10 +
-             'WHERE  deptname != ''R&D'' AND deptname != ''IT'' -- ERROR - disabled reference for class.'#13#10 +
-             'GROUP BY deptname'#13#10 +
-             'HAVING deptname <> ''''			---COUNT(empno) > 0'#13#10 +
-             'UNION ALL'#13#10 +
-             'SELECT ''all'''#13#10 +
-             'FROM DUAL'#13#10 +
-             'ORDER BY deptname			---COUNT(empno) DESC;' );
-
-  { date: 2012-02-23, file: Subqueries.sql }
-  TestQuery( 'SELECT  (SELECT Name FROM Dept WHERE Dept.ID = Emp.ID_Dept)'#13#10'FROM    Emp;' );
-  TestQuery( 'SELECT  (SELECT Name FROM Dept D WHERE D.ID = E.ID_Dept) AS Dept_Name'#13#10'FROM    Emp E;' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   EXISTS (SELECT Name FROM Dept WHERE Dept.ID = Emp.ID_Dept);' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   NOT EXISTS (SELECT * FROM Dept D WHERE D.ID = E.ID_Dept);' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   ID_Dept IN (SELECT ID FROM Dept WHERE Dept.ID = Emp.ID_Dept);' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   E.ID_Dept NOT IN (SELECT ID FROM Dept D WHERE D.ID = E.ID_Dept);' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   (SELECT ID FROM Dept WHERE Dept.ID = Emp.ID_Dept) = 1;' );
-  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   (SELECT ID FROM Dept D WHERE D.ID = E.ID_Dept) = 1;' );
-  TestQuery( 'SELECT	*'#13#10'FROM	(SELECT * FROM Emp E);' );
-  TestQuery( 'SELECT	*'#13#10'FROM	(SELECT * FROM Emp);' );
-
-  { date: 2012-05-29, file: DDL Operations.sql }
-  TestQuery( '/* DDL test */' );
-  TestQuery( '/* 1. NON CREATE OPERATIONS */' );
-  TestQuery( 'ALTER TABLE tab1 DROP col;' );
-  TestQuery( 'ALTER TABLE tab1 DROP COLUMN col;' );
-  TestQuery( 'ALTER TABLE tab1 DROP ( col1, col2 );' );
-  TestQuery( 'ALTER TABLE tab1 RENAME COLUMN col1 TO col2;' );
-  TestQuery( '/* 2. COLUMN NAMES */' );
-  TestQuery( '/* 2.1. VARIOUS COLUMN DEFS - ALTER TABLE ADD COLUMN */' );
-  TestQuery( 'CREATE TABLE tab ( col INT );' );
-  TestQuery( 'ALTER TABLE tab ADD col INT;' );
-  TestQuery( 'ALTER TABLE tab ADD col INTEGER;' );
-  TestQuery( 'ALTER TABLE tab ADD col DECIMAL ;' );
-  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(6) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(99999999) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(8,2) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col CHAR ;' );
-  TestQuery( 'ALTER TABLE tab ADD col CHAR(5) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col CHAR(999999) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col VARCHAR ;' );
-  TestQuery( 'ALTER TABLE tab ADD col VARCHAR(5) ;' );
-  TestQuery( 'ALTER TABLE tab ADD col VARCHAR(999999) ;' );
-  TestQuery( '/* 3. MULTIPLE COLUMNS */' );
-  TestQuery( 'CREATE TABLE emp_table ( deptno INT, empno INT, empname VARCHAR(100), Salary DECIMAL(10,2) );' );
-  TestQuery( 'CREATE TABLE dept_table ( deptno INT, deptname VARCHAR(100) );' );
+//  TestQuery( 'ALTER TABLE tabelka2 MODIFY pole2 /*5*/ VARCHAR(10) NOT NULL;' );
+//  TestQuery( 'ALTER TABLE tabelka2 MODIFY pole5 VARCHAR(10) NOT NULL;' );
+//  TestQuery( 'ALTER TABLE tabelka2 ALTER COLUMN pole5 VARCHAR(20) NULL;' );
+//
+//  TestQuery( 'ALTER TABLE tabelka2 ADD CONSTRAINT tabelka2_CK2 CHECK (pole6 > 0);' );
+//
+//  TestQuery( 'ALTER TABLE tabelka2 ADD ( pole6 INT, pole7 INT );' );
+//  TestQuery( 'ALTER TABLE tabelka2 MODIFY ( pole6 VARCHAR(10), pole7 VARCHAR(10) );' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP ( pole6, pole7 );' );
+//
+//  TestQuery( 'CREATE INDEX IX_tabelka_pole4 ON tabelka2 ( pole4 );' );
+//  TestQuery( 'CREATE UNIQUE INDEX IX_tabelka_pole5 ON tabelka2 ( pole5 );' );
+//  TestQuery( 'DROP INDEX IX_tabelka_pole5;' );
+//
+//  TestQuery( 'ALTER TABLE tabelka1 DROP CONSTRAINT tabelka1_PK;' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_FK;' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_CK;' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP CONSTRAINT tabelka2_UK;' );
+//
+//  TestQuery( 'ALTER TABLE tabelka2 DROP pole4;' );
+//  TestQuery( 'ALTER TABLE tabelka2 DROP COLUMN pole5;' );
+//
+//  TestQuery( 'ALTER TABLE tabelka2 RENAME TO tabelka3;' );
+//  TestQuery( 'ALTER TABLE tabelka2 RENAME COLUMN pole3 TO pole9;' );
+//  TestQuery( 'ALTER TABLE tabelka3 RENAME COLUMN pole3 TO pole9;' );
+//
+//  TestQuery( 'SELECT A.pole2 FROM tabelka2 A JOIN tabelka1 AS B ON B.pole1 = A.pole2;' );
+//  TestQuery( 'SELECT * FROM tabelka2 A JOIN tabelka1 AS B ON B.pole1 = A.pole2;' );
+//
+//  TestQuery( 'DROP TABLE tabelka1;' );
+//  TestQuery( 'DROP TABLE tabelka2;' );
+//
+//  TestQuery( 'CREATE TABLE emp ( deptno INT, empno INT, empname VARCHAR(50) );' );
+//  TestQuery( 'CREATE TABLE dept ( deptno INT, deptname VARCHAR(50) );' );
+//  TestQuery( 'SELECT 1, deptno, * FROM emp;' );
+//  TestQuery( 'SELECT e.* FROM emp e, dept d;' );
+//  TestQuery( 'INSERT INTO emp ( deptno ) VALUES ( 1 );' );
+//  TestQuery( 'INSERT INTO emp ( deptno ) SELECT deptno FROM emp;' );
+//  TestQuery( 'DELETE FROM emp;' );
+//
+//  TestQuery( 'UPDATE emp SET deptno = 1, empname = empname + ''DEPT=2'' WHERE deptno = 2;' );
+//  TestQuery( 'SELECT deptno FROM emp;' );
+//  TestQuery( 'UPDATE emp SET deptno = deptno FROM dept WHERE deptno = 1;  --Ambigous' );
+//  TestQuery( 'DELETE FROM emp JOIN dept ON dept.deptno = emp.deptno;' );
+//
+//  TestQuery( 'SELECT * FROM emp LEFT JOIN dept ON emp.deptno = dept.deptno;' );
+//  TestQuery( 'SELECT T1.deptno, T1.deptname, T2.empno, T2.empname FROM dept T1, emp T2 WHERE T1.deptno=T2.deptno;' );
+//  TestQuery( 'SELECT deptname				--, COUNT(empno)'#13#10 +
+//             'FROM   dept D'#13#10 +
+//             'JOIN   emp E ON E.deptno = D.deptno'#13#10 +
+//             'WHERE  deptname != ''R&D'' AND deptname != ''IT'' -- ERROR - disabled reference for class.'#13#10 +
+//             'GROUP BY deptname'#13#10 +
+//             'HAVING deptname <> ''''			---COUNT(empno) > 0'#13#10 +
+//             'UNION ALL'#13#10 +
+//             'SELECT ''all'''#13#10 +
+//             'FROM DUAL'#13#10 +
+//             'ORDER BY deptname			---COUNT(empno) DESC;' );
+//
+//  { date: 2012-02-23, file: Subqueries.sql }
+//  TestQuery( 'SELECT  (SELECT Name FROM Dept WHERE Dept.ID = Emp.ID_Dept)'#13#10'FROM    Emp;' );
+//  TestQuery( 'SELECT  (SELECT Name FROM Dept D WHERE D.ID = E.ID_Dept) AS Dept_Name'#13#10'FROM    Emp E;' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   EXISTS (SELECT Name FROM Dept WHERE Dept.ID = Emp.ID_Dept);' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   NOT EXISTS (SELECT * FROM Dept D WHERE D.ID = E.ID_Dept);' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   ID_Dept IN (SELECT ID FROM Dept WHERE Dept.ID = Emp.ID_Dept);' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   E.ID_Dept NOT IN (SELECT ID FROM Dept D WHERE D.ID = E.ID_Dept);' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp  '#13#10'WHERE   (SELECT ID FROM Dept WHERE Dept.ID = Emp.ID_Dept) = 1;' );
+//  TestQuery( 'SELECT  *'#13#10'FROM    Emp E'#13#10'WHERE   (SELECT ID FROM Dept D WHERE D.ID = E.ID_Dept) = 1;' );
+//  TestQuery( 'SELECT	*'#13#10'FROM	(SELECT * FROM Emp E);' );
+//  TestQuery( 'SELECT	*'#13#10'FROM	(SELECT * FROM Emp);' );
+//
+//  { date: 2012-05-29, file: DDL Operations.sql }
+//  TestQuery( '/* DDL test */' );
+//  TestQuery( '/* 1. NON CREATE OPERATIONS */' );
+//  TestQuery( 'ALTER TABLE tab1 DROP col;' );
+//  TestQuery( 'ALTER TABLE tab1 DROP COLUMN col;' );
+//  TestQuery( 'ALTER TABLE tab1 DROP ( col1, col2 );' );
+//  TestQuery( 'ALTER TABLE tab1 RENAME COLUMN col1 TO col2;' );
+//  TestQuery( '/* 2. COLUMN NAMES */' );
+//  TestQuery( '/* 2.1. VARIOUS COLUMN DEFS - ALTER TABLE ADD COLUMN */' );
+//  TestQuery( 'CREATE TABLE tab ( col INT );' );
+//  TestQuery( 'ALTER TABLE tab ADD col INT;' );
+//  TestQuery( 'ALTER TABLE tab ADD col INTEGER;' );
+//  TestQuery( 'ALTER TABLE tab ADD col DECIMAL ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(6) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(99999999) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col DECIMAL(8,2) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col CHAR ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col CHAR(5) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col CHAR(999999) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col VARCHAR ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col VARCHAR(5) ;' );
+//  TestQuery( 'ALTER TABLE tab ADD col VARCHAR(999999) ;' );
+//  TestQuery( '/* 3. MULTIPLE COLUMNS */' );
+//  TestQuery( 'CREATE TABLE emp_table ( deptno INT, empno INT, empname VARCHAR(100), Salary DECIMAL(10,2) );' );
+//  TestQuery( 'CREATE TABLE dept_table ( deptno INT, deptname VARCHAR(100) );' );
 
   TestQuery( 'CREATE TABLE Dept	(	ID INT IDENTITY NOT NULL PRIMARY KEY,'#13#10'Name VARCHAR(10) NOT NULL UNIQUE );' );
   TestQuery( 'CREATE TABLE Emp 	(	ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,'#13#10 +
