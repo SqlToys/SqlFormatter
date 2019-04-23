@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 345   19-01-27 20:22 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 346   19-02-24 15:53 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1322,7 +1322,7 @@ begin
   //AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
     AddStr(lNode.Name, gtlsNumber, False);
 
-    lNode := lNode.Find(gtsiNone, gtkwPrec);
+    lNode := aNode.Find(gtsiNone, gtkwPrec);
     if Assigned(lNode) then begin
     //if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddComma;
     //if aNode.ColPrec <> gtsqlSizeOrPrecNotSpecified then AddStr(IntToStr(aNode.ColPrec), gtlsNumber, False);
@@ -2042,25 +2042,30 @@ begin
 //    then AddSpace(ML_DataType - Length(RawText) + lLen + 1);
 
 //if aNode.Identity then begin
-  if aNode.KeywordExt = gtkwIdentity then begin
+//if aNode.KeywordExt = gtkwIdentity then begin
+  lNode := aNode.Find(gtsiNone, gtkwIdentity);
+  if Assigned(lNode) then begin
     AddStr(gtkwIdentity);
-    lNode := aNode.Find(gtsiNone, gtkwSize);
+//  lNode := lNode.Find(gtsiNone, gtkwSize);
 //  if aNode.ColIdentitySeed >0 then begin
 //  if aNode.Int1 >0 then begin
-    if Assigned(lNode) then begin
+//  if Assigned(lNode) then begin
+    if Assigned(lNode.Find(gtsiNone, gtkwSize)) then begin
       AddStr(gttkLeftBracket);
     //AddStr(IntToStr(aNode.ColIdentitySeed), gtlsNumber, False);
     //AddStr(IntToStr(aNode.Int1), gtlsNumber, False);
-      AddStr(lNode.Name, gtlsNumber, False);
+    //AddStr(lNode.Name, gtlsNumber, False);
+      AddStr(lNode.Find(gtsiNone, gtkwSize).Name, gtlsNumber, False);
     //if aNode.ColIdentityInc >0 then AddComma;
     //if aNode.ColIdentityInc >0 then AddStr(IntToStr(aNode.ColIdentityInc), gtlsNumber, False);
 
-      lNode := lNode.Find(gtsiNone, gtkwPrec);
-      if Assigned(lNode) then begin
+//    lNode := lNode.Find(gtsiNone, gtkwPrec);
+//    if Assigned(lNode) then begin
+      if Assigned(lNode.Find(gtsiNone, gtkwPrec)) then begin
       //if aNode.Int2 >0 then AddComma;
       //if aNode.Int2 >0 then AddStr(IntToStr(aNode.Int2), gtlsNumber, False);
         AddComma;
-        AddStr(lNode.Name, gtlsNumber, False);
+        AddStr(lNode.Find(gtsiNone, gtkwPrec).Name, gtlsNumber, False);
       end;
       AddStr(gttkRightBracket);
     end;
