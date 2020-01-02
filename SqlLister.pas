@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 346   19-02-24 15:53 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 347   19-03-10 11:00 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1713,12 +1713,13 @@ begin
          end else AddStr(gttkConcatenation);
       end;
 
-      if aNode[i].Check(gtsiExprTree) or
-         aNode[i].Check(gtsiExpr, gttkNumber) or aNode[i].Check(gtsiExpr, gtkwVarchar) or
-         aNode[i].Check(gtsiExpr, gttkIdentifier) or aNode[i].Check(gtsiExpr, gttkParameterName) or
-         aNode[i].Check(gtsiExpr, gttkColumnName) or aNode[i].Check(gtsiExpr, gttkStar)
-        then List(aNode[i], aListerOpt)
-        else List(aNode[i], aListerOpt); // - [{gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
+      List(aNode[i], aListerOpt);
+//      if aNode[i].Check(gtsiExprTree) or
+//         aNode[i].Check(gtsiExpr, gttkNumber) or aNode[i].Check(gtsiExpr, gtkwVarchar) or
+//         aNode[i].Check(gtsiExpr, gttkIdentifier) or aNode[i].Check(gtsiExpr, gttkParameterName) or
+//         aNode[i].Check(gtsiExpr, gttkColumnName) or aNode[i].Check(gtsiExpr, gttkStar)
+//        then List(aNode[i], aListerOpt)
+//        else List(aNode[i], aListerOpt); // - [{gtloOnLeftSideIntend, gtloCondLeftSideOrderREMOVED{, gtloOnRightSideIntend}]);
     end;
 
 //AddRightBracket(aNode.BracketsCount);
