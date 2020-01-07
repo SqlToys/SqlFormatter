@@ -175,7 +175,501 @@ end;
 {------------------------------- Test functions -------------------------------}
 procedure GtSqlTestRun;
 begin
+  { basic SELECT tests first -----------------------------------------------------------------------------------------}
   TestQuery( 'select 1 from dual' );
+
+  { date: 2013-01-08, file: Basic Queries - Expressions.sql }
+  TestQuery( '/* ALGEBRA - proste operacje */' );
+  TestQuery( '/* dodaæ operacje ze zmian¹ znaku - minus/reverse */' );   { TODO !!! }
+  TestQuery( '/* dodaæ operacje z nawiasami */' );
+  TestQuery( 'SELECT a + b ;' );
+  TestQuery( 'SELECT a - b ;' );
+  TestQuery( 'SELECT a * b ;' );
+  TestQuery( 'SELECT a / b ;' );
+  TestQuery( 'SELECT a % b ;' );
+  TestQuery( 'SELECT a || b;' );
+
+  TestQuery( '/* zmiana poziomu pojedyncza i podwójna */' );
+  TestQuery( 'SELECT a + b + c;' );
+  TestQuery( 'SELECT a + b - c;' );
+  TestQuery( 'SELECT a + b * c;' );
+  TestQuery( 'SELECT a + b / c;' );
+  TestQuery( 'SELECT a + b % c;' );
+  TestQuery( 'SELECT a + b || c;' );
+  TestQuery( 'SELECT a - b + c;' );
+  TestQuery( 'SELECT a - b - c;' );
+  TestQuery( 'SELECT a - b * c;' );
+  TestQuery( 'SELECT a - b / c;' );
+  TestQuery( 'SELECT a - b % c;' );
+  TestQuery( 'SELECT a - b || c;' );
+  TestQuery( 'SELECT a * b + c;' );
+  TestQuery( 'SELECT a * b - c;' );
+  TestQuery( 'SELECT a * b * c;' );
+  TestQuery( 'SELECT a * b / c;' );
+  TestQuery( 'SELECT a * b % c;' );
+  TestQuery( 'SELECT a * b || c;' );
+  TestQuery( 'SELECT a / b + c;' );
+  TestQuery( 'SELECT a / b - c;' );
+  TestQuery( 'SELECT a / b * c;' );
+  TestQuery( 'SELECT a / b / c;' );
+  TestQuery( 'SELECT a / b % c;' );
+  TestQuery( 'SELECT a / b || c;' );
+  TestQuery( 'SELECT a % b + c;' );
+  TestQuery( 'SELECT a % b - c;' );
+  TestQuery( 'SELECT a % b * c;' );
+  TestQuery( 'SELECT a % b / c;' );
+  TestQuery( 'SELECT a % b % c;' );
+  TestQuery( 'SELECT a % b || c;' );
+  TestQuery( 'SELECT a || b + c;' );
+  TestQuery( 'SELECT a || b - c;' );
+  TestQuery( 'SELECT a || b * c;' );
+  TestQuery( 'SELECT a || b / c;' );
+  TestQuery( 'SELECT a || b % c;' );
+  TestQuery( 'SELECT a || b || c;' );
+
+  TestQuery( '/* czy po zmianach poziomu prawid³owe parsowanie */' );
+  TestQuery( 'SELECT a + b + c + d;' );
+  TestQuery( 'SELECT a + b + c - d;' );
+  TestQuery( 'SELECT a + b + c * d;' );
+  TestQuery( 'SELECT a + b + c / d;' );
+  TestQuery( 'SELECT a + b + c % d;' );
+  TestQuery( 'SELECT a + b + c || d;' );
+  TestQuery( 'SELECT a + b - c + d;' );
+  TestQuery( 'SELECT a + b - c - d;' );
+  TestQuery( 'SELECT a + b - c * d;' );
+  TestQuery( 'SELECT a + b - c / d;' );
+  TestQuery( 'SELECT a + b - c % d;' );
+  TestQuery( 'SELECT a + b - c || d;' );
+  TestQuery( 'SELECT a + b * c + d;' );
+  TestQuery( 'SELECT a + b * c - d;' );
+  TestQuery( 'SELECT a + b * c * d;' );
+  TestQuery( 'SELECT a + b * c / d;' );
+  TestQuery( 'SELECT a + b * c % d;' );
+  TestQuery( 'SELECT a + b * c || d;' );
+  TestQuery( 'SELECT a + b / c + d;' );
+  TestQuery( 'SELECT a + b / c - d;' );
+  TestQuery( 'SELECT a + b / c * d;' );
+  TestQuery( 'SELECT a + b / c / d;' );
+  TestQuery( 'SELECT a + b / c % d;' );
+  TestQuery( 'SELECT a + b / c || d;' );
+  TestQuery( 'SELECT a + b % c + d;' );
+  TestQuery( 'SELECT a + b % c - d;' );
+  TestQuery( 'SELECT a + b % c * d;' );
+  TestQuery( 'SELECT a + b % c / d;' );
+  TestQuery( 'SELECT a + b % c % d;' );
+  TestQuery( 'SELECT a + b % c || d;' );
+  TestQuery( 'SELECT a + b || c + d;' );
+  TestQuery( 'SELECT a + b || c - d;' );
+  TestQuery( 'SELECT a + b || c * d;' );
+  TestQuery( 'SELECT a + b || c / d;' );
+  TestQuery( 'SELECT a + b || c % d;' );
+  TestQuery( 'SELECT a + b || c || d;' );
+  TestQuery( 'SELECT a - b + c + d;' );
+  TestQuery( 'SELECT a - b + c - d;' );
+  TestQuery( 'SELECT a - b + c * d;' );
+  TestQuery( 'SELECT a - b + c / d;' );
+  TestQuery( 'SELECT a - b + c % d;' );
+  TestQuery( 'SELECT a - b + c || d;' );
+  TestQuery( 'SELECT a - b - c + d;' );
+  TestQuery( 'SELECT a - b - c - d;' );
+  TestQuery( 'SELECT a - b - c * d;' );
+  TestQuery( 'SELECT a - b - c / d;' );
+  TestQuery( 'SELECT a - b - c % d;' );
+  TestQuery( 'SELECT a - b - c || d;' );
+  TestQuery( 'SELECT a - b * c + d;' );
+  TestQuery( 'SELECT a - b * c - d;' );
+  TestQuery( 'SELECT a - b * c * d;' );
+  TestQuery( 'SELECT a - b * c / d;' );
+  TestQuery( 'SELECT a - b * c % d;' );
+  TestQuery( 'SELECT a - b * c || d;' );
+  TestQuery( 'SELECT a - b / c + d;' );
+  TestQuery( 'SELECT a - b / c - d;' );
+  TestQuery( 'SELECT a - b / c * d;' );
+  TestQuery( 'SELECT a - b / c / d;' );
+  TestQuery( 'SELECT a - b / c % d;' );
+  TestQuery( 'SELECT a - b / c || d;' );
+  TestQuery( 'SELECT a - b % c + d;' );
+  TestQuery( 'SELECT a - b % c - d;' );
+  TestQuery( 'SELECT a - b % c * d;' );
+  TestQuery( 'SELECT a - b % c / d;' );
+  TestQuery( 'SELECT a - b % c % d;' );
+  TestQuery( 'SELECT a - b % c || d;' );
+  TestQuery( 'SELECT a - b || c + d;' );
+  TestQuery( 'SELECT a - b || c - d;' );
+  TestQuery( 'SELECT a - b || c * d;' );
+  TestQuery( 'SELECT a - b || c / d;' );
+  TestQuery( 'SELECT a - b || c % d;' );
+  TestQuery( 'SELECT a - b || c || d;' );
+  TestQuery( 'SELECT a * b + c + d;' );
+  TestQuery( 'SELECT a * b + c - d;' );
+  TestQuery( 'SELECT a * b + c * d;' );
+  TestQuery( 'SELECT a * b + c / d;' );
+  TestQuery( 'SELECT a * b + c % d;' );
+  TestQuery( 'SELECT a * b + c || d;' );
+  TestQuery( 'SELECT a * b - c + d;' );
+  TestQuery( 'SELECT a * b - c - d;' );
+  TestQuery( 'SELECT a * b - c * d;' );
+  TestQuery( 'SELECT a * b - c / d;' );
+  TestQuery( 'SELECT a * b - c % d;' );
+  TestQuery( 'SELECT a * b - c || d;' );
+  TestQuery( 'SELECT a * b * c + d;' );
+  TestQuery( 'SELECT a * b * c - d;' );
+  TestQuery( 'SELECT a * b * c * d;' );
+  TestQuery( 'SELECT a * b * c / d;' );
+  TestQuery( 'SELECT a * b * c % d;' );
+  TestQuery( 'SELECT a * b * c || d;' );
+  TestQuery( 'SELECT a * b / c + d;' );
+  TestQuery( 'SELECT a * b / c - d;' );
+  TestQuery( 'SELECT a * b / c * d;' );
+  TestQuery( 'SELECT a * b / c / d;' );
+  TestQuery( 'SELECT a * b / c % d;' );
+  TestQuery( 'SELECT a * b / c || d;' );
+  TestQuery( 'SELECT a * b % c + d;' );
+  TestQuery( 'SELECT a * b % c - d;' );
+  TestQuery( 'SELECT a * b % c * d;' );
+  TestQuery( 'SELECT a * b % c / d;' );
+  TestQuery( 'SELECT a * b % c % d;' );
+  TestQuery( 'SELECT a * b % c || d;' );
+  TestQuery( 'SELECT a * b || c + d;' );
+  TestQuery( 'SELECT a * b || c - d;' );
+  TestQuery( 'SELECT a * b || c * d;' );
+  TestQuery( 'SELECT a * b || c / d;' );
+  TestQuery( 'SELECT a * b || c % d;' );
+  TestQuery( 'SELECT a * b || c || d;' );
+  TestQuery( 'SELECT a / b + c + d;' );
+  TestQuery( 'SELECT a / b + c - d;' );
+  TestQuery( 'SELECT a / b + c * d;' );
+  TestQuery( 'SELECT a / b + c / d;' );
+  TestQuery( 'SELECT a / b + c % d;' );
+  TestQuery( 'SELECT a / b + c || d;' );
+  TestQuery( 'SELECT a / b - c + d;' );
+  TestQuery( 'SELECT a / b - c - d;' );
+  TestQuery( 'SELECT a / b - c * d;' );
+  TestQuery( 'SELECT a / b - c / d;' );
+  TestQuery( 'SELECT a / b - c % d;' );
+  TestQuery( 'SELECT a / b - c || d;' );
+  TestQuery( 'SELECT a / b * c + d;' );
+  TestQuery( 'SELECT a / b * c - d;' );
+  TestQuery( 'SELECT a / b * c * d;' );
+  TestQuery( 'SELECT a / b * c / d;' );
+  TestQuery( 'SELECT a / b * c % d;' );
+  TestQuery( 'SELECT a / b * c || d;' );
+  TestQuery( 'SELECT a / b / c + d;' );
+  TestQuery( 'SELECT a / b / c - d;' );
+  TestQuery( 'SELECT a / b / c * d;' );
+  TestQuery( 'SELECT a / b / c / d;' );
+  TestQuery( 'SELECT a / b / c % d;' );
+  TestQuery( 'SELECT a / b / c || d;' );
+  TestQuery( 'SELECT a / b % c + d;' );
+  TestQuery( 'SELECT a / b % c - d;' );
+  TestQuery( 'SELECT a / b % c * d;' );
+  TestQuery( 'SELECT a / b % c / d;' );
+  TestQuery( 'SELECT a / b % c % d;' );
+  TestQuery( 'SELECT a / b % c || d;' );
+  TestQuery( 'SELECT a / b || c + d;' );
+  TestQuery( 'SELECT a / b || c - d;' );
+  TestQuery( 'SELECT a / b || c * d;' );
+  TestQuery( 'SELECT a / b || c / d;' );
+  TestQuery( 'SELECT a / b || c % d;' );
+  TestQuery( 'SELECT a / b || c || d;' );
+  TestQuery( 'SELECT a % b + c + d;' );
+  TestQuery( 'SELECT a % b + c - d;' );
+  TestQuery( 'SELECT a % b + c * d;' );
+  TestQuery( 'SELECT a % b + c / d;' );
+  TestQuery( 'SELECT a % b + c % d;' );
+  TestQuery( 'SELECT a % b + c || d;' );
+  TestQuery( 'SELECT a % b - c + d;' );
+  TestQuery( 'SELECT a % b - c - d;' );
+  TestQuery( 'SELECT a % b - c * d;' );
+  TestQuery( 'SELECT a % b - c / d;' );
+  TestQuery( 'SELECT a % b - c % d;' );
+  TestQuery( 'SELECT a % b - c || d;' );
+  TestQuery( 'SELECT a % b * c + d;' );
+  TestQuery( 'SELECT a % b * c - d;' );
+  TestQuery( 'SELECT a % b * c * d;' );
+  TestQuery( 'SELECT a % b * c / d;' );
+  TestQuery( 'SELECT a % b * c % d;' );
+  TestQuery( 'SELECT a % b * c || d;' );
+  TestQuery( 'SELECT a % b / c + d;' );
+  TestQuery( 'SELECT a % b / c - d;' );
+  TestQuery( 'SELECT a % b / c * d;' );
+  TestQuery( 'SELECT a % b / c / d;' );
+  TestQuery( 'SELECT a % b / c % d;' );
+  TestQuery( 'SELECT a % b / c || d;' );
+  TestQuery( 'SELECT a % b % c + d;' );
+  TestQuery( 'SELECT a % b % c - d;' );
+  TestQuery( 'SELECT a % b % c * d;' );
+  TestQuery( 'SELECT a % b % c / d;' );
+  TestQuery( 'SELECT a % b % c % d;' );
+  TestQuery( 'SELECT a % b % c || d;' );
+  TestQuery( 'SELECT a % b || c + d;' );
+  TestQuery( 'SELECT a % b || c - d;' );
+  TestQuery( 'SELECT a % b || c * d;' );
+  TestQuery( 'SELECT a % b || c / d;' );
+  TestQuery( 'SELECT a % b || c % d;' );
+  TestQuery( 'SELECT a % b || c || d;' );
+  TestQuery( 'SELECT a || b + c + d;' );
+  TestQuery( 'SELECT a || b + c - d;' );
+  TestQuery( 'SELECT a || b + c * d;' );
+  TestQuery( 'SELECT a || b + c / d;' );
+  TestQuery( 'SELECT a || b + c % d;' );
+  TestQuery( 'SELECT a || b + c || d;' );
+  TestQuery( 'SELECT a || b - c + d;' );
+  TestQuery( 'SELECT a || b - c - d;' );
+  TestQuery( 'SELECT a || b - c * d;' );
+  TestQuery( 'SELECT a || b - c / d;' );
+  TestQuery( 'SELECT a || b - c % d;' );
+  TestQuery( 'SELECT a || b - c || d;' );
+  TestQuery( 'SELECT a || b * c + d;' );
+  TestQuery( 'SELECT a || b * c - d;' );
+  TestQuery( 'SELECT a || b * c * d;' );
+  TestQuery( 'SELECT a || b * c / d;' );
+  TestQuery( 'SELECT a || b * c % d;' );
+  TestQuery( 'SELECT a || b * c || d;' );
+  TestQuery( 'SELECT a || b / c + d;' );
+  TestQuery( 'SELECT a || b / c - d;' );
+  TestQuery( 'SELECT a || b / c * d;' );
+  TestQuery( 'SELECT a || b / c / d;' );
+  TestQuery( 'SELECT a || b / c % d;' );
+  TestQuery( 'SELECT a || b / c || d;' );
+  TestQuery( 'SELECT a || b % c + d;' );
+  TestQuery( 'SELECT a || b % c - d;' );
+  TestQuery( 'SELECT a || b % c * d;' );
+  TestQuery( 'SELECT a || b % c / d;' );
+  TestQuery( 'SELECT a || b % c % d;' );
+  TestQuery( 'SELECT a || b % c || d;' );
+  TestQuery( 'SELECT a || b || c + d;' );
+  TestQuery( 'SELECT a || b || c - d;' );
+  TestQuery( 'SELECT a || b || c * d;' );
+  TestQuery( 'SELECT a || b || c / d;' );
+  TestQuery( 'SELECT a || b || c % d;' );
+  TestQuery( 'SELECT a || b || c || d;' );
+
+  { date: 2013-01-15, file: minus expressions.sql }
+//TestQuery( 'SELECT 1 - -1 FROM DUAL;' );
+
+  { date: 2013-01-18, file: where to or.sql }
+  TestQuery( 'SELECT  1 FROM  a WHERE a = 1 OR b IN ( 2, 3 ) ;' );
+
+  { date: 2014-01-22, file: old BRACKETS condition 1.sql }
+  TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c)' );
+
+  { date: 2014-01-30, file: old BRACKETS condition 2.sql }
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
+             'SELECT  *'#13#10 +
+             'FROM    tab'#13#10 +
+             'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
+             'AND     ((e=e AND f=f)  OR  (g=g AND h=h)  OR  (i=i))'#13#10 +
+             'OR      (j=j);' );
+
+  { date: 2014-02-04, file: old BRACKETS condition 3.sql }
+  TestQuery( 'SELECT * FROM tab WHERE (a=b) AND (c=d) ' );
+
+  { date: 2013-12-24, file: FUNCTION param name.sql }
+  TestQuery( 'SELECT fun(param_name=>1)' );
+
+  { date: 2013-11-29, file: old EXPR double quoted.sql }
+  TestQuery( 'SELECT xxx."aaa]asas"' );
+
+  { date: 2013-06-15, file: SELECT INTO mssql.sql }
+  TestQuery( 'SELECT   a'#13#10 +
+             '     ,   b'#13#10 +
+             '  INTO   table1'#13#10 +
+             '  FROM   dual ;' );
+
+  { date: 2013-06-15, file: SELECT INTO oracle.sql }
+  TestQuery( 'SELECT   a'#13#10 +
+             '     ,   b'#13#10 +
+             '  INTO   c'#13#10 +
+             '     ,   d'#13#10 +
+             '  FROM   dual ;' );
+
+  { date: 2013-05-31, file: LIMIT.sql }
+  TestQuery( 'SELECT   *  FROM   dual  limit 5, 2' );
+
+  { date: 2013-03-29, file: non existed alias.sql }
+  TestQuery( 'SELECT   A.a'#13#10 +
+             '     ,   B.b'#13#10 +
+             '     ,   c.c'#13#10 +
+             '  FROM   tab_a A'#13#10 +
+             '     ,   tab_b B' );
+
+  { date: 2013-03-18, file: todo select into.sql }
+  TestQuery( 'select 1 into a from dual' );
+
+  { date: 2013-03-09, file: space inside brackets.sql }
+  TestQuery( 'SELECT   NVL( U.WYMIAR, 1)' );
+
+  { date: 2014-10-21, file: parse sql_rowcount.sql }
+  TestQuery( 'select sql%rowcount from dual' );
+
+  { date: 2013-03-01, file: CRLF inside comment 2.sql }
+  TestQuery( 'select 1 /*'#13#10 +
+             'from dual */' );
+
+  { date: 2014-05-27, file: parse WHERE conditions.sql }
+  TestQuery( '/* too much brackets */'#13#10 +
+             'SELECT * FROM tab WHERE a=a AND b=b OR c=c;' );
+  TestQuery( 'SELECT * FROM tab WHERE (a=a AND b=b OR c=c);' );
+  TestQuery( 'SELECT  *'#13#10 +
+             'FROM    tab'#13#10 +
+             'WHERE   ((a=a AND b=b)  OR  c=c);' );
+  TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c);' );
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
+             'SELECT  *'#13#10 +
+             'FROM    tab'#13#10 +
+             'WHERE   ((a=a AND b=b)  OR  c=c);' );
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
+             'SELECT  *'#13#10 +
+             'FROM    tab'#13#10 +
+             'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
+             'AND     ((e=e AND f=f)  OR  (g=g AND h=h)  OR  (i=i))'#13#10 +
+             'OR      (j=j);' );
+  TestQuery( 'SELECT * FROM tab WHERE (a=b) AND (c=d);' );
+
+  { date: 2014-05-07, file: BRACKETS expression.sql }
+//  TestQuery( '         SELECT  1 + ( 2 )'#13#10 +
+//             '           FROM  dual ' );
+
+  { date: 2014-05-08, file: BRACKETS expression 2.sql }
+  TestQuery( 'SELECT 1;' );
+  TestQuery( 'SELECT (1);' );
+  TestQuery( 'SELECT ((1));' );
+  TestQuery( 'SELECT 1+2+3;' );
+//TestQuery( 'SELECT 1+(2+3); /* lost brackets, semicolon orphant */' );
+//TestQuery( 'SELECT (1+(2+3)); /* lost brackets, semicolon orphant */' );
+//TestQuery( 'SELECT ((1)+((2)+(3))); /* lost brackets, semicolon orphant */' );
+
+  { date: 2014-05-11, file: wrong COND escalation.sql }
+  TestQuery( 'SELECT * FROM tab WHERE a=a AND b=b OR c=c;' );
+  TestQuery( 'SELECT * FROM tab WHERE (a=a AND b=b OR c=c);' );
+  TestQuery( 'SELECT  *'#13#10 +
+             'FROM    tab'#13#10 +
+             'WHERE   ((a=a AND b=b)  OR  c=c);' );
+
+  { date: 2014-04-02, file: format DISTINCT star.sql }
+  TestQuery( ' SELECT   DISTINCT*'#13#10 +
+             '   FROM   TAB' );
+
+  TestQuery( 'SELECT xxx."aaa]asas";' );
+
+  { date: 2014-05-11, file: parse EXPR misc.sql }
+  TestQuery( 'select ''a''''''''b'''''' from dual;' );
+
+  { date: 2013-01-18, file: old UNION order by.sql }
+  TestQuery( 'select 1 from dual'#13#10 +
+             'union'#13#10 +
+             'select 2 from dual'#13#10 +
+             'order by 1' );
+
+  { date: 2012-12-30, file: Basic Queries - Conditions.sql }
+  TestQuery( '/* (Line: 15) WARUNKI - operatory porównania */' );
+  TestQuery( 'SELECT * FROM a WHERE a = 1;' );
+  TestQuery( 'SELECT * FROM a WHERE a < 1;' );
+  TestQuery( 'SELECT * FROM a WHERE a > 1;' );
+  TestQuery( 'SELECT * FROM a WHERE a <= 1; /* NOT > */' );
+  TestQuery( 'SELECT * FROM a WHERE a >= 1; /* NOT < */' );
+  TestQuery( 'SELECT * FROM a WHERE a <> 1; /* NOT = */' );
+  TestQuery( 'SELECT * FROM a WHERE a != 1; /* NOT = */' );
+  TestQuery( '/* WARUNKI - podstawowe wyra¿enia z³o¿one */' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2 OR c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2 OR c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2 AND c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2 AND c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE ( a=1 OR b=2 ) OR c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE ( a=1 AND b=2 ) OR c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE ( a=1 OR b=2 ) AND c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE ( a=1 AND b=2 ) AND c=3;' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 OR ( b=2 OR c=3 );' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 AND ( b=2 OR c=3 );' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 OR ( b=2 AND c=3 );' );
+  TestQuery( 'SELECT * FROM b WHERE a=1 AND ( b=2 AND c=3 );' );
+  TestQuery( 'SELECT * FROM c WHERE a=1 AND ( b=2 OR c=3 ) OR d=4 AND e=5 AND f=6 OR g=7 OR ( h=8 AND i=9 );' );
+  TestQuery( 'SELECT * FROM c WHERE NOT a=1 AND NOT( NOT b=2 OR NOT c=3 ) OR NOT d=4 AND NOT e=5 AND NOT f=6 OR NOT g=7 OR NOT ( NOT h=8 AND NOT i=9 );' );
+  TestQuery( '/* WARUNKI - klauzule IN, BETWEEN, EXISTS, SUBQUERY, LIKE, IS NULL */' );
+  TestQuery( 'SELECT * FROM d WHERE a IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2);' );
+  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM a WHERE (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM a WHERE NOT (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM h WHERE a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL;' );
+  TestQuery( '/* klauzule IN, BETWEEN, EXISTS, SUBQUERY, LIKE z innymi warunkami */' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 OR a IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 AND a IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE a IN (1,2) OR b=1;' );
+  TestQuery( 'SELECT * FROM d WHERE a IN (1,2) AND b=1;' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 OR a NOT IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 AND a NOT IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2) OR b=1;' );
+  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2) AND b=1;' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 OR NOT a IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE b=1 AND NOT a IN (1,2);' );
+  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2) OR b=1;' );
+  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2) AND b=1;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 OR a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 AND a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2 OR c=1;' );
+  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2 AND c=1;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 OR NOT a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 AND NOT a BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2 OR c=1;' );
+  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2 AND c=1;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 OR a NOT BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE c=1 AND a NOT BETWEEN 1 AND 2;' );
+  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2 OR c=1;' );
+  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2 AND c=1;' );
+  TestQuery( 'SELECT * FROM f WHERE c=1 OR EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM f WHERE c=1 AND EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic) OR c=1;' );
+  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic) AND c=1;' );
+  TestQuery( 'SELECT * FROM f WHERE c=1 OR NOT EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM f WHERE c=1 AND NOT EXISTS(SELECT * FROM nic);' );
+  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic) OR c=1;' );
+  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic) AND c=1;' );
+  TestQuery( 'SELECT * FROM g WHERE c=1 OR (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM g WHERE c=1 AND (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM g WHERE (SELECT a FROM b) = 1 OR c=1;' );
+  TestQuery( 'SELECT * FROM g WHERE (SELECT a FROM b) = 1 AND c=1;' );
+  TestQuery( 'SELECT * FROM g WHERE c=1 OR NOT (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM g WHERE c=1 AND NOT (SELECT a FROM b) = 1;' );
+  TestQuery( 'SELECT * FROM g WHERE NOT (SELECT a FROM b) = 1 OR c=1;' );
+  TestQuery( 'SELECT * FROM g WHERE NOT (SELECT a FROM b) = 1 AND c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 OR a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 AND a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE a LIKE b OR c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE a LIKE b AND c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 OR NOT a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 AND NOT a LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b OR c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b AND c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 OR a NOT LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE c=1 AND a NOT LIKE b;' );
+  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b OR c=1;' );
+  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b AND c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 OR a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 AND a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NULL OR c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NULL AND c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 OR NOT a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 AND NOT a IS NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL OR c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL AND c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 OR a IS NOT NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE c=1 AND a IS NOT NULL;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL OR c=1;' );
+  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL AND c=1;' );
 
   { date: 2010-08-12, file: 2010 First Test.sql }
   TestQuery( 'USE comit ;' );
@@ -1267,392 +1761,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   TestQuery( 'GRANT SELECT ON PST_SYSTEM.FAST_ATTACHMENTS TO PST;' );
   TestQuery( 'GRANT INSERT ON PST_SYSTEM.FAST_ATTACHMENTS TO PST;' );
 
-  { date: 2012-12-30, file: Basic Queries - Conditions.sql }
-  TestQuery( '/* (Line: 15) WARUNKI - operatory porównania */' );
-  TestQuery( 'SELECT * FROM a WHERE a = 1;' );
-  TestQuery( 'SELECT * FROM a WHERE a < 1;' );
-  TestQuery( 'SELECT * FROM a WHERE a > 1;' );
-  TestQuery( 'SELECT * FROM a WHERE a <= 1; /* NOT > */' );
-  TestQuery( 'SELECT * FROM a WHERE a >= 1; /* NOT < */' );
-  TestQuery( 'SELECT * FROM a WHERE a <> 1; /* NOT = */' );
-  TestQuery( 'SELECT * FROM a WHERE a != 1; /* NOT = */' );
-  TestQuery( '/* WARUNKI - podstawowe wyra¿enia z³o¿one */' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2 OR c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2 OR c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2 AND c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2 AND c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE ( a=1 OR b=2 ) OR c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE ( a=1 AND b=2 ) OR c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE ( a=1 OR b=2 ) AND c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE ( a=1 AND b=2 ) AND c=3;' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 OR ( b=2 OR c=3 );' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 AND ( b=2 OR c=3 );' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 OR ( b=2 AND c=3 );' );
-  TestQuery( 'SELECT * FROM b WHERE a=1 AND ( b=2 AND c=3 );' );
-  TestQuery( 'SELECT * FROM c WHERE a=1 AND ( b=2 OR c=3 ) OR d=4 AND e=5 AND f=6 OR g=7 OR ( h=8 AND i=9 );' );
-  TestQuery( 'SELECT * FROM c WHERE NOT a=1 AND NOT( NOT b=2 OR NOT c=3 ) OR NOT d=4 AND NOT e=5 AND NOT f=6 OR NOT g=7 OR NOT ( NOT h=8 AND NOT i=9 );' );
-  TestQuery( '/* WARUNKI - klauzule IN, BETWEEN, EXISTS, SUBQUERY, LIKE, IS NULL */' );
-  TestQuery( 'SELECT * FROM d WHERE a IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2);' );
-  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM a WHERE (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM a WHERE NOT (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM h WHERE a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL;' );
-  TestQuery( '/* klauzule IN, BETWEEN, EXISTS, SUBQUERY, LIKE z innymi warunkami */' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 OR a IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 AND a IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE a IN (1,2) OR b=1;' );
-  TestQuery( 'SELECT * FROM d WHERE a IN (1,2) AND b=1;' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 OR a NOT IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 AND a NOT IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2) OR b=1;' );
-  TestQuery( 'SELECT * FROM d WHERE a NOT IN (1,2) AND b=1;' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 OR NOT a IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE b=1 AND NOT a IN (1,2);' );
-  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2) OR b=1;' );
-  TestQuery( 'SELECT * FROM d WHERE NOT a IN (1,2) AND b=1;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 OR a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 AND a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2 OR c=1;' );
-  TestQuery( 'SELECT * FROM e WHERE a BETWEEN 1 AND 2 AND c=1;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 OR NOT a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 AND NOT a BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2 OR c=1;' );
-  TestQuery( 'SELECT * FROM e WHERE NOT a BETWEEN 1 AND 2 AND c=1;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 OR a NOT BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE c=1 AND a NOT BETWEEN 1 AND 2;' );
-  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2 OR c=1;' );
-  TestQuery( 'SELECT * FROM e WHERE a NOT BETWEEN 1 AND 2 AND c=1;' );
-  TestQuery( 'SELECT * FROM f WHERE c=1 OR EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM f WHERE c=1 AND EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic) OR c=1;' );
-  TestQuery( 'SELECT * FROM f WHERE EXISTS(SELECT * FROM nic) AND c=1;' );
-  TestQuery( 'SELECT * FROM f WHERE c=1 OR NOT EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM f WHERE c=1 AND NOT EXISTS(SELECT * FROM nic);' );
-  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic) OR c=1;' );
-  TestQuery( 'SELECT * FROM f WHERE NOT EXISTS(SELECT * FROM nic) AND c=1;' );
-  TestQuery( 'SELECT * FROM g WHERE c=1 OR (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM g WHERE c=1 AND (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM g WHERE (SELECT a FROM b) = 1 OR c=1;' );
-  TestQuery( 'SELECT * FROM g WHERE (SELECT a FROM b) = 1 AND c=1;' );
-  TestQuery( 'SELECT * FROM g WHERE c=1 OR NOT (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM g WHERE c=1 AND NOT (SELECT a FROM b) = 1;' );
-  TestQuery( 'SELECT * FROM g WHERE NOT (SELECT a FROM b) = 1 OR c=1;' );
-  TestQuery( 'SELECT * FROM g WHERE NOT (SELECT a FROM b) = 1 AND c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 OR a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 AND a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE a LIKE b OR c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE a LIKE b AND c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 OR NOT a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 AND NOT a LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b OR c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE NOT a LIKE b AND c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 OR a NOT LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE c=1 AND a NOT LIKE b;' );
-  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b OR c=1;' );
-  TestQuery( 'SELECT * FROM h WHERE a NOT LIKE b AND c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 OR a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 AND a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NULL OR c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NULL AND c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 OR NOT a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 AND NOT a IS NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL OR c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE NOT a IS NULL AND c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 OR a IS NOT NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE c=1 AND a IS NOT NULL;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL OR c=1;' );
-  TestQuery( 'SELECT * FROM i WHERE a IS NOT NULL AND c=1;' );
-
-  { date: 2013-01-08, file: Basic Queries - Expressions.sql }
-  TestQuery( '/* ALGEBRA - proste operacje */' );
-  TestQuery( '/* dodaæ operacje ze zmian¹ znaku - minus/reverse */' );
-  TestQuery( '/* dodaæ operacje z nawiasami */' );
-  TestQuery( 'SELECT a + b ;' );
-  TestQuery( 'SELECT a - b ;' );
-  TestQuery( 'SELECT a * b ;' );
-  TestQuery( 'SELECT a / b ;' );
-  TestQuery( 'SELECT a % b ;' );
-  TestQuery( 'SELECT a || b;' );
-  TestQuery( '/* zmiana poziomu pojedyncza i podwójna */' );
-  TestQuery( 'SELECT a + b + c;' );
-  TestQuery( 'SELECT a + b - c;' );
-//TestQuery( 'SELECT a + b * c;' );
-//TestQuery( 'SELECT a + b / c;' );
-//TestQuery( 'SELECT a + b % c;' );
-  TestQuery( 'SELECT a + b || c;' );
-  TestQuery( 'SELECT a - b + c;' );
-  TestQuery( 'SELECT a - b - c;' );
-//TestQuery( 'SELECT a - b * c;' );
-//TestQuery( 'SELECT a - b / c;' );
-//TestQuery( 'SELECT a - b % c;' );
-  TestQuery( 'SELECT a - b || c;' );
-  TestQuery( 'SELECT a * b + c;' );
-//TestQuery( 'SELECT a * b - c;' );
-  TestQuery( 'SELECT a * b * c;' );
-  TestQuery( 'SELECT a * b / c;' );
-  TestQuery( 'SELECT a * b % c;' );
-  TestQuery( 'SELECT a * b || c;' );
-  TestQuery( 'SELECT a / b + c;' );
-//TestQuery( 'SELECT a / b - c;' );
-  TestQuery( 'SELECT a / b * c;' );
-  TestQuery( 'SELECT a / b / c;' );
-  TestQuery( 'SELECT a / b % c;' );
-  TestQuery( 'SELECT a / b || c;' );
-  TestQuery( 'SELECT a % b + c;' );
-//TestQuery( 'SELECT a % b - c;' );
-  TestQuery( 'SELECT a % b * c;' );
-  TestQuery( 'SELECT a % b / c;' );
-  TestQuery( 'SELECT a % b % c;' );
-  TestQuery( 'SELECT a % b || c;' );
-//TestQuery( 'SELECT a || b + c;' );
-//TestQuery( 'SELECT a || b - c;' );
-  TestQuery( 'SELECT a || b * c;' );
-  TestQuery( 'SELECT a || b / c;' );
-  TestQuery( 'SELECT a || b % c;' );
-  TestQuery( 'SELECT a || b || c;' );
-  TestQuery( '/* czy po zmianach poziomu prawid³owe parsowanie */' );
-  TestQuery( 'SELECT a + b + c + d;' );
-  TestQuery( 'SELECT a + b + c - d;' );
-//TestQuery( 'SELECT a + b + c * d;' );
-//TestQuery( 'SELECT a + b + c / d;' );
-//TestQuery( 'SELECT a + b + c % d;' );
-  TestQuery( 'SELECT a + b + c || d;' );
-  TestQuery( 'SELECT a + b - c + d;' );
-  TestQuery( 'SELECT a + b - c - d;' );
-//TestQuery( 'SELECT a + b - c * d;' );
-//TestQuery( 'SELECT a + b - c / d;' );
-//TestQuery( 'SELECT a + b - c % d;' );
-  TestQuery( 'SELECT a + b - c || d;' );
-//TestQuery( 'SELECT a + b * c + d;' );
-//TestQuery( 'SELECT a + b * c - d;' );
-//TestQuery( 'SELECT a + b * c * d;' );
-//TestQuery( 'SELECT a + b * c / d;' );
-//TestQuery( 'SELECT a + b * c % d;' );
-//TestQuery( 'SELECT a + b * c || d;' );
-//TestQuery( 'SELECT a + b / c + d;' );
-//TestQuery( 'SELECT a + b / c - d;' );
-//TestQuery( 'SELECT a + b / c * d;' );
-//TestQuery( 'SELECT a + b / c / d;' );
-//TestQuery( 'SELECT a + b / c % d;' );
-//TestQuery( 'SELECT a + b / c || d;' );
-//TestQuery( 'SELECT a + b % c + d;' );
-//TestQuery( 'SELECT a + b % c - d;' );
-//TestQuery( 'SELECT a + b % c * d;' );
-//TestQuery( 'SELECT a + b % c / d;' );
-//TestQuery( 'SELECT a + b % c % d;' );
-//TestQuery( 'SELECT a + b % c || d;' );
-  TestQuery( 'SELECT a + b || c + d;' );
-  TestQuery( 'SELECT a + b || c - d;' );
-//TestQuery( 'SELECT a + b || c * d;' );
-//TestQuery( 'SELECT a + b || c / d;' );
-//TestQuery( 'SELECT a + b || c % d;' );
-  TestQuery( 'SELECT a + b || c || d;' );
-  TestQuery( 'SELECT a - b + c + d;' );
-  TestQuery( 'SELECT a - b + c - d;' );
-//TestQuery( 'SELECT a - b + c * d;' );
-//TestQuery( 'SELECT a - b + c / d;' );
-//TestQuery( 'SELECT a - b + c % d;' );
-  TestQuery( 'SELECT a - b + c || d;' );
-  TestQuery( 'SELECT a - b - c + d;' );
-  TestQuery( 'SELECT a - b - c - d;' );
-//TestQuery( 'SELECT a - b - c * d;' );
-//TestQuery( 'SELECT a - b - c / d;' );
-//TestQuery( 'SELECT a - b - c % d;' );
-  TestQuery( 'SELECT a - b - c || d;' );
-//TestQuery( 'SELECT a - b * c + d;' );
-//TestQuery( 'SELECT a - b * c - d;' );
-//TestQuery( 'SELECT a - b * c * d;' );
-//  TestQuery( 'SELECT a - b * c / d;' );
-//  TestQuery( 'SELECT a - b * c % d;' );
-//  TestQuery( 'SELECT a - b * c || d;' );
-//  TestQuery( 'SELECT a - b / c + d;' );
-//  TestQuery( 'SELECT a - b / c - d;' );
-//  TestQuery( 'SELECT a - b / c * d;' );
-//  TestQuery( 'SELECT a - b / c / d;' );
-//  TestQuery( 'SELECT a - b / c % d;' );
-//  TestQuery( 'SELECT a - b / c || d;' );
-//  TestQuery( 'SELECT a - b % c + d;' );
-//  TestQuery( 'SELECT a - b % c - d;' );
-//  TestQuery( 'SELECT a - b % c * d;' );
-//  TestQuery( 'SELECT a - b % c / d;' );
-//  TestQuery( 'SELECT a - b % c % d;' );
-//  TestQuery( 'SELECT a - b % c || d;' );
-//  TestQuery( 'SELECT a - b || c + d;' );
-//  TestQuery( 'SELECT a - b || c - d;' );
-//  TestQuery( 'SELECT a - b || c * d;' );
-//  TestQuery( 'SELECT a - b || c / d;' );
-//  TestQuery( 'SELECT a - b || c % d;' );
-//  TestQuery( 'SELECT a - b || c || d;' );
-//  TestQuery( 'SELECT a * b + c + d;' );
-//  TestQuery( 'SELECT a * b + c - d;' );
-//  TestQuery( 'SELECT a * b + c * d;' );
-//  TestQuery( 'SELECT a * b + c / d;' );
-//  TestQuery( 'SELECT a * b + c % d;' );
-//  TestQuery( 'SELECT a * b + c || d;' );
-//  TestQuery( 'SELECT a * b - c + d;' );
-//  TestQuery( 'SELECT a * b - c - d;' );
-//  TestQuery( 'SELECT a * b - c * d;' );
-//  TestQuery( 'SELECT a * b - c / d;' );
-//  TestQuery( 'SELECT a * b - c % d;' );
-//  TestQuery( 'SELECT a * b - c || d;' );
-//  TestQuery( 'SELECT a * b * c + d;' );
-//  TestQuery( 'SELECT a * b * c - d;' );
-//  TestQuery( 'SELECT a * b * c * d;' );
-//  TestQuery( 'SELECT a * b * c / d;' );
-//  TestQuery( 'SELECT a * b * c % d;' );
-//  TestQuery( 'SELECT a * b * c || d;' );
-//  TestQuery( 'SELECT a * b / c + d;' );
-//  TestQuery( 'SELECT a * b / c - d;' );
-//  TestQuery( 'SELECT a * b / c * d;' );
-//  TestQuery( 'SELECT a * b / c / d;' );
-//  TestQuery( 'SELECT a * b / c % d;' );
-//  TestQuery( 'SELECT a * b / c || d;' );
-//  TestQuery( 'SELECT a * b % c + d;' );
-//  TestQuery( 'SELECT a * b % c - d;' );
-//  TestQuery( 'SELECT a * b % c * d;' );
-//  TestQuery( 'SELECT a * b % c / d;' );
-//  TestQuery( 'SELECT a * b % c % d;' );
-//  TestQuery( 'SELECT a * b % c || d;' );
-//  TestQuery( 'SELECT a * b || c + d;' );
-//  TestQuery( 'SELECT a * b || c - d;' );
-//  TestQuery( 'SELECT a * b || c * d;' );
-//  TestQuery( 'SELECT a * b || c / d;' );
-//  TestQuery( 'SELECT a * b || c % d;' );
-//  TestQuery( 'SELECT a * b || c || d;' );
-//  TestQuery( 'SELECT a / b + c + d;' );
-//  TestQuery( 'SELECT a / b + c - d;' );
-//  TestQuery( 'SELECT a / b + c * d;' );
-//  TestQuery( 'SELECT a / b + c / d;' );
-//  TestQuery( 'SELECT a / b + c % d;' );
-//  TestQuery( 'SELECT a / b + c || d;' );
-//  TestQuery( 'SELECT a / b - c + d;' );
-//  TestQuery( 'SELECT a / b - c - d;' );
-//  TestQuery( 'SELECT a / b - c * d;' );
-//  TestQuery( 'SELECT a / b - c / d;' );
-//  TestQuery( 'SELECT a / b - c % d;' );
-//  TestQuery( 'SELECT a / b - c || d;' );
-//  TestQuery( 'SELECT a / b * c + d;' );
-//  TestQuery( 'SELECT a / b * c - d;' );
-//  TestQuery( 'SELECT a / b * c * d;' );
-//  TestQuery( 'SELECT a / b * c / d;' );
-//  TestQuery( 'SELECT a / b * c % d;' );
-//  TestQuery( 'SELECT a / b * c || d;' );
-//  TestQuery( 'SELECT a / b / c + d;' );
-//  TestQuery( 'SELECT a / b / c - d;' );
-//  TestQuery( 'SELECT a / b / c * d;' );
-//  TestQuery( 'SELECT a / b / c / d;' );
-//  TestQuery( 'SELECT a / b / c % d;' );
-//  TestQuery( 'SELECT a / b / c || d;' );
-//  TestQuery( 'SELECT a / b % c + d;' );
-//  TestQuery( 'SELECT a / b % c - d;' );
-//  TestQuery( 'SELECT a / b % c * d;' );
-//  TestQuery( 'SELECT a / b % c / d;' );
-//  TestQuery( 'SELECT a / b % c % d;' );
-//  TestQuery( 'SELECT a / b % c || d;' );
-//  TestQuery( 'SELECT a / b || c + d;' );
-//  TestQuery( 'SELECT a / b || c - d;' );
-//  TestQuery( 'SELECT a / b || c * d;' );
-//  TestQuery( 'SELECT a / b || c / d;' );
-//  TestQuery( 'SELECT a / b || c % d;' );
-//  TestQuery( 'SELECT a / b || c || d;' );
-//  TestQuery( 'SELECT a % b + c + d;' );
-//  TestQuery( 'SELECT a % b + c - d;' );
-//  TestQuery( 'SELECT a % b + c * d;' );
-//  TestQuery( 'SELECT a % b + c / d;' );
-//  TestQuery( 'SELECT a % b + c % d;' );
-//  TestQuery( 'SELECT a % b + c || d;' );
-//  TestQuery( 'SELECT a % b - c + d;' );
-//  TestQuery( 'SELECT a % b - c - d;' );
-//  TestQuery( 'SELECT a % b - c * d;' );
-//  TestQuery( 'SELECT a % b - c / d;' );
-//  TestQuery( 'SELECT a % b - c % d;' );
-//  TestQuery( 'SELECT a % b - c || d;' );
-//  TestQuery( 'SELECT a % b * c + d;' );
-//  TestQuery( 'SELECT a % b * c - d;' );
-//  TestQuery( 'SELECT a % b * c * d;' );
-//  TestQuery( 'SELECT a % b * c / d;' );
-//  TestQuery( 'SELECT a % b * c % d;' );
-//  TestQuery( 'SELECT a % b * c || d;' );
-//  TestQuery( 'SELECT a % b / c + d;' );
-//  TestQuery( 'SELECT a % b / c - d;' );
-//  TestQuery( 'SELECT a % b / c * d;' );
-//  TestQuery( 'SELECT a % b / c / d;' );
-//  TestQuery( 'SELECT a % b / c % d;' );
-//  TestQuery( 'SELECT a % b / c || d;' );
-//  TestQuery( 'SELECT a % b % c + d;' );
-//  TestQuery( 'SELECT a % b % c - d;' );
-//  TestQuery( 'SELECT a % b % c * d;' );
-//  TestQuery( 'SELECT a % b % c / d;' );
-//  TestQuery( 'SELECT a % b % c % d;' );
-//  TestQuery( 'SELECT a % b % c || d;' );
-//  TestQuery( 'SELECT a % b || c + d;' );
-//  TestQuery( 'SELECT a % b || c - d;' );
-//  TestQuery( 'SELECT a % b || c * d;' );
-//  TestQuery( 'SELECT a % b || c / d;' );
-//  TestQuery( 'SELECT a % b || c % d;' );
-//  TestQuery( 'SELECT a % b || c || d;' );
-//  TestQuery( 'SELECT a || b + c + d;' );
-//  TestQuery( 'SELECT a || b + c - d;' );
-//  TestQuery( 'SELECT a || b + c * d;' );
-//  TestQuery( 'SELECT a || b + c / d;' );
-//  TestQuery( 'SELECT a || b + c % d;' );
-//  TestQuery( 'SELECT a || b + c || d;' );
-//  TestQuery( 'SELECT a || b - c + d;' );
-//  TestQuery( 'SELECT a || b - c - d;' );
-//  TestQuery( 'SELECT a || b - c * d;' );
-//  TestQuery( 'SELECT a || b - c / d;' );
-//  TestQuery( 'SELECT a || b - c % d;' );
-//  TestQuery( 'SELECT a || b - c || d;' );
-//  TestQuery( 'SELECT a || b * c + d;' );
-//  TestQuery( 'SELECT a || b * c - d;' );
-//  TestQuery( 'SELECT a || b * c * d;' );
-//  TestQuery( 'SELECT a || b * c / d;' );
-//  TestQuery( 'SELECT a || b * c % d;' );
-//  TestQuery( 'SELECT a || b * c || d;' );
-//  TestQuery( 'SELECT a || b / c + d;' );
-//  TestQuery( 'SELECT a || b / c - d;' );
-//  TestQuery( 'SELECT a || b / c * d;' );
-//  TestQuery( 'SELECT a || b / c / d;' );
-//  TestQuery( 'SELECT a || b / c % d;' );
-//  TestQuery( 'SELECT a || b / c || d;' );
-//  TestQuery( 'SELECT a || b % c + d;' );
-//  TestQuery( 'SELECT a || b % c - d;' );
-//  TestQuery( 'SELECT a || b % c * d;' );
-//  TestQuery( 'SELECT a || b % c / d;' );
-//  TestQuery( 'SELECT a || b % c % d;' );
-//  TestQuery( 'SELECT a || b % c || d;' );
-//  TestQuery( 'SELECT a || b || c + d;' );
-//  TestQuery( 'SELECT a || b || c - d;' );
-//  TestQuery( 'SELECT a || b || c * d;' );
-//  TestQuery( 'SELECT a || b || c / d;' );
-//  TestQuery( 'SELECT a || b || c % d;' );
-//  TestQuery( 'SELECT a || b || c || d;' );
-
-  { date: 2013-01-15, file: minus expressions.sql }
-//TestQuery( 'SELECT 1 - -1 FROM DUAL;' );
-
-  { date: 2013-01-18, file: where to or.sql }
-  TestQuery( 'SELECT  1 FROM  a WHERE a = 1 OR b IN ( 2, 3 ) ;' );
-
-  { date: 2013-01-18, file: old UNION order by.sql }
-  TestQuery( 'select 1 from dual'#13#10 +
-             'union'#13#10 +
-             'select 2 from dual'#13#10 +
-             'order by 1' );
-
   { date: 2013-01-23, file: kwerenda do HD_USLUGA_INTERFACE MDembka.sql }
   TestQuery( 'select distinct '#13#10 +
              '       ut.id_uslugatele as id_uslugatele'#13#10 +
@@ -2012,10 +2120,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   { date: 2013-03-01, file: parse global temporary table.sql }
   TestQuery( 'create global temporary table a (b int );' );
 
-  { date: 2013-03-01, file: CRLF inside comment 2.sql }
-  TestQuery( 'select 1 /*'#13#10 +
-             'from dual */' );
-
   { date: 2013-03-04, file: ADD CONSTRAINT.sql }
   TestQuery( 'ALTER TABLE TYP_SWIATLOWODU_WLOKNO'#13#10 +
              'ADD ID_WLOKNO_TYP INT NULL REFERENCES WLOKNO_TYP;' );
@@ -2043,9 +2147,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'FROM      WLOKNO WL'#13#10 +
              'LEFT JOIN WEZEL_KABEL WK1 ON WK1.ID = WL.ID_WEZEL_KABEL_1'#13#10 +
              'LEFT JOIN WEZEL_KABEL WK2 ON WK2.ID = WL.ID_WEZEL_KABEL_2' );
-
-  { date: 2013-03-09, file: space inside brackets.sql }
-  TestQuery( 'SELECT   NVL( U.WYMIAR, 1)' );
 
   { date: 2013-03-09, file: alias and table color in column name with dots.sql }
   TestQuery( 'SELECT   *'#13#10 +
@@ -2153,9 +2254,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   { date: 2013-03-16, file: insert.sql }
   TestQuery( 'INSERT INTO tab( a) VALUES (1)' );
 
-  { date: 2013-03-18, file: todo select into.sql }
-  TestQuery( 'select 1 into a from dual' );
-
   { date: 2013-03-19, file: ALTER TABLE col + ref.sql }
   TestQuery( 'ALTER TABLE PARA_CU_POMIAR'#13#10 +
              'ADD ID_NUMER_TEL INT NULL'#13#10 +
@@ -2212,13 +2310,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              ' GROUP BY   UE.ID'#13#10 +
              '        ,   UE.NR'#13#10 +
              '        ,   UE.ID_WEZEL' );
-
-  { date: 2013-03-29, file: non existed alias.sql }
-  TestQuery( 'SELECT   A.a'#13#10 +
-             '     ,   B.b'#13#10 +
-             '     ,   c.c'#13#10 +
-             '  FROM   tab_a A'#13#10 +
-             '     ,   tab_b B' );
 
   { date: 2013-03-29, file: ON clause intend.sql }
   TestQuery( 'SELECT   *'#13#10 +
@@ -2952,9 +3043,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   TestQuery( 'create user tomek;' );
   TestQuery( 'create login tomek;' );
 
-  { date: 2013-05-31, file: LIMIT.sql }
-  TestQuery( 'SELECT   *  FROM   dual  limit 5, 2' );
-
   { date: 2013-05-31, file: INSERT OR REPLACE.sql }
   TestQuery( 'insert or replace into a (b) values (1);' );
 
@@ -3010,19 +3098,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   { date: 2013-06-13, file: DELETE exprlist.sql }
   TestQuery( 'DELETE FROM tab1;' );
   TestQuery( 'DELETE m.* FROM materials m JOIN product p;' );
-
-  { date: 2013-06-15, file: SELECT INTO mssql.sql }
-  TestQuery( 'SELECT   a'#13#10 +
-             '     ,   b'#13#10 +
-             '  INTO   table1'#13#10 +
-             '  FROM   dual ;' );
-
-  { date: 2013-06-15, file: SELECT INTO oracle.sql }
-  TestQuery( 'SELECT   a'#13#10 +
-             '     ,   b'#13#10 +
-             '  INTO   c'#13#10 +
-             '     ,   d'#13#10 +
-             '  FROM   dual ;' );
 
   { date: 2013-07-03, file: BETWEEN expr.sql }
 //TestQuery( 'select * from KLASY_IP4_V WHERE 256*(256*(256*IP_A+IP_B)+IP_C)+IP_D BETWEEN IP AND BROADCAST' );
@@ -3709,9 +3784,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
 //             '  WHERE   IMP.ID_ELEMENT  IS NULL'#13#10 +
 //             '    AND   IMP.KOD         = ''L'';' );
 
-  { date: 2013-11-29, file: old EXPR double quoted.sql }
-  TestQuery( 'SELECT xxx."aaa]asas"' );
-
   { date: 2013-12-06, file: old UNION alias intend.sql }
   TestQuery( ' SELECT   1 AS         A1'#13#10 +
              '      ,   2 AS SECOND_ONE'#13#10 +
@@ -3743,9 +3815,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              ''#13#10 +
              'END;' );
 
-  { date: 2013-12-24, file: FUNCTION param name.sql }
-  TestQuery( 'SELECT fun(param_name=>1)' );
-
   { date: 2013-12-25, file: old IN condition wo close bracket.sql }
   TestQuery( ' SELECT   USL.*'#13#10 +
              '   FROM   USLUGA_EXT  USL'#13#10 +
@@ -3769,19 +3838,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              ')'#13#10 +
              'ORDER BY PTYP.PASSPORT_TYPE_NAME, V.NR' );
 
-  { date: 2014-01-22, file: old BRACKETS condition 1.sql }
-  TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c)' );
-
-  { date: 2014-01-30, file: old BRACKETS condition 2.sql }
-  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
-             'SELECT  *'#13#10 +
-             'FROM    tab'#13#10 +
-             'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
-             'AND     ((e=e AND f=f)  OR  (g=g AND h=h)  OR  (i=i))'#13#10 +
-             'OR      (j=j);' );
-
-  { date: 2014-02-04, file: old BRACKETS condition 3.sql }
-  TestQuery( 'SELECT * FROM tab WHERE (a=b) AND (c=d) ' );
 
   { date: 2014-02-24, file: parse WHERE subquery.sql }
 //  TestQuery( '  INSERT INTO   URZADZENIE_IP'#13#10 +
@@ -3803,34 +3859,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'WHERE tr.b_punkt_styku_a != 1'#13#10 +
              'AND ( pv.b_dzierzawa = 1 OR wl.b_operator_wlasny != 1 )' );
 
-  { date: 2014-04-02, file: format DISTINCT star.sql }
-  TestQuery( ' SELECT   DISTINCT*'#13#10 +
-             '   FROM   TAB' );
-
-  { date: 2014-05-07, file: BRACKETS expression.sql }
-//  TestQuery( '         SELECT  1 + ( 2 )'#13#10 +
-//             '           FROM  dual ' );
-
-  { date: 2014-05-08, file: BRACKETS expression 2.sql }
-  TestQuery( 'SELECT 1;' );
-  TestQuery( 'SELECT (1);' );
-  TestQuery( 'SELECT ((1));' );
-  TestQuery( 'SELECT 1+2+3;' );
-//TestQuery( 'SELECT 1+(2+3); /* lost brackets, semicolon orphant */' );
-//TestQuery( 'SELECT (1+(2+3)); /* lost brackets, semicolon orphant */' );
-//TestQuery( 'SELECT ((1)+((2)+(3))); /* lost brackets, semicolon orphant */' );
-
-  { date: 2014-05-11, file: wrong COND escalation.sql }
-  TestQuery( 'SELECT * FROM tab WHERE a=a AND b=b OR c=c;' );
-  TestQuery( 'SELECT * FROM tab WHERE (a=a AND b=b OR c=c);' );
-  TestQuery( 'SELECT  *'#13#10 +
-             'FROM    tab'#13#10 +
-             'WHERE   ((a=a AND b=b)  OR  c=c);' );
-
-  { date: 2014-05-11, file: parse EXPR misc.sql }
-  TestQuery( 'select ''a''''''''b'''''' from dual;' );
-
-  TestQuery( 'SELECT xxx."aaa]asas";' );
   TestQuery( 'SELECT ''SELECT '''''' || table_name || '''''', '' || ''COUNT(*) AS ILE FROM '' || table_name || '' WHERE ID IS NULL'' || CHR(13) || CHR(10) ||'#13#10 +
              '       ''UNION ALL'' /*|| CHR(13) || CHR(10)*/'#13#10 +
              'FROM user_tab_cols'#13#10 +
@@ -4579,25 +4607,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
 //             '           +1 - height)), -1,''YES'',''NO'') CAN_REDUCE_LEVEL'#13#10 +
 //             '  from index_stats;' );
 
-  { date: 2014-05-27, file: parse WHERE conditions.sql }
-  TestQuery( '/* too much brackets */'#13#10 +
-             'SELECT * FROM tab WHERE a=a AND b=b OR c=c;' );
-  TestQuery( 'SELECT * FROM tab WHERE (a=a AND b=b OR c=c);' );
-  TestQuery( 'SELECT  *'#13#10 +
-             'FROM    tab'#13#10 +
-             'WHERE   ((a=a AND b=b)  OR  c=c);' );
-  TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c);' );
-  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
-             'SELECT  *'#13#10 +
-             'FROM    tab'#13#10 +
-             'WHERE   ((a=a AND b=b)  OR  c=c);' );
-  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
-             'SELECT  *'#13#10 +
-             'FROM    tab'#13#10 +
-             'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
-             'AND     ((e=e AND f=f)  OR  (g=g AND h=h)  OR  (i=i))'#13#10 +
-             'OR      (j=j);' );
-  TestQuery( 'SELECT * FROM tab WHERE (a=b) AND (c=d);' );
   TestQuery( ' SELECT   USL.*'#13#10 +
              '   FROM   USLUGA_EXT  USL'#13#10 +
              '  WHERE   USL.ID IN '#13#10 +
@@ -4823,8 +4832,11 @@ TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
   { date: 2014-10-21, file: parse column datatype.sql }
 //TestQuery( 'create table nic ( nic nic.nic%type );' );
 
-  { date: 2014-10-21, file: parse sql_rowcount.sql }
-  TestQuery( 'select sql%rowcount from dual' );
+
+
+
+
+
 
 
 //TestFinish;

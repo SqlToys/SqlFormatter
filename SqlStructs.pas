@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 312   19-01-21 15:18 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 313   19-03-10 15:29 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -220,6 +220,7 @@ type
   //function        TablesCount: Integer;
 
     function        ExprTreeOwner: TGtSqlNode;
+    function        ExprTreeOperator: TGtLexToken;
   //function        ConditionsCount: Integer;
 
     procedure       KeywordAuxAdd     (aKeywordAux: TGtLexToken);
@@ -831,6 +832,14 @@ begin
 
 //Result := OwnerOfAKind(gtsiExprTree);
   Result := FindOwner(gtsiExprTree);
+end;
+
+{ returns operator }
+function TGtSqlNode.ExprTreeOperator: TGtLexToken;
+begin
+  Result := gttkConcatenation ;
+  if KeywordAuxCheck(gttkPlus) then Result := gttkPlus else
+  if KeywordAuxCheck(gttkStar) then Result := gttkStar ;
 end;
 
 { drills down cond tree to count single conditions }

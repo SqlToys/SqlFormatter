@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 347   19-03-10 11:00 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 348   19-03-10 15:29 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1704,10 +1704,10 @@ begin
 
 //      aListerOpt := aListerOpt - [ gtloOnLeftSideIntend, gtloOnRightSideIntend ];
 
-         if aNode[i].KeywordAuxCheck(gttkPlus) then begin
+         if aNode.KeywordAuxCheck(gttkPlus) then begin
            if aNode[i].KeywordAuxCheck(gttkMinus) then AddStr(gttkMinus) else AddStr(gttkPlus);
          end else
-         if aNode[i].KeywordAuxCheck(gttkStar) then begin
+         if aNode.KeywordAuxCheck(gttkStar) then begin
            if aNode[i].KeywordAuxCheck(gttkSlash) then AddStr(gttkSlash) else
            if aNode[i].KeywordAuxCheck(gttkPercent) then AddStr(gttkPercent) else AddStr(gttkStar);
          end else AddStr(gttkConcatenation);
