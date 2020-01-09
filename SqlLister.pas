@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 348   19-03-10 15:29 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 349   19-03-10 18:04 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -1379,9 +1379,10 @@ begin
 //                                aNode.Name
 //  else
   if aNode.Check(gtsiExpr, gttkNumber) then begin
+    s := strif(aNode.KeywordAuxCheck(gttkMinusMinus), gttkMinus.TokenText) + aNode.Name
   //s := strif(aNode.ExprMinus, gttkMinus.TokenText) + aNode.Name
-    if aNode.KeywordAuxCheck(gttkMinus) then s := gttkMinus.TokenText;
-    s := aNode.Name;
+  //if aNode.KeywordAuxCheck(gttkMinus) then s := gttkMinus.TokenText;
+  //s := aNode.Name;
   end else
   if aNode.Check(gtsiExpr, gttkIdentifier) then begin
 //                         if UpperCase(aNode.Name) = gtkwNull.TokenText

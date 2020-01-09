@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 21    19-03-10 11:01 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 23    19-03-10 18:05 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest0;
@@ -176,7 +176,14 @@ end;
 procedure GtSqlTestRun;
 begin
   { basic SELECT tests first -----------------------------------------------------------------------------------------}
+//TestQuery( 'SELECT a-1 FROM DUAL;' ); { ** SAME AS a - b ** }
+
   TestQuery( 'select 1 from dual' );
+  TestQuery( 'select -1 from dual' );
+//TestQuery( 'select +1 from dual' ); { ** MUST BE WRONG ** }
+
+  { date: 2012-10-26, file: format - minus number.sql }
+  TestQuery( 'select -1 from dual' );
 
   { date: 2013-01-08, file: Basic Queries - Expressions.sql }
   TestQuery( '/* ALGEBRA - proste operacje */' );
@@ -446,7 +453,7 @@ begin
   TestQuery( 'SELECT a || b || c || d;' );
 
   { date: 2013-01-15, file: minus expressions.sql }
-//TestQuery( 'SELECT 1 - -1 FROM DUAL;' );
+//TestQuery( 'SELECT 1 - -1 FROM DUAL;' );     { ** MUST BE WRONG ** }
 
   { date: 2013-01-18, file: where to or.sql }
   TestQuery( 'SELECT  1 FROM  a WHERE a = 1 OR b IN ( 2, 3 ) ;' );
@@ -528,17 +535,17 @@ begin
   TestQuery( 'SELECT * FROM tab WHERE (a=b) AND (c=d);' );
 
   { date: 2014-05-07, file: BRACKETS expression.sql }
-//  TestQuery( '         SELECT  1 + ( 2 )'#13#10 +
-//             '           FROM  dual ' );
+  TestQuery( '         SELECT  1 + ( 2 )'#13#10 +
+             '           FROM  dual ' );
 
   { date: 2014-05-08, file: BRACKETS expression 2.sql }
   TestQuery( 'SELECT 1;' );
   TestQuery( 'SELECT (1);' );
   TestQuery( 'SELECT ((1));' );
   TestQuery( 'SELECT 1+2+3;' );
-//TestQuery( 'SELECT 1+(2+3); /* lost brackets, semicolon orphant */' );
-//TestQuery( 'SELECT (1+(2+3)); /* lost brackets, semicolon orphant */' );
-//TestQuery( 'SELECT ((1)+((2)+(3))); /* lost brackets, semicolon orphant */' );
+  TestQuery( 'SELECT 1+(2+3); /* lost brackets, semicolon orphant */' );
+  TestQuery( 'SELECT (1+(2+3)); /* lost brackets, semicolon orphant */' );
+  TestQuery( 'SELECT ((1)+((2)+(3))); /* lost brackets, semicolon orphant */' );
 
   { date: 2014-05-11, file: wrong COND escalation.sql }
   TestQuery( 'SELECT * FROM tab WHERE a=a AND b=b OR c=c;' );
@@ -964,48 +971,48 @@ begin
              '              V_EXT      INT);' );
 
   { date: 2012-10-13, file: parse parameters with dots.sql - comment inside string - TestQuery function problem }
-//  TestQuery( 'SELECT ''---'' FROM DUAL;' );
+  TestQuery( 'SELECT ''---'' FROM DUAL;' );
 
   { date: 2012-10-13, file: parse parameters with dots.sql }
-//  TestQuery( 'SELECT TAB.*,'#13#10 +
-//
-//             '       CASE WHEN ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2)  OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2)'#13#10 +
-//             '              OR ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2B) OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2B)'#13#10 +
-//             '       THEN ''OSIAGNIÊTY'''#13#10 +
-//             '       ELSE ''-''||''-''||''-'' '#13#10 +
-//             '       END AS KONIEC_OSIAGNIETY'#13#10 +
-//             'FROM ('#13#10 +
-//             '    SELECT         TAB.*, U2A.B_SZKIELET, W2A.ID_ELEMENT AS ID_ELEMENT_2,'#13#10 +
-//             '                   W2A.ELEMENT || '' / '' || P2A.NR ||'#13#10 +
-//             '                   CASE WHEN P2B.NR != P2A.NR THEN '' , '' || P2B.NR END ||'#13#10 +
-//             '                   CASE WHEN kontener IS NOT NULL THEN '' / '' || kontener END AS koniec'#13#10 +
-//             '    FROM ('#13#10 +
-//             '        SELECT     TRS.LP, K2.NUMER_UPR AS kontener,'#13#10 +
-//             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_PORT_2     ELSE TRS.ID_PORT_1     END AS ID_PORT_2,'#13#10 +
-//             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_PORT_2B    ELSE TRS.ID_PORT_1B    END AS ID_PORT_2B,'#13#10 +
-//             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_GNIAZDO_2A ELSE TRS.ID_GNIAZDO_1A END AS ID_GNIAZDO_2A,'#13#10 +
-//             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_GNIAZDO_2B ELSE TRS.ID_GNIAZDO_1B END AS ID_GNIAZDO_2B'#13#10 +
-//             ''#13#10 +
-//             '        FROM       TRANSMISJA_SKL_PORTY TRS'#13#10 +
-//             '        LEFT JOIN  TRANSMISJA_SKL_PORTY TRSP ON TRSP.ID_TRANSMISJA = TRS.ID_TRANSMISJA AND TRSP.LP = TRS.LP - 1'#13#10 +
-//             '        LEFT JOIN  KONTENERY_SDH K2 ON K2.ID = TRS.ID_KONTENERY_SDH_2'#13#10 +
-//             '        WHERE      TRS.ID_TRANSMISJA = :qEdit.ID'#13#10 +
-//             '              AND  TRS.LP != 999'#13#10 +
-//             ''#13#10 +
-//             '        UNION ALL'#13#10 +
-//             ''#13#10 +
-//             '        SELECT     -1, NULL, TR.ID_PORT_1, TR.ID_PORT_1B, TR.ID_GNIAZDO_1A, TR.ID_GNIAZDO_1B'#13#10 +
-//             '        FROM       TRANSMISJA TR'#13#10 +
-//             '        WHERE      TR.ID = :qEdit.ID'#13#10 +
-//             ''#13#10 +
-//             '        ORDER BY   1 DESC'#13#10 +
-//             '    ) TAB'#13#10 +
-//             '    LEFT JOIN  PORT       P2A ON P2A.ID = TAB.ID_PORT_2'#13#10 +
-//             '    LEFT JOIN  PORT       P2B ON P2B.ID = TAB.ID_PORT_2B'#13#10 +
-//             '    LEFT JOIN  WEZEL_V    W2A ON W2A.ID = P2A.ID_WEZEL'#13#10 +
-//             '    LEFT JOIN  URZADZENIE U2A ON U2A.ID = W2A.ID_ELEMENT AND W2A.ID_TYP_WEZLA = 5'#13#10 +
-//             '    WHERE    ROWNUM = 1'#13#10 +
-//             ') TAB' );
+  TestQuery( 'SELECT TAB.*,'#13#10 +
+
+             '       CASE WHEN ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2)  OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2)'#13#10 +
+             '              OR ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2B) OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2B)'#13#10 +
+             '       THEN ''OSIAGNIÊTY'''#13#10 +
+             '       ELSE ''-''||''-''||''-'' '#13#10 +
+             '       END AS KONIEC_OSIAGNIETY'#13#10 +
+             'FROM ('#13#10 +
+             '    SELECT         TAB.*, U2A.B_SZKIELET, W2A.ID_ELEMENT AS ID_ELEMENT_2,'#13#10 +
+             '                   W2A.ELEMENT || '' / '' || P2A.NR ||'#13#10 +
+             '                   CASE WHEN P2B.NR != P2A.NR THEN '' , '' || P2B.NR END ||'#13#10 +
+             '                   CASE WHEN kontener IS NOT NULL THEN '' / '' || kontener END AS koniec'#13#10 +
+             '    FROM ('#13#10 +
+             '        SELECT     TRS.LP, K2.NUMER_UPR AS kontener,'#13#10 +
+             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_PORT_2     ELSE TRS.ID_PORT_1     END AS ID_PORT_2,'#13#10 +
+             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_PORT_2B    ELSE TRS.ID_PORT_1B    END AS ID_PORT_2B,'#13#10 +
+             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_GNIAZDO_2A ELSE TRS.ID_GNIAZDO_1A END AS ID_GNIAZDO_2A,'#13#10 +
+             '                   CASE WHEN TRS.ID_PORT_1 = TRSP.ID_PORT_1 OR TRS.ID_PORT_1 = TRSP.ID_PORT_1B OR TRS.ID_PORT_1 = TRSP.ID_PORT_2 OR TRS.ID_PORT_1 = TRSP.ID_PORT_2B OR TRSP.ID IS NULL AND TRS.ID_PORT_1 = :qEdit.ID_PORT_1 ' + 'THEN TRS.ID_GNIAZDO_2B ELSE TRS.ID_GNIAZDO_1B END AS ID_GNIAZDO_2B'#13#10 +
+             ''#13#10 +
+             '        FROM       TRANSMISJA_SKL_PORTY TRS'#13#10 +
+             '        LEFT JOIN  TRANSMISJA_SKL_PORTY TRSP ON TRSP.ID_TRANSMISJA = TRS.ID_TRANSMISJA AND TRSP.LP = TRS.LP - 1'#13#10 +
+             '        LEFT JOIN  KONTENERY_SDH K2 ON K2.ID = TRS.ID_KONTENERY_SDH_2'#13#10 +
+             '        WHERE      TRS.ID_TRANSMISJA = :qEdit.ID'#13#10 +
+             '              AND  TRS.LP != 999'#13#10 +
+             ''#13#10 +
+             '        UNION ALL'#13#10 +
+             ''#13#10 +
+             '        SELECT     -1, NULL, TR.ID_PORT_1, TR.ID_PORT_1B, TR.ID_GNIAZDO_1A, TR.ID_GNIAZDO_1B'#13#10 +
+             '        FROM       TRANSMISJA TR'#13#10 +
+             '        WHERE      TR.ID = :qEdit.ID'#13#10 +
+             ''#13#10 +
+             '        ORDER BY   1 DESC'#13#10 +
+             '    ) TAB'#13#10 +
+             '    LEFT JOIN  PORT       P2A ON P2A.ID = TAB.ID_PORT_2'#13#10 +
+             '    LEFT JOIN  PORT       P2B ON P2B.ID = TAB.ID_PORT_2B'#13#10 +
+             '    LEFT JOIN  WEZEL_V    W2A ON W2A.ID = P2A.ID_WEZEL'#13#10 +
+             '    LEFT JOIN  URZADZENIE U2A ON U2A.ID = W2A.ID_ELEMENT AND W2A.ID_TYP_WEZLA = 5'#13#10 +
+             '    WHERE    ROWNUM = 1'#13#10 +
+             ') TAB' );
 
   { date: 2012-10-13, file: connect by adds PRIOR to expression.sql }
   TestQuery( 'SELECT      TS.LP, TS.ID, TS.ID_TRANSMISJA, TS.ID_TRANSMISJA_SKL, NVL2(TRD.ID_TRANSMISJA,1,0),'#13#10 +
@@ -1055,13 +1062,13 @@ begin
   TestQuery( 'INSERT INTO emp_table ( deptno, empname ) SELECT 1, ''Scott'' FROM DUAL;' );
   TestQuery( 'UPDATE emp_table SET deptno = 2 WHERE empname = ''Scott'';' );
   TestQuery( 'DELETE FROM emp_table WHERE empname = ''Scott'';' );
-//TestQuery( 'SELECT DISTINCT 1*(2+3)+4 FROM emp_table;' );
-//TestQuery( 'SELECT DISTINCT 2*(2*(2*(2*(2*(2*(1+1)+1)+1)+1)+1)+1)+1 FROM emp_table;' );
+  TestQuery( 'SELECT DISTINCT 1*(2+3)+4 FROM emp_table;' );
+  TestQuery( 'SELECT DISTINCT 2*(2*(2*(2*(2*(2*(1+1)+1)+1)+1)+1)+1)+1 FROM emp_table;' );
   TestQuery( 'SELECT CASE a WHEN 1 THEN ''1'' WHEN 2 THEN ''2'' ELSE CASE WHEN b=2 THEN ''7'' ELSE ''0'' END END AS CaseExpr FROM emp_table;' );
   TestQuery( 'SELECT CASE WHEN a=1 THEN ''1'' WHEN a=2 THEN ''2'' ELSE ''0'' END AS CaseExpr FROM emp_table;' );
   TestQuery( 'SELECT CASE WHEN a=1 AND b=1 THEN ''1'' WHEN a=2 AND b=2 THEN ''2'' ELSE ''0'' END AS CaseExpr FROM emp_table;' );
   TestQuery( 'SELECT COUNT(*), MAX(ID), NVL(a) FROM emp_table;' );
-  TestQuery( 'SELECT a-1 FROM DUAL;' );
+
   TestQuery( 'SAVEPOINT tgi_savepoint_101;' );
   TestQuery( 'COMMIT;' );
   TestQuery( 'COMMIT WORK;' );
@@ -1118,53 +1125,53 @@ begin
              '          WHERE  c = 3 ;' );
 
   { date: 2012-10-22, file: old subquery split on union.sql }
-//  TestQuery( 'SELECT td.nazwa, trs.id_transmisja'#13#10 +
-//             'FROM   transmisja_skladniki trs'#13#10 +
-//             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
-//             'JOIN   PORT P ON P.ID = trp.id_port_1'#13#10 +
-//             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
-//             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
-//             'AND    trp.id_port_1 IN ('#13#10 +
-//             '        SELECT      p11.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
-//             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
-//             '        UNION ALL'#13#10 +
-//             '        SELECT      p22.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
-//             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
-//             ')'#13#10 +
-//             'UNION ALL'#13#10 +
-//             'SELECT td.nazwa, trs.id_transmisja'#13#10 +
-//             'FROM   transmisja_skladniki trs'#13#10 +
-//             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
-//             'JOIN   PORT P ON P.ID = trp.id_port_2'#13#10 +
-//             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
-//             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
-//             'AND    trp.id_port_1 IN ('#13#10 +
-//             '        SELECT      p11.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
-//             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
-//             '        UNION ALL'#13#10 +
-//             '        SELECT      p22.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
-//             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
-//             ')' );
+  TestQuery( 'SELECT td.nazwa, trs.id_transmisja'#13#10 +
+             'FROM   transmisja_skladniki trs'#13#10 +
+             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
+             'JOIN   PORT P ON P.ID = trp.id_port_1'#13#10 +
+             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
+             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
+             'AND    trp.id_port_1 IN ('#13#10 +
+             '        SELECT      p11.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
+             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
+             '        UNION ALL'#13#10 +
+             '        SELECT      p22.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
+             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
+             ')'#13#10 +
+             'UNION ALL'#13#10 +
+             'SELECT td.nazwa, trs.id_transmisja'#13#10 +
+             'FROM   transmisja_skladniki trs'#13#10 +
+             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
+             'JOIN   PORT P ON P.ID = trp.id_port_2'#13#10 +
+             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
+             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
+             'AND    trp.id_port_1 IN ('#13#10 +
+             '        SELECT      p11.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
+             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
+             '        UNION ALL'#13#10 +
+             '        SELECT      p22.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
+             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
+             ')' );
 
   { date: 2012-10-26, file: old 4 union - nested.sql }
   TestQuery( 'SELECT DISTINCT ID FROM TRANSMISJA TR WHERE TR.ID = 12590'#13#10 +
@@ -1175,20 +1182,17 @@ begin
              'UNION'#13#10 +
              'SELECT ID FROM TRANSMISJA TR WHERE TR.ID = 12590 ;' );
 
-  { date: 2012-10-26, file: format - minus number.sql }
-//  TestQuery( 'select -1 from dual' );
-
   { date: 2012-10-26, file: start with.sql }
   TestQuery( 'DELETE FROM TMP_PORTY;' );
-//  TestQuery( '/* tylko porty WDM Band lub porty DWDM Channel */'#13#10 +
-//             'INSERT INTO TMP_PORTY ( ID_PORT )'#13#10 +
-//             'SELECT DISTINCT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_1 WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
-//             'UNION'#13#10 +
-//             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_2  WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
-//             'UNION'#13#10 +
-//             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_1B WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
-//             'UNION'#13#10 +
-//             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_2B WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4);' );
+  TestQuery( '/* tylko porty WDM Band lub porty DWDM Channel */'#13#10 +
+             'INSERT INTO TMP_PORTY ( ID_PORT )'#13#10 +
+             'SELECT DISTINCT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_1 WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
+             'UNION'#13#10 +
+             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_2  WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
+             'UNION'#13#10 +
+             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_1B WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4)'#13#10 +
+             'UNION'#13#10 +
+             'SELECT P.ID FROM TRANSMISJA TR JOIN PORT P ON P.ID = TR.ID_PORT_2B WHERE TR.ID = 12590 AND P.ID_TRANSPORT IN (-2,-4);' );
   TestQuery( 'SELECT      LEVEL, SYS_CONNECT_BY_PATH(TAB.ID_PORT_1 ||''-''|| TAB.ID_PORT_2, ''/'')'#13#10 +
              'FROM      ('#13#10 +
              '            SELECT 1, TR.ID, TR.ID_PORT_1, TR.ID_PORT_2'#13#10 +
@@ -1555,35 +1559,35 @@ begin
 //             'GROUP BY  USL.ID_HD;' );
 
   { date: 2012-11-17, file: minus expression.sql }
-TestQuery( '       SELECT  W.ID'#13#10 +
-           '            ,  W.ID_WEZEL'#13#10 +
-           '            ,  NVL ( W.ZAPAS_1, 0 ) + NVL ( W.ZAPAS_2, 0 ) AS ZAPAS'#13#10 +
-           '            ,  W.ID_TYP_ELEMENTU'#13#10 +
-           '            ,  W.ID_ELEMENT'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.NR, 112, I.NR, 111, C.NR ) AS NR'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.UWAGI, 112, I.UWAGI, 111, C.UWAGI ) AS UWAGI'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, ST.NAZWA, 112, IT.NAZWA, 111, CT.NAZWA ) AS TYP'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, SW1.ELEMENT, 112, IW1.ELEMENT, 111, CW1.ELEMENT ) AS WEZEL1'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, SW2.ELEMENT, 112, IW2.ELEMENT, 111, CW2.ELEMENT ) AS WEZEL2'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, ST.LICZBA, 112, 1, 111, CT.LICZBAPAR ) AS LICZBA'#13#10 +
-           '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.DLUGOSC_TRASOWA, 112, I.DLUGOSC_TRASOWA, C.DLUGOSC_TRASOWA ) AS DLUGOSC_TRASOWA'#13#10 +
-           '            ,  NVL ( ST.LICZBA - ILEWLOKIENWOLNYCH ( S.ID ), 0 ) AS ZAJETYCH'#13#10 +
-           '            ,  S.DLUGOSC_OPTYCZNA AS DLUGOSC_OPTYCZNA'#13#10 +
-           '         FROM  WEZEL_KABEL W'#13#10 +
-           '    LEFT JOIN  SWIATLOWOD_WKV S ON W.ID_TYP_ELEMENTU = 101 AND W.ID_ELEMENT = S.ID'#13#10 +
-           '    LEFT JOIN  TYP_SWIATLOWODU ST ON S.ID_TYP_SWIATLOWODU = ST.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V SW1 ON S.ID_WEZEL_1 = SW1.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V SW2 ON S.ID_WEZEL_2 = SW2.ID'#13#10 +
-           '    LEFT JOIN  WIAZKA_INF I ON W.ID_TYP_ELEMENTU = 112 AND W.ID_ELEMENT = I.ID'#13#10 +
-           '    LEFT JOIN  TYP_KABLA_INF IT ON I.ID_TYP_KABLA_INF = IT.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V IW1 ON I.ID_WEZEL_1 = IW1.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V IW2 ON I.ID_WEZEL_2 = IW2.ID'#13#10 +
-           '    LEFT JOIN  KABEL_CU C ON W.ID_TYP_ELEMENTU = 111 AND W.ID_ELEMENT = C.ID'#13#10 +
-           '    LEFT JOIN  TYP_KABLA_CU CT ON C.ID_TYP_KABLA_CU = CT.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V CW1 ON C.ID_WEZEL_1 = CW1.ID'#13#10 +
-           '    LEFT JOIN  WEZEL_V CW2 ON C.ID_WEZEL_2 = CW2.ID'#13#10 +
-           '        WHERE  W.ID_WEZEL = :qWezelDlaSzaf.ID'#13#10 +
-           '     ORDER BY  4 ASC;' );
+  TestQuery( '       SELECT  W.ID'#13#10 +
+             '            ,  W.ID_WEZEL'#13#10 +
+             '            ,  NVL ( W.ZAPAS_1, 0 ) + NVL ( W.ZAPAS_2, 0 ) AS ZAPAS'#13#10 +
+             '            ,  W.ID_TYP_ELEMENTU'#13#10 +
+             '            ,  W.ID_ELEMENT'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.NR, 112, I.NR, 111, C.NR ) AS NR'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.UWAGI, 112, I.UWAGI, 111, C.UWAGI ) AS UWAGI'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, ST.NAZWA, 112, IT.NAZWA, 111, CT.NAZWA ) AS TYP'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, SW1.ELEMENT, 112, IW1.ELEMENT, 111, CW1.ELEMENT ) AS WEZEL1'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, SW2.ELEMENT, 112, IW2.ELEMENT, 111, CW2.ELEMENT ) AS WEZEL2'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, ST.LICZBA, 112, 1, 111, CT.LICZBAPAR ) AS LICZBA'#13#10 +
+             '            ,  DECODE ( W.ID_TYP_ELEMENTU, 101, S.DLUGOSC_TRASOWA, 112, I.DLUGOSC_TRASOWA, C.DLUGOSC_TRASOWA ) AS DLUGOSC_TRASOWA'#13#10 +
+             '            ,  NVL ( ST.LICZBA - ILEWLOKIENWOLNYCH ( S.ID ), 0 ) AS ZAJETYCH'#13#10 +
+             '            ,  S.DLUGOSC_OPTYCZNA AS DLUGOSC_OPTYCZNA'#13#10 +
+             '         FROM  WEZEL_KABEL W'#13#10 +
+             '    LEFT JOIN  SWIATLOWOD_WKV S ON W.ID_TYP_ELEMENTU = 101 AND W.ID_ELEMENT = S.ID'#13#10 +
+             '    LEFT JOIN  TYP_SWIATLOWODU ST ON S.ID_TYP_SWIATLOWODU = ST.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V SW1 ON S.ID_WEZEL_1 = SW1.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V SW2 ON S.ID_WEZEL_2 = SW2.ID'#13#10 +
+             '    LEFT JOIN  WIAZKA_INF I ON W.ID_TYP_ELEMENTU = 112 AND W.ID_ELEMENT = I.ID'#13#10 +
+             '    LEFT JOIN  TYP_KABLA_INF IT ON I.ID_TYP_KABLA_INF = IT.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V IW1 ON I.ID_WEZEL_1 = IW1.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V IW2 ON I.ID_WEZEL_2 = IW2.ID'#13#10 +
+             '    LEFT JOIN  KABEL_CU C ON W.ID_TYP_ELEMENTU = 111 AND W.ID_ELEMENT = C.ID'#13#10 +
+             '    LEFT JOIN  TYP_KABLA_CU CT ON C.ID_TYP_KABLA_CU = CT.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V CW1 ON C.ID_WEZEL_1 = CW1.ID'#13#10 +
+             '    LEFT JOIN  WEZEL_V CW2 ON C.ID_WEZEL_2 = CW2.ID'#13#10 +
+             '        WHERE  W.ID_WEZEL = :qWezelDlaSzaf.ID'#13#10 +
+             '     ORDER BY  4 ASC;' );
 
   { date: 2012-11-17, file: subquery intends.sql }
   TestQuery( '       UPDATE  KANALIZACJA K'#13#10 +
@@ -1704,50 +1708,50 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   TestQuery( 'SELECT * FROM swiatlowod WHERE 29830 IN (ID_WEZEL_1, ID_WEZEL_2);' );
 
   { date: 2012-12-29, file: order by and where and join conditions.sql }
-//  TestQuery( 'SELECT'#13#10 +
-//             'W.*'#13#10 +
-//             ','#13#10 +
-//             'StatusEksploatacji_WloknoInt(W.ID) AS B_ZAJETE,'#13#10 +
-//             'WL.NAZWA AS WLASCICIEL,'#13#10 +
-//             'G1.NR AS GNIAZDO1, SUBSTR( W1.ELEMENT, 1, 50 ) AS P1,'#13#10 +
-//             'G2.NR AS GNIAZDO2, SUBSTR( W2.ELEMENT, 1, 50 ) AS P2,'#13#10 +
-//             '          NVL(STA.NR, LOKA.SYMBOL) AS WEZEL_A, NVL(STB.NR, LOKB.SYMBOL) AS WEZEL_B,'#13#10 +
-//             '          CASE WHEN G1.ID_TYP_GNIAZDA = -1 THEN ''spaw'' ELSE SUBSTR( COALESCE(U1.NR, P1.NR), 1, 50 ) || '' . '' || G1.NR END AS PORT1,'#13#10 +
-//             '          CASE WHEN G2.ID_TYP_GNIAZDA = -1 THEN ''spaw'' ELSE SUBSTR( COALESCE(U2.NR, P2.NR), 1, 50 ) || '' . '' || G2.NR END AS PORT2,'#13#10 +
-//             'S.NAZWA AS STATUS,'#13#10 +
-//             'GETTRASADLAWLOKNA(W.ID) AS TRASA,'#13#10 +
-//             '(SELECT DECODE(COUNT(*), 0, 1, COUNT(*)) FROM WLOKNO WHERE ID_WLOKNO = W.ID) AS SEG,'#13#10 +
-//             'GETPROJEKTDLAELEMENTU(107, W.ID) AS PROJEKT,'#13#10 +
-//             'GETTRASAIDDLAWLOKNA(W.ID) AS ID_TRASA,'#13#10 +
-//             'WloknoSwUslugi (W.ID) AS USLUGI'#13#10 +
-//             ''#13#10 +
-//             'FROM WLOKNO W'#13#10 +
-//             'LEFT JOIN GNIAZDO G1 ON W.ID_GNIAZDO_1 = G1.ID'#13#10 +
-//             'LEFT JOIN GNIAZDO G2 ON W.ID_GNIAZDO_2 = G2.ID'#13#10 +
-//             '--LEFT JOIN WEZEL_V W1 ON G1.ID_WEZEL = W1.ID AND W1.ID_TYP_WEZLA IN (3, 5, 23)'#13#10 +
-//             '--LEFT JOIN WEZEL_V W2 ON G2.ID_WEZEL = W2.ID AND W2.ID_TYP_WEZLA IN (3, 5, 23)'#13#10 +
-//             'LEFT JOIN WLASCICIEL WL ON WL.ID = W.ID_WLASCICIEL'#13#10 +
-//             'LEFT JOIN STATUS S ON S.ID = W.ID_STATUS'#13#10 +
-//             ''#13#10 +
-//             'LEFT JOIN WEZEL         WA ON WA.ID = W.ID_WEZEL_1'#13#10 +
-//             'LEFT JOIN WEZEL         WB ON WB.ID = W.ID_WEZEL_2'#13#10 +
-//             'LEFT JOIN STUDNIA      STA ON STA.ID = WA.ID_ELEMENT AND WA.ID_TYP_WEZLA = 2'#13#10 +
-//             'LEFT JOIN STUDNIA      STB ON STB.ID = WB.ID_ELEMENT AND WB.ID_TYP_WEZLA = 2'#13#10 +
-//             'LEFT JOIN LOKALIZACJA LOKA ON LOKA.ID = WA.ID_ELEMENT AND WA.ID_TYP_WEZLA = 24'#13#10 +
-//             'LEFT JOIN LOKALIZACJA LOKB ON LOKB.ID = WB.ID_ELEMENT AND WB.ID_TYP_WEZLA = 24'#13#10 +
-//             'LEFT JOIN WEZEL_V       W1 ON W1.ID = G1.ID_WEZEL AND G1.ID_TYP_GNIAZDA != -1'#13#10 +
-//             'LEFT JOIN URZADZENIE    U1 ON U1.ID = W1.ID_ELEMENT AND W1.ID_TYP_WEZLA = 5'#13#10 +
-//             'LEFT JOIN PRZELACZNICA  P1 ON P1.ID = W1.ID_ELEMENT AND W1.ID_TYP_WEZLA = 3'#13#10 +
-//             'LEFT JOIN WEZEL_V       W2 ON W2.ID = G2.ID_WEZEL AND G2.ID_TYP_GNIAZDA != -1'#13#10 +
-//             'LEFT JOIN URZADZENIE    U2 ON U2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 5'#13#10 +
-//             'LEFT JOIN PRZELACZNICA  P2 ON P2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 3'#13#10 +
-//             ''#13#10 +
-//             'WHERE'#13#10 +
-//             'W.ID_SWIATLOWOD = 4564 --:qEdit.ID'#13#10 +
-//             'AND W.ID_WLOKNO IS NULL'#13#10 +
-//             ''#13#10 +
-//             'ORDER BY'#13#10 +
-//             'W.NR' );
+  TestQuery( 'SELECT'#13#10 +
+             'W.*'#13#10 +
+             ','#13#10 +
+             'StatusEksploatacji_WloknoInt(W.ID) AS B_ZAJETE,'#13#10 +
+             'WL.NAZWA AS WLASCICIEL,'#13#10 +
+             'G1.NR AS GNIAZDO1, SUBSTR( W1.ELEMENT, 1, 50 ) AS P1,'#13#10 +
+             'G2.NR AS GNIAZDO2, SUBSTR( W2.ELEMENT, 1, 50 ) AS P2,'#13#10 +
+             '          NVL(STA.NR, LOKA.SYMBOL) AS WEZEL_A, NVL(STB.NR, LOKB.SYMBOL) AS WEZEL_B,'#13#10 +
+             '          CASE WHEN G1.ID_TYP_GNIAZDA = -1 THEN ''spaw'' ELSE SUBSTR( COALESCE(U1.NR, P1.NR), 1, 50 ) || '' . '' || G1.NR END AS PORT1,'#13#10 +
+             '          CASE WHEN G2.ID_TYP_GNIAZDA = -1 THEN ''spaw'' ELSE SUBSTR( COALESCE(U2.NR, P2.NR), 1, 50 ) || '' . '' || G2.NR END AS PORT2,'#13#10 +
+             'S.NAZWA AS STATUS,'#13#10 +
+             'GETTRASADLAWLOKNA(W.ID) AS TRASA,'#13#10 +
+             '(SELECT DECODE(COUNT(*), 0, 1, COUNT(*)) FROM WLOKNO WHERE ID_WLOKNO = W.ID) AS SEG,'#13#10 +
+             'GETPROJEKTDLAELEMENTU(107, W.ID) AS PROJEKT,'#13#10 +
+             'GETTRASAIDDLAWLOKNA(W.ID) AS ID_TRASA,'#13#10 +
+             'WloknoSwUslugi (W.ID) AS USLUGI'#13#10 +
+             ''#13#10 +
+             'FROM WLOKNO W'#13#10 +
+             'LEFT JOIN GNIAZDO G1 ON W.ID_GNIAZDO_1 = G1.ID'#13#10 +
+             'LEFT JOIN GNIAZDO G2 ON W.ID_GNIAZDO_2 = G2.ID'#13#10 +
+             '--LEFT JOIN WEZEL_V W1 ON G1.ID_WEZEL = W1.ID AND W1.ID_TYP_WEZLA IN (3, 5, 23)'#13#10 +
+             '--LEFT JOIN WEZEL_V W2 ON G2.ID_WEZEL = W2.ID AND W2.ID_TYP_WEZLA IN (3, 5, 23)'#13#10 +
+             'LEFT JOIN WLASCICIEL WL ON WL.ID = W.ID_WLASCICIEL'#13#10 +
+             'LEFT JOIN STATUS S ON S.ID = W.ID_STATUS'#13#10 +
+             ''#13#10 +
+             'LEFT JOIN WEZEL         WA ON WA.ID = W.ID_WEZEL_1'#13#10 +
+             'LEFT JOIN WEZEL         WB ON WB.ID = W.ID_WEZEL_2'#13#10 +
+             'LEFT JOIN STUDNIA      STA ON STA.ID = WA.ID_ELEMENT AND WA.ID_TYP_WEZLA = 2'#13#10 +
+             'LEFT JOIN STUDNIA      STB ON STB.ID = WB.ID_ELEMENT AND WB.ID_TYP_WEZLA = 2'#13#10 +
+             'LEFT JOIN LOKALIZACJA LOKA ON LOKA.ID = WA.ID_ELEMENT AND WA.ID_TYP_WEZLA = 24'#13#10 +
+             'LEFT JOIN LOKALIZACJA LOKB ON LOKB.ID = WB.ID_ELEMENT AND WB.ID_TYP_WEZLA = 24'#13#10 +
+             'LEFT JOIN WEZEL_V       W1 ON W1.ID = G1.ID_WEZEL AND G1.ID_TYP_GNIAZDA != -1'#13#10 +
+             'LEFT JOIN URZADZENIE    U1 ON U1.ID = W1.ID_ELEMENT AND W1.ID_TYP_WEZLA = 5'#13#10 +
+             'LEFT JOIN PRZELACZNICA  P1 ON P1.ID = W1.ID_ELEMENT AND W1.ID_TYP_WEZLA = 3'#13#10 +
+             'LEFT JOIN WEZEL_V       W2 ON W2.ID = G2.ID_WEZEL AND G2.ID_TYP_GNIAZDA != -1'#13#10 +
+             'LEFT JOIN URZADZENIE    U2 ON U2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 5'#13#10 +
+             'LEFT JOIN PRZELACZNICA  P2 ON P2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 3'#13#10 +
+             ''#13#10 +
+             'WHERE'#13#10 +
+             'W.ID_SWIATLOWOD = 4564 --:qEdit.ID'#13#10 +
+             'AND W.ID_WLOKNO IS NULL'#13#10 +
+             ''#13#10 +
+             'ORDER BY'#13#10 +
+             'W.NR' );
 
   { date: 2012-12-29, file: YA stops working.sql }
 
@@ -1865,17 +1869,17 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'order by nazwa' );
 
   { date: 2013-02-07, file: format vs list by tokens.sql }
-//  TestQuery( '         SELECT  DISTINCT'#13#10 +
-//             '                 1'#13#10 +
-//             '              ,  fun( 1 + ( 2 * b.b ) )'#13#10 +
-//             '              ,  ''abc'''#13#10 +
-//             '              ,  b.a AS a'#13#10 +
-//             '           FROM  dual AS b'#13#10 +
-//             '          WHERE  b.c = :qEdit.ID'#13#10 +
-//             ''#13#10 +
-//             '          UNION'#13#10 +
-//             ''#13#10 +
-//             '         SELECT  COUNT( * ) ;' );
+  TestQuery( '         SELECT  DISTINCT'#13#10 +
+             '                 1'#13#10 +
+             '              ,  fun( 1 + ( 2 * b.b ) )'#13#10 +
+             '              ,  ''abc'''#13#10 +
+             '              ,  b.a AS a'#13#10 +
+             '           FROM  dual AS b'#13#10 +
+             '          WHERE  b.c = :qEdit.ID'#13#10 +
+             ''#13#10 +
+             '          UNION'#13#10 +
+             ''#13#10 +
+             '         SELECT  COUNT( * ) ;' );
   TestQuery( '   CREATE TABLE  nic'#13#10 +
              '              (  a INTEGER'#13#10 +
              '              )  ;' );
@@ -1960,22 +1964,22 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              '  WHERE   x = 3 ;' );
 
   { date: 2013-02-22, file: CREATE MATERIALIZED VIEW.sql }
-//  TestQuery( 'CREATE MATERIALIZED VIEW HD_USLUGA_INTERFACE2_XXX'#13#10 +
-//             'REFRESH FORCE ON DEMAND'#13#10 +
-//             'START WITH TO_DATE(''22-02-2013 15:35:40'', ''DD-MM-YYYY HH24:MI:SS'') NEXT SYSDATE + 1'#13#10 +
-//             'AS'#13#10 +
-//             'SELECT    UTR.ID_USLUGA, UTR.ID_TRANSMISJA, SKL.ID, SKL.LP, TRL.ID_PORT_2, TRL.NR_VLAN'#13#10 +
-//             ''#13#10 +
-//             'FROM      pst.USLUGA               USL'#13#10 +
-//             'JOIN      pst.USLUGA_TRANSMISJA    UTR ON UTR.ID_USLUGA = USL.ID'#13#10 +
-//             'JOIN      pst.TRANSMISJA_SKLADNIKI SKL ON SKL.ID_TRANSMISJA = UTR.ID_TRANSMISJA AND SKL.ID_TRANSLACJE_SDH IS NOT NULL'#13#10 +
-//             'JOIN      pst.TRANSLACJE_SDH       TRL ON TRL.ID = SKL.ID_TRANSLACJE_SDH'#13#10 +
-//             'JOIN      pst.URZADZENIE           URZ ON URZ.ID = TRL.ID_URZADZENIE'#13#10 +
-//             ''#13#10 +
-//             'WHERE     USL.ID_RODZAJ_USLUGI  = -3'#13#10 +
-//             'AND       URZ.ID_TYP_URZADZENIA = -6'#13#10 +
-//             'AND     ( TRL.ID_TYP_TRANSLACJI = -2 AND TRL.NR_VLAN = pst.NRPART(TRL.NR_VLAN,2)'#13#10 +
-//             '       OR TRL.ID_TYP_TRANSLACJI = -5 /*AND TRL.NR_VLAN IS NULL*/ );' );
+  TestQuery( 'CREATE MATERIALIZED VIEW HD_USLUGA_INTERFACE2_XXX'#13#10 +
+//           'REFRESH FORCE ON DEMAND'#13#10 +
+//           'START WITH TO_DATE(''22-02-2013 15:35:40'', ''DD-MM-YYYY HH24:MI:SS'') NEXT SYSDATE + 1'#13#10 +
+             'AS'#13#10 +
+             'SELECT    UTR.ID_USLUGA, UTR.ID_TRANSMISJA, SKL.ID, SKL.LP, TRL.ID_PORT_2, TRL.NR_VLAN'#13#10 +
+             ''#13#10 +
+             'FROM      pst.USLUGA               USL'#13#10 +
+             'JOIN      pst.USLUGA_TRANSMISJA    UTR ON UTR.ID_USLUGA = USL.ID'#13#10 +
+             'JOIN      pst.TRANSMISJA_SKLADNIKI SKL ON SKL.ID_TRANSMISJA = UTR.ID_TRANSMISJA AND SKL.ID_TRANSLACJE_SDH IS NOT NULL'#13#10 +
+             'JOIN      pst.TRANSLACJE_SDH       TRL ON TRL.ID = SKL.ID_TRANSLACJE_SDH'#13#10 +
+             'JOIN      pst.URZADZENIE           URZ ON URZ.ID = TRL.ID_URZADZENIE'#13#10 +
+             ''#13#10 +
+             'WHERE     USL.ID_RODZAJ_USLUGI  = -3'#13#10 +
+             'AND       URZ.ID_TYP_URZADZENIA = -6'#13#10 +
+             'AND     ( TRL.ID_TYP_TRANSLACJI = -2 AND TRL.NR_VLAN = pst.NRPART(TRL.NR_VLAN,2)'#13#10 +
+             '       OR TRL.ID_TYP_TRANSLACJI = -5 /*AND TRL.NR_VLAN IS NULL*/ );' );
 
   { date: 2013-02-24, file: cast.sql }
 //TestQuery( 'select cast(1+1 as varchar(5)) as value1, convert(int, ''13'', 123) as value2 from dual' );
@@ -2003,16 +2007,16 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'CONSTRAINT LOKALIZACJA$FK_WLASCICIEL REFERENCES WLASCICIEL' );
 
   { date: 2013-02-27, file: close bracket style on format.sql }
-//  TestQuery( 'INSERT INTO   WLOKNO_POMIAR_TYP'#13#10 +
-//             '          (   ID'#13#10 +
-//             '          ,   NAZWA )'#13#10 +
-//             '   VALUES (   -1'#13#10 +
-//             '          ,   ''powykonawczy'' );' );
-//  TestQuery( 'INSERT INTO   WLOKNO_POMIAR_TYP'#13#10 +
-//             '          (   ID'#13#10 +
-//             '          ,   NAZWA )'#13#10 +
-//             '   VALUES (   -2'#13#10 +
-//             '          ,   ''okresowy'' );' );
+  TestQuery( 'INSERT INTO   WLOKNO_POMIAR_TYP'#13#10 +
+             '          (   ID'#13#10 +
+             '          ,   NAZWA )'#13#10 +
+             '   VALUES (   -1'#13#10 +
+             '          ,   ''powykonawczy'' );' );
+  TestQuery( 'INSERT INTO   WLOKNO_POMIAR_TYP'#13#10 +
+             '          (   ID'#13#10 +
+             '          ,   NAZWA )'#13#10 +
+             '   VALUES (   -2'#13#10 +
+             '          ,   ''okresowy'' );' );
 
   { date: 2013-02-27, file: todo join subquery intend on format.sql }
   TestQuery( 'CREATE OR REPLACE   VIEW WLOKNO_POM_WKV AS'#13#10 +
@@ -2163,56 +2167,56 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   TestQuery( 'SAVEPOINT svp_01 ;' );
 
   { date: 2013-03-13, file: ext query alias color.sql }
-//  TestQuery( '  SELECT   *'#13#10 +
-//             '    FROM ('#13#10 +
-//             '             SELECT   -110 AS id'#13#10 +
-//             '                  ,   ''patchcord'' AS nr'#13#10 +
-//             '                  ,   110 AS typ'#13#10 +
-//             '                  ,   0 AS sort'#13#10 +
-//             '               FROM   dual'#13#10 +
-//             '              UNION'#13#10 +
-//             '             SELECT   -103 AS id'#13#10 +
-//             '                  ,   ''trasa optyczna'' AS nr'#13#10 +
-//             '                  ,   103 AS typ'#13#10 +
-//             '                  ,   2 AS sort'#13#10 +
-//             '               FROM   dual'#13#10 +
-//             '              UNION'#13#10 +
-//             '             SELECT   S.id'#13#10 +
-//             '                  ,   S.nr'#13#10 +
-//             '                  ,   107 AS TYP'#13#10 +
-//             '                  ,   1 AS sort'#13#10 +
-//             '               FROM   swiatlowod S'#13#10 +
-//             '                  ,   szafa     SZ'#13#10 +
-//             '                  ,   wezel_v    V'#13#10 +
-//             '              WHERE   SZ.id = V.id_szafa'#13#10 +
-//             '                AND   V.id = :qEdit.id_element'#13#10 +
-//             '                AND   ( ( S.id_wezel_1 = SZ.id_wezel'#13#10 +
-//             '                 OR   S.id_wezel_2 = SZ.id_wezel )'#13#10 +
-//             '                 OR   S.id IN'#13#10 +
-//             '                    ('#13#10 +
-//             '                        SELECT   id_element'#13#10 +
-//             '                          FROM   wezel_kabel'#13#10 +
-//             '                         WHERE   id_typ_elementu = 101'#13#10 +
-//             '                           AND   id_wezel = SZ.id_wezel'#13#10 +
-//             '                    ) )'#13#10 +
-//             '              UNION'#13#10 +
-//             '             SELECT   S.id'#13#10 +
-//             '                  ,   S.nr'#13#10 +
-//             '                  ,   107 AS TYP'#13#10 +
-//             '                  ,   1 AS sort'#13#10 +
-//             '               FROM   swiatlowod S'#13#10 +
-//             '              WHERE   ( S.id_wezel_1 = :qEdit.PWID'#13#10 +
-//             '                 OR   S.id_wezel_2 = :qEdit.PWID )'#13#10 +
-//             '                 OR   S.id IN'#13#10 +
-//             '                    ('#13#10 +
-//             '                        SELECT   id_element'#13#10 +
-//             '                          FROM   wezel_kabel'#13#10 +
-//             '                         WHERE   id_typ_elementu = 101'#13#10 +
-//             '                           AND   id_wezel = :qEdit.PWID'#13#10 +
-//             '                    )'#13#10 +
-//             '         ) v'#13#10 +
-//             'ORDER BY   sort'#13#10 +
-//             '       ,   nr' );
+  TestQuery( '  SELECT   *'#13#10 +
+             '    FROM ('#13#10 +
+             '             SELECT   -110 AS id'#13#10 +
+             '                  ,   ''patchcord'' AS nr'#13#10 +
+             '                  ,   110 AS typ'#13#10 +
+             '                  ,   0 AS sort'#13#10 +
+             '               FROM   dual'#13#10 +
+             '              UNION'#13#10 +
+             '             SELECT   -103 AS id'#13#10 +
+             '                  ,   ''trasa optyczna'' AS nr'#13#10 +
+             '                  ,   103 AS typ'#13#10 +
+             '                  ,   2 AS sort'#13#10 +
+             '               FROM   dual'#13#10 +
+             '              UNION'#13#10 +
+             '             SELECT   S.id'#13#10 +
+             '                  ,   S.nr'#13#10 +
+             '                  ,   107 AS TYP'#13#10 +
+             '                  ,   1 AS sort'#13#10 +
+             '               FROM   swiatlowod S'#13#10 +
+             '                  ,   szafa     SZ'#13#10 +
+             '                  ,   wezel_v    V'#13#10 +
+             '              WHERE   SZ.id = V.id_szafa'#13#10 +
+             '                AND   V.id = :qEdit.id_element'#13#10 +
+             '                AND   ( ( S.id_wezel_1 = SZ.id_wezel'#13#10 +
+             '                 OR   S.id_wezel_2 = SZ.id_wezel )'#13#10 +
+             '                 OR   S.id IN'#13#10 +
+             '                    ('#13#10 +
+             '                        SELECT   id_element'#13#10 +
+             '                          FROM   wezel_kabel'#13#10 +
+             '                         WHERE   id_typ_elementu = 101'#13#10 +
+             '                           AND   id_wezel = SZ.id_wezel'#13#10 +
+             '                    ) )'#13#10 +
+             '              UNION'#13#10 +
+             '             SELECT   S.id'#13#10 +
+             '                  ,   S.nr'#13#10 +
+             '                  ,   107 AS TYP'#13#10 +
+             '                  ,   1 AS sort'#13#10 +
+             '               FROM   swiatlowod S'#13#10 +
+             '              WHERE   ( S.id_wezel_1 = :qEdit.PWID'#13#10 +
+             '                 OR   S.id_wezel_2 = :qEdit.PWID )'#13#10 +
+             '                 OR   S.id IN'#13#10 +
+             '                    ('#13#10 +
+             '                        SELECT   id_element'#13#10 +
+             '                          FROM   wezel_kabel'#13#10 +
+             '                         WHERE   id_typ_elementu = 101'#13#10 +
+             '                           AND   id_wezel = :qEdit.PWID'#13#10 +
+             '                    )'#13#10 +
+             '         ) v'#13#10 +
+             'ORDER BY   sort'#13#10 +
+             '       ,   nr' );
 
   { date: 2013-03-13, file: ALTER TABLE MODIFY.sql }
 //  TestQuery( 'ALTER TABLE EL_URZADZENIE_POMIARY MODIFY STAN_LICZNIKA NULL MODIFY POMIAR_NAT_PRADU NULL MODIFY'#13#10 +
@@ -2403,25 +2407,25 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'LEFT JOIN   WEZEL_LOK_STUDNIA_V  W2 ON   W2.ID = TR.ID_WEZEL_2          ' );
 
   { date: 2013-04-08, file: ON second condition.sql }
-//  TestQuery( ''#13#10 +
-//             'CREATE OR REPLACE VIEW WEZEL_V AS'#13#10 +
-//             ''#13#10 +
-//             '     SELECT   W.ID'#13#10 +
-//             '       FROM   WEZEL               W'#13#10 +
-//             '  LEFT JOIN   TYP_WEZLA           T ON    T.ID           = W.ID_TYP_WEZLA'#13#10 +
-//             '  LEFT JOIN   TYP_ELEMENTU        S ON    S.ID           = T.ID          '#13#10 +
-//             '  LEFT JOIN   LOKALIZACJA       E24 ON    W.ID_TYP_WEZLA = 24 AND E24.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   BUDYNEK            E1 ON    W.ID_TYP_WEZLA = 1 AND E1.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   STUDNIA            E2 ON    W.ID_TYP_WEZLA = 2 AND E2.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   PRZELACZNICA       E3 ON    W.ID_TYP_WEZLA = 3 AND E3.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   URZADZENIE         E5 ON    W.ID_TYP_WEZLA = 5 AND E5.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MUFA              E23 ON    W.ID_TYP_WEZLA = 23 AND E23.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GLOWICA_CU       E116 ON    W.ID_TYP_WEZLA = 116 AND E116.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MDF              E117 ON    W.ID_TYP_WEZLA = 117 AND E117.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   SZAFA_CU         E118 ON    W.ID_TYP_WEZLA = 118 AND E118.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GRUPA_GLOWIC_CU  E119 ON    W.ID_TYP_WEZLA = 119 AND E119.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   TUNEL            E138 ON    W.ID_TYP_WEZLA = 138 AND E138.ID = W.ID_ELEMENT'#13#10 +
-//             '      WHERE   ID_TYP_WEZLA IN ( -1, 1, 2, 3, 5, 23, 24, 116, 117, 118, 119, 138 )' );
+  TestQuery( ''#13#10 +
+             'CREATE OR REPLACE VIEW WEZEL_V AS'#13#10 +
+             ''#13#10 +
+             '     SELECT   W.ID'#13#10 +
+             '       FROM   WEZEL               W'#13#10 +
+             '  LEFT JOIN   TYP_WEZLA           T ON    T.ID           = W.ID_TYP_WEZLA'#13#10 +
+             '  LEFT JOIN   TYP_ELEMENTU        S ON    S.ID           = T.ID          '#13#10 +
+             '  LEFT JOIN   LOKALIZACJA       E24 ON    W.ID_TYP_WEZLA = 24 AND E24.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   BUDYNEK            E1 ON    W.ID_TYP_WEZLA = 1 AND E1.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   STUDNIA            E2 ON    W.ID_TYP_WEZLA = 2 AND E2.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   PRZELACZNICA       E3 ON    W.ID_TYP_WEZLA = 3 AND E3.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   URZADZENIE         E5 ON    W.ID_TYP_WEZLA = 5 AND E5.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   MUFA              E23 ON    W.ID_TYP_WEZLA = 23 AND E23.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   GLOWICA_CU       E116 ON    W.ID_TYP_WEZLA = 116 AND E116.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   MDF              E117 ON    W.ID_TYP_WEZLA = 117 AND E117.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   SZAFA_CU         E118 ON    W.ID_TYP_WEZLA = 118 AND E118.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   GRUPA_GLOWIC_CU  E119 ON    W.ID_TYP_WEZLA = 119 AND E119.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   TUNEL            E138 ON    W.ID_TYP_WEZLA = 138 AND E138.ID = W.ID_ELEMENT'#13#10 +
+             '      WHERE   ID_TYP_WEZLA IN ( -1, 1, 2, 3, 5, 23, 24, 116, 117, 118, 119, 138 )' );
 
   { date: 2013-04-09, file: subquery empty line before clause.sql }
   TestQuery( ''#13#10 +
@@ -2503,78 +2507,41 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              '  JOIN   PRZEPLYWNOSC            PRZ ON PRZ.ID = TMP.ID_PRZEPLYWNOSC /* cut this expression to get AV */' );
 
   { date: 2013-04-15, file: ON cond second expr intend.sql }
-//  TestQuery( ''#13#10 +
-//             '     SELECT   TMP.ID'#13#10 +
-//             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )                   AS     REF_PASSPORT_TYPE'#13#10 +
-//             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, TRS.ID_TRANSMISJA, TMP.REF_PASSPORT_TABLE_ID ) AS REF_PASSPORT_TABLE_ID'#13#10 +
-//             '          ,   COALESCE( V.NR, V.NAZWA, TR.NAZWA )                                                AS                    NR'#13#10 +
-//             '          ,   T.PASSPORT_TYPE_NAME'#13#10 +
-//             '          ,   T.PASSPORT_FORM_NAME'#13#10 +
-//             '       FROM   TMP_PASSPORT_REFERENCES  TMP'#13#10 +
-//             '       JOIN   PASSPORT_TYPE              T ON   T.ID                = DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )'#13#10 +
-//             '  LEFT JOIN   PASSPORT_V                 V ON   V.ID_PASSPORT_TYPE  = TMP.REF_PASSPORT_TYPE    AND V.PASSPORT_TABLE_ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   TRANSMISJA_SKLADNIKI     TRS ON TMP.REF_PASSPORT_TYPE = 727                      AND TRS.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   USLUGA_TRANSMISJA        UTR ON TMP.REF_PASSPORT_TYPE = 882                      AND UTR.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   USLUGA                   USL ON USL.ID                = UTR.ID_USLUGA            '#13#10 +
-//             '  LEFT JOIN   TRANSMISJA                TR ON  TR.ID                = UTR.ID_TRANSMISJA        '#13#10 +
-//             '   ORDER BY   T.PASSPORT_TYPE_NAME'#13#10 +
-//             '          ,   NVL( V.NR, V.NAZWA ) ;'#13#10 +
-//             ''#13#10 +
-//             'CREATE OR REPLACE VIEW WEZEL_V AS'#13#10 +
-//             ''#13#10 +
-//             '     SELECT   W.ID'#13#10 +
-//             '       FROM   WEZEL               W'#13#10 +
-//             '  LEFT JOIN   TYP_WEZLA           T ON    T.ID           = W.ID_TYP_WEZLA'#13#10 +
-//             '  LEFT JOIN   TYP_ELEMENTU        S ON    S.ID           = T.ID          '#13#10 +
-//             '  LEFT JOIN   LOKALIZACJA       E24 ON    W.ID_TYP_WEZLA = 24            AND E24.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   BUDYNEK            E1 ON    W.ID_TYP_WEZLA = 1             AND E1.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   STUDNIA            E2 ON    W.ID_TYP_WEZLA = 2             AND E2.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   PRZELACZNICA       E3 ON    W.ID_TYP_WEZLA = 3             AND E3.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   URZADZENIE         E5 ON    W.ID_TYP_WEZLA = 5             AND E5.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MUFA              E23 ON    W.ID_TYP_WEZLA = 23            AND E23.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GLOWICA_CU       E116 ON    W.ID_TYP_WEZLA = 116           AND E116.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MDF              E117 ON    W.ID_TYP_WEZLA = 117           AND E117.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   SZAFA_CU         E118 ON    W.ID_TYP_WEZLA = 118           AND E118.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GRUPA_GLOWIC_CU  E119 ON    W.ID_TYP_WEZLA = 119           AND E119.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   TUNEL            E138 ON    W.ID_TYP_WEZLA = 138           AND E138.ID = W.ID_ELEMENT'#13#10 +
-//             '      WHERE   ID_TYP_WEZLA IN ( -1, 1, 2, 3, 5, 23, 24, 116, 117, 118, 119, 138 ) ;' );
-
-  { date: 2013-04-15, file: ON cond second expr intend.sql }
-//  TestQuery( ''#13#10 +
-//             '     SELECT   TMP.ID'#13#10 +
-//             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )                   AS     REF_PASSPORT_TYPE'#13#10 +
-//             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, TRS.ID_TRANSMISJA, TMP.REF_PASSPORT_TABLE_ID ) AS REF_PASSPORT_TABLE_ID'#13#10 +
-//             '          ,   COALESCE( V.NR, V.NAZWA, TR.NAZWA )                                                AS                    NR'#13#10 +
-//             '          ,   T.PASSPORT_TYPE_NAME'#13#10 +
-//             '          ,   T.PASSPORT_FORM_NAME'#13#10 +
-//             '       FROM   TMP_PASSPORT_REFERENCES  TMP'#13#10 +
-//             '       JOIN   PASSPORT_TYPE              T ON   T.ID                = DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )'#13#10 +
-//             '  LEFT JOIN   PASSPORT_V                 V ON   V.ID_PASSPORT_TYPE  = TMP.REF_PASSPORT_TYPE    AND V.PASSPORT_TABLE_ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   TRANSMISJA_SKLADNIKI     TRS ON TMP.REF_PASSPORT_TYPE = 727                      AND TRS.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   USLUGA_TRANSMISJA        UTR ON TMP.REF_PASSPORT_TYPE = 882                      AND UTR.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
-//             '  LEFT JOIN   USLUGA                   USL ON USL.ID                = UTR.ID_USLUGA            '#13#10 +
-//             '  LEFT JOIN   TRANSMISJA                TR ON  TR.ID                = UTR.ID_TRANSMISJA        '#13#10 +
-//             '   ORDER BY   T.PASSPORT_TYPE_NAME'#13#10 +
-//             '          ,   NVL( V.NR, V.NAZWA ) ;'#13#10 +
-//             ''#13#10 +
-//             'CREATE OR REPLACE VIEW WEZEL_V AS'#13#10 +
-//             ''#13#10 +
-//             '     SELECT   W.ID'#13#10 +
-//             '       FROM   WEZEL               W'#13#10 +
-//             '  LEFT JOIN   TYP_WEZLA           T ON    T.ID           = W.ID_TYP_WEZLA'#13#10 +
-//             '  LEFT JOIN   TYP_ELEMENTU        S ON    S.ID           = T.ID          '#13#10 +
-//             '  LEFT JOIN   LOKALIZACJA       E24 ON    W.ID_TYP_WEZLA = 24            AND E24.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   BUDYNEK            E1 ON    W.ID_TYP_WEZLA = 1             AND E1.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   STUDNIA            E2 ON    W.ID_TYP_WEZLA = 2             AND E2.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   PRZELACZNICA       E3 ON    W.ID_TYP_WEZLA = 3             AND E3.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   URZADZENIE         E5 ON    W.ID_TYP_WEZLA = 5             AND E5.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MUFA              E23 ON    W.ID_TYP_WEZLA = 23            AND E23.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GLOWICA_CU       E116 ON    W.ID_TYP_WEZLA = 116           AND E116.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   MDF              E117 ON    W.ID_TYP_WEZLA = 117           AND E117.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   SZAFA_CU         E118 ON    W.ID_TYP_WEZLA = 118           AND E118.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   GRUPA_GLOWIC_CU  E119 ON    W.ID_TYP_WEZLA = 119           AND E119.ID = W.ID_ELEMENT'#13#10 +
-//             '  LEFT JOIN   TUNEL            E138 ON    W.ID_TYP_WEZLA = 138           AND E138.ID = W.ID_ELEMENT'#13#10 +
-//             '      WHERE   ID_TYP_WEZLA IN ( -1, 1, 2, 3, 5, 23, 24, 116, 117, 118, 119, 138 ) ;' );
+  TestQuery( ''#13#10 +
+             '     SELECT   TMP.ID'#13#10 +
+             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )                   AS     REF_PASSPORT_TYPE'#13#10 +
+             '          ,   DECODE( TMP.REF_PASSPORT_TYPE, 727, TRS.ID_TRANSMISJA, TMP.REF_PASSPORT_TABLE_ID ) AS REF_PASSPORT_TABLE_ID'#13#10 +
+             '          ,   COALESCE( V.NR, V.NAZWA, TR.NAZWA )                                                AS                    NR'#13#10 +
+             '          ,   T.PASSPORT_TYPE_NAME'#13#10 +
+             '          ,   T.PASSPORT_FORM_NAME'#13#10 +
+             '       FROM   TMP_PASSPORT_REFERENCES  TMP'#13#10 +
+             '       JOIN   PASSPORT_TYPE              T ON   T.ID                = DECODE( TMP.REF_PASSPORT_TYPE, 727, 868, TMP.REF_PASSPORT_TYPE )'#13#10 +
+             '  LEFT JOIN   PASSPORT_V                 V ON   V.ID_PASSPORT_TYPE  = TMP.REF_PASSPORT_TYPE    AND V.PASSPORT_TABLE_ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
+             '  LEFT JOIN   TRANSMISJA_SKLADNIKI     TRS ON TMP.REF_PASSPORT_TYPE = 727                      AND TRS.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
+             '  LEFT JOIN   USLUGA_TRANSMISJA        UTR ON TMP.REF_PASSPORT_TYPE = 882                      AND UTR.ID = TMP.REF_PASSPORT_TABLE_ID'#13#10 +
+             '  LEFT JOIN   USLUGA                   USL ON USL.ID                = UTR.ID_USLUGA            '#13#10 +
+             '  LEFT JOIN   TRANSMISJA                TR ON  TR.ID                = UTR.ID_TRANSMISJA        '#13#10 +
+             '   ORDER BY   T.PASSPORT_TYPE_NAME'#13#10 +
+             '          ,   NVL( V.NR, V.NAZWA ) ;' );
+  TestQuery( ''#13#10 +
+             'CREATE OR REPLACE VIEW WEZEL_V AS'#13#10 +
+             ''#13#10 +
+             '     SELECT   W.ID'#13#10 +
+             '       FROM   WEZEL               W'#13#10 +
+             '  LEFT JOIN   TYP_WEZLA           T ON    T.ID           = W.ID_TYP_WEZLA'#13#10 +
+             '  LEFT JOIN   TYP_ELEMENTU        S ON    S.ID           = T.ID          '#13#10 +
+             '  LEFT JOIN   LOKALIZACJA       E24 ON    W.ID_TYP_WEZLA = 24            AND E24.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   BUDYNEK            E1 ON    W.ID_TYP_WEZLA = 1             AND E1.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   STUDNIA            E2 ON    W.ID_TYP_WEZLA = 2             AND E2.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   PRZELACZNICA       E3 ON    W.ID_TYP_WEZLA = 3             AND E3.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   URZADZENIE         E5 ON    W.ID_TYP_WEZLA = 5             AND E5.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   MUFA              E23 ON    W.ID_TYP_WEZLA = 23            AND E23.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   GLOWICA_CU       E116 ON    W.ID_TYP_WEZLA = 116           AND E116.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   MDF              E117 ON    W.ID_TYP_WEZLA = 117           AND E117.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   SZAFA_CU         E118 ON    W.ID_TYP_WEZLA = 118           AND E118.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   GRUPA_GLOWIC_CU  E119 ON    W.ID_TYP_WEZLA = 119           AND E119.ID = W.ID_ELEMENT'#13#10 +
+             '  LEFT JOIN   TUNEL            E138 ON    W.ID_TYP_WEZLA = 138           AND E138.ID = W.ID_ELEMENT'#13#10 +
+             '      WHERE   ID_TYP_WEZLA IN ( -1, 1, 2, 3, 5, 23, 24, 116, 117, 118, 119, 138 ) ;' );
 
   { date: 2013-04-16, file: old ORDER BY nulls first.sql }
   TestQuery( 'SELECT *'#13#10 +
@@ -2709,18 +2676,18 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              '    FROM   SPAW_TMP'#13#10 +
              '   WHERE   ROWNUM = 1'#13#10 +
              'ORDER BY   ID ;' );
-//  TestQuery( '  UPDATE   WLOKNO_WKV'#13#10 +
-//             '     SET   ID_GNIAZDO_1 = G'#13#10 +
-//             '   WHERE   ID = :RECORDID'#13#10 +
-//             '     AND   ID_GNIAZDO_1 IS NULL'#13#10 +
-//             '     AND   NVL( ID_GNIAZDO_2, -1 ) != G'#13#10 +
-//             '     AND   ID_WEZEL_1 = :cmbLokalizacja.Value ;' );
-//  TestQuery( '  UPDATE   WLOKNO_WKV'#13#10 +
-//             '     SET   ID_GNIAZDO_2 = G'#13#10 +
-//             '   WHERE   ID = :RECORDID'#13#10 +
-//             '     AND   ID_GNIAZDO_2 IS NULL'#13#10 +
-//             '     AND   NVL( ID_GNIAZDO_1, -1 ) != G'#13#10 +
-//             '     AND   ID_WEZEL_2 = :cmbLokalizacja.Value ;' );
+  TestQuery( '  UPDATE   WLOKNO_WKV'#13#10 +
+             '     SET   ID_GNIAZDO_1 = G'#13#10 +
+             '   WHERE   ID = :RECORDID'#13#10 +
+             '     AND   ID_GNIAZDO_1 IS NULL'#13#10 +
+             '     AND   NVL( ID_GNIAZDO_2, -1 ) != G'#13#10 +
+             '     AND   ID_WEZEL_1 = :cmbLokalizacja.Value ;' );
+  TestQuery( '  UPDATE   WLOKNO_WKV'#13#10 +
+             '     SET   ID_GNIAZDO_2 = G'#13#10 +
+             '   WHERE   ID = :RECORDID'#13#10 +
+             '     AND   ID_GNIAZDO_2 IS NULL'#13#10 +
+             '     AND   NVL( ID_GNIAZDO_1, -1 ) != G'#13#10 +
+             '     AND   ID_WEZEL_2 = :cmbLokalizacja.Value ;' );
   TestQuery( '  DELETE '#13#10 +
              '   FROM    SPAW_TMP'#13#10 +
              '   WHERE   ID_GNIAZDO = G ;' );
@@ -2989,17 +2956,6 @@ TestQuery( '       SELECT  W.ID'#13#10 +
 //             'FOR UPDATE OF'#13#10 +
 //             'WLASCICIEL.ID NOWAIT' );
 
-  { date: 2013-05-17, file: FOR UPDATE intend.sql }
-//  TestQuery( 'SELECT'#13#10 +
-//             'WLASCICIEL.*'#13#10 +
-//             'FROM'#13#10 +
-//             'WLASCICIEL'#13#10 +
-//             'WHERE'#13#10 +
-//             'WLASCICIEL.ID = :AKTID'#13#10 +
-//             'AND WLASCICIEL.ID_ADRES_SZCZ = ADRES_SZCZ.ID(+)'#13#10 +
-//             'FOR UPDATE OF'#13#10 +
-//             'WLASCICIEL.ID NOWAIT' );
-
   { date: 2013-05-25, file: TRUNCATE TABLE.sql }
   TestQuery( 'TRUNCATE TABLE AUDITING;' );
 
@@ -3100,7 +3056,7 @@ TestQuery( '       SELECT  W.ID'#13#10 +
   TestQuery( 'DELETE m.* FROM materials m JOIN product p;' );
 
   { date: 2013-07-03, file: BETWEEN expr.sql }
-//TestQuery( 'select * from KLASY_IP4_V WHERE 256*(256*(256*IP_A+IP_B)+IP_C)+IP_D BETWEEN IP AND BROADCAST' );
+  TestQuery( 'select * from KLASY_IP4_V WHERE 256*(256*(256*IP_A+IP_B)+IP_C)+IP_D BETWEEN IP AND BROADCAST' );
 
   { date: 2013-07-04, file: NEW params.sql }
   TestQuery( '  INSERT INTO  KLASY_IP4'#13#10 +
@@ -3521,14 +3477,12 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              '       AND   NR.NR BETWEEN 1 AND M.POJEMNOSC' );
 
   { date: 2013-08-23, file: WHERE AV no conditions.sql }
-//  TestQuery( 'SELECT'#13#10 +
-//             '*'#13#10 +
-//             'FROM'#13#10 +
-//             'PRZEGLAD P'#13#10 +
-//             'WHERE'#13#10 +
-//             ''#13#10 +
-//             'ORDER BY'#13#10 +
-//             'P.DATA' );
+  TestQuery( 'SELECT'#13#10 +
+             '*'#13#10 +
+             'FROM'#13#10 +
+             'PRZEGLAD P'#13#10 +
+             'ORDER BY'#13#10 +
+             'P.DATA' );
 
   { date: 2013-08-30, file: EXT QUERY alias.sql }
   TestQuery( 'SELECT   ''U''          AS          TYP'#13#10 +
@@ -3610,14 +3564,14 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              ';' );
 
   { date: 2013-09-25, file: empty line before CLAUSE on short query to no linespaces.sql }
-//  TestQuery( '  SELECT   *'#13#10 +
-//             ''#13#10 +
-//             '    FROM   KONTENERY_SDH  T'#13#10 +
-//             ''#13#10 +
-//             '   WHERE   ID_SYGNAL_DET_GLOWNY = -105'#13#10 +
-//             '     AND   ( ID - 1000000 * TRUNC(ID / 1000000) < 23999 )'#13#10 +
-//             ''#13#10 +
-//             'ORDER BY   ID' );
+  TestQuery( '  SELECT   *'#13#10 +
+             ''#13#10 +
+             '    FROM   KONTENERY_SDH  T'#13#10 +
+             ''#13#10 +
+             '   WHERE   ID_SYGNAL_DET_GLOWNY = -105'#13#10 +
+             '     AND   ( ID - 1000000 * TRUNC(ID / 1000000) < 23999 )'#13#10 +
+             ''#13#10 +
+             'ORDER BY   ID' );
 
   { date: 2013-09-30, file: AV ON condition broken.sql }
   TestQuery( 'SELECT NVL(SZP.POZYCJA, W.POZYCJA) AS POZYCJA, /*DECODE(W.ID_TYP_WEZLA, 3, ''panel'',*/ W.TYP AS TYP, W.ELEMENT,'#13#10 +
@@ -3770,19 +3724,19 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              ' ORDER BY   W.NR ;' );
 
   { date: 2013-11-28, file: FUNCTION params.sql }
-//  TestQuery( ' UPDATE   IMP_LOKALIZACJA  IMP'#13#10 +
-//             '    SET   ID_TYP_ELEMENTU = ELEMENT_TYPES.LOKALIZACJA'#13#10 +
-//             '      ,   ID_ELEMENT      = LOKALIZACJA_FIND_OR_CREATE ( p_SYMBOL             => IMP.SYMBOL'#13#10 +
-//             '                                                       , p_ID_TYP_LOKALIZACJI => -1 '#13#10 +
-//             '                                                       , p_ID_WEZEL           => WEZEL_FIND_OR_CREATE ( p_ID_TYP_WEZLA => WEZEL_TYPES.BUDYNEK'#13#10 +
-//             '                                                                                                      , p_ID_ELEMENT   => BUDYNEK_FIND_OR_CREATE ( p_NR             => IMP.SYMBOL'#13#10 +
-//             '                                                                                                                                                 , p_ID_ADRES       => UTWORZADRES2( IMP.MIASTO, IMP.ULICA, IMP.POSESJA, NULL )'#13#10 +
-//             '                                                                                                                                                 , p_ID_TYP_BUDYNKU => -1 '#13#10 +
-//             '                                                                                                                                                 )'#13#10 +
-//             '                                                                                                      )                                           '#13#10 +
-//             '                                                       )'#13#10 +
-//             '  WHERE   IMP.ID_ELEMENT  IS NULL'#13#10 +
-//             '    AND   IMP.KOD         = ''L'';' );
+  TestQuery( ' UPDATE   IMP_LOKALIZACJA  IMP'#13#10 +
+             '    SET   ID_TYP_ELEMENTU = ELEMENT_TYPES.LOKALIZACJA'#13#10 +
+             '      ,   ID_ELEMENT      = LOKALIZACJA_FIND_OR_CREATE ( p_SYMBOL             => IMP.SYMBOL'#13#10 +
+             '                                                       , p_ID_TYP_LOKALIZACJI => -1 '#13#10 +
+             '                                                       , p_ID_WEZEL           => WEZEL_FIND_OR_CREATE ( p_ID_TYP_WEZLA => WEZEL_TYPES.BUDYNEK'#13#10 +
+             '                                                                                                      , p_ID_ELEMENT   => BUDYNEK_FIND_OR_CREATE ( p_NR             => IMP.SYMBOL'#13#10 +
+             '                                                                                                                                                 , p_ID_ADRES       => UTWORZADRES2( IMP.MIASTO, IMP.ULICA, IMP.POSESJA, NULL )'#13#10 +
+             '                                                                                                                                                 , p_ID_TYP_BUDYNKU => -1 '#13#10 +
+             '                                                                                                                                                 )'#13#10 +
+             '                                                                                                      )                                           '#13#10 +
+             '                                                       )'#13#10 +
+             '  WHERE   IMP.ID_ELEMENT  IS NULL'#13#10 +
+             '    AND   IMP.KOD         = ''L'';' );
 
   { date: 2013-12-06, file: old UNION alias intend.sql }
   TestQuery( ' SELECT   1 AS         A1'#13#10 +
@@ -3840,14 +3794,14 @@ TestQuery( '       SELECT  W.ID'#13#10 +
 
 
   { date: 2014-02-24, file: parse WHERE subquery.sql }
-//  TestQuery( '  INSERT INTO   URZADZENIE_IP'#13#10 +
-//             '            (   ID_URZADZENIE'#13#10 +
-//             '            ,   ID_KLASY_IP4   )'#13#10 +
-//             '       SELECT   lURz'#13#10 +
-//             '            ,   IP.ID'#13#10 +
-//             '         FROM   KLASY_IP4  IP'#13#10 +
-//             '        WHERE   IP.IP = l_IP'#13#10 +
-//             '           OR   IP.IP = l_IP + (SELECT NO_IP_ADDRES FROM TYP_KLASY_IP WHERE ID = :NEW.ID_TYP_KLASY_IP) - 1;' );
+  TestQuery( '  INSERT INTO   URZADZENIE_IP'#13#10 +
+             '            (   ID_URZADZENIE'#13#10 +
+             '            ,   ID_KLASY_IP4   )'#13#10 +
+             '       SELECT   lURz'#13#10 +
+             '            ,   IP.ID'#13#10 +
+             '         FROM   KLASY_IP4  IP'#13#10 +
+             '        WHERE   IP.IP = l_IP'#13#10 +
+             '           OR   IP.IP = l_IP + (SELECT NO_IP_ADDRES FROM TYP_KLASY_IP WHERE ID = :NEW.ID_TYP_KLASY_IP) - 1;' );
 
   { date: 2014-03-19, file: EXPR logic.sql }
   TestQuery( 'SELECT TR.ID_WEZEL_1, TR.ID_PORT_1 '#13#10 +
@@ -4117,54 +4071,54 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'SELECT ID FROM TRANSMISJA TR WHERE TR.ID = 12590 '#13#10 +
              'UNION'#13#10 +
              'SELECT ID FROM TRANSMISJA TR WHERE TR.ID = 12590 ;' );
-//  TestQuery( 'SELECT td.nazwa, trs.id_transmisja'#13#10 +
-//             'FROM   transmisja_skladniki trs '#13#10 +
-//             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
-//             'JOIN   PORT P ON P.ID = trp.id_port_1'#13#10 +
-//             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
-//             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
-//             'AND    trp.id_port_1 IN ('#13#10 +
-//             '        SELECT      p11.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
-//             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
-//             '        UNION ALL'#13#10 +
-//             '        SELECT      p22.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
-//             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
-//             ') '#13#10 +
-//             'UNION ALL'#13#10 +
-//             'SELECT td.nazwa, trs.id_transmisja'#13#10 +
-//             'FROM   transmisja_skladniki trs '#13#10 +
-//             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
-//             'JOIN   PORT P ON P.ID = trp.id_port_2'#13#10 +
-//             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
-//             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
-//             'AND    trp.id_port_1 IN ('#13#10 +
-//             '        SELECT      p11.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
-//             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
-//             '        UNION ALL'#13#10 +
-//             '        SELECT      p22.id'#13#10 +
-//             '        FROM        transmisja tr'#13#10 +
-//             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
-//             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
-//             '        WHERE       tr.id = 12193'#13#10 +
-//             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
-//             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
-//             ') '#13#10 +
-//             ';' );
+  TestQuery( 'SELECT td.nazwa, trs.id_transmisja'#13#10 +
+             'FROM   transmisja_skladniki trs '#13#10 +
+             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
+             'JOIN   PORT P ON P.ID = trp.id_port_1'#13#10 +
+             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
+             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
+             'AND    trp.id_port_1 IN ('#13#10 +
+             '        SELECT      p11.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
+             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
+             '        UNION ALL'#13#10 +
+             '        SELECT      p22.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
+             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
+             ') '#13#10 +
+             'UNION ALL'#13#10 +
+             'SELECT td.nazwa, trs.id_transmisja'#13#10 +
+             'FROM   transmisja_skladniki trs '#13#10 +
+             'JOIN   transmisja_przebieg trp ON trp.id_transmisja = trs.id_transmisja'#13#10 +
+             'JOIN   PORT P ON P.ID = trp.id_port_2'#13#10 +
+             'JOIN   transport_det td ON td.id = p.id_transport_det'#13#10 +
+             'WHERE  trs.id_transmisja_skl = 12193'#13#10 +
+             'AND    trp.id_port_1 IN ('#13#10 +
+             '        SELECT      p11.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p1 ON p1.id = tr.id_port_1'#13#10 +
+             '        JOIN        port p11 ON p11.id_wezel = p1.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p11.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p11.id_transport_det IS NOT NULL'#13#10 +
+             '        UNION ALL'#13#10 +
+             '        SELECT      p22.id'#13#10 +
+             '        FROM        transmisja tr'#13#10 +
+             '        JOIN        port  p2 ON p2.id = tr.id_port_2'#13#10 +
+             '        JOIN        port p22 ON p22.id_wezel = p2.id_wezel'#13#10 +
+             '        WHERE       tr.id = 12193'#13#10 +
+             '        AND         p22.id_transport IN (-4,-5)'#13#10 +
+             '        AND         p22.id_transport_det IS NOT NULL'#13#10 +
+             ') '#13#10 +
+             ';' );
   TestQuery( 'SELECT ID_SWIATLOWOD, NR_WLOKNO, NR'#13#10 +
              'FROM ('#13#10 +
              'SELECT V.ID_SWIATLOWOD, V.NR_WLOKNO, NR.NR'#13#10 +
@@ -4596,16 +4550,16 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              '      AND   c=c' );
 
   { date: 2014-05-27, file: parse EXPR escalation.sql }
-//  TestQuery( 'SELECT     (1*2)/(3*4) alias1,'#13#10 +
-//             '    ((a - b)*c)/ (d*e) alias2'#13#10 +
-//             '  from index_stats;' );
-//  TestQuery( 'select name  NAME,'#13#10 +
-//             '    (br_rows_len*100)/(br_blk_len*br_blks) BRANCH_UTILIZATION,'#13#10 +
-//             '    ((lf_rows_len - del_lf_rows_len)*100)/ (lf_blk_len*lf_blks) LEAF_UTILIZATI,'#13#10 +
-//             '    decode (sign(ceil(log(br_blk_len/(br_rows_len/br_rows),'#13#10 +
-//             '            lf_blk_len/(lf_rows_len - del_lf_rows_len)/(lf_rows - del_lf_rows))'#13#10 +
-//             '           +1 - height)), -1,''YES'',''NO'') CAN_REDUCE_LEVEL'#13#10 +
-//             '  from index_stats;' );
+  TestQuery( 'SELECT     (1*2)/(3*4) alias1,'#13#10 +
+             '    ((a - b)*c)/ (d*e) alias2'#13#10 +
+             '  from index_stats;' );
+  TestQuery( 'select name  NAME,'#13#10 +
+             '    (br_rows_len*100)/(br_blk_len*br_blks) BRANCH_UTILIZATION,'#13#10 +
+             '    ((lf_rows_len - del_lf_rows_len)*100)/ (lf_blk_len*lf_blks) LEAF_UTILIZATI,'#13#10 +
+             '    decode (sign(ceil(log(br_blk_len/(br_rows_len/br_rows),'#13#10 +
+             '            lf_blk_len/(lf_rows_len - del_lf_rows_len)/(lf_rows - del_lf_rows))'#13#10 +
+             '           +1 - height)), -1,''YES'',''NO'') CAN_REDUCE_LEVEL'#13#10 +
+             '  from index_stats;' );
 
   TestQuery( ' SELECT   USL.*'#13#10 +
              '   FROM   USLUGA_EXT  USL'#13#10 +
@@ -4623,65 +4577,65 @@ TestQuery( '       SELECT  W.ID'#13#10 +
 //             '        ,   COLUMN_NAME;' );
 
   { date: 2014-06-06, file: parse no WHERE in deepest query after format.sql }
-//  TestQuery( '-- Cost = 72   IO = 69   CPU = 39.877.731'#13#10 +
-//             '--                       CPU = 25.550.000 -- bez SMU1 i SMU2'#13#10 +
-//             '-- Cost = 33   IO = 33   CPU =    403.013 -- SMU top            -- 0.156 sek'#13#10 +
-//             '-- Cost = 10   IO =  9   CPU = 14.440.358 -- bez WKV (LOW)      -- 0.062 sek'#13#10 +
-//             '-- Cost = 45   IO = 41   CPU = 52.211.246 '#13#10 +
-//             '-- Cost =  3   IO =  3   CPU =    120.807 -- FK 1:1 JOIN -> subq cols           REAL IO = 22, CPU:    273.574 ???'#13#10 +
-//             '-- Cost =  3   IO =  3   CPU =    120.807 -- WEZEL_SW_12 AS FIRST               REAL IO = 32, CPU: 28.809.286 ???'#13#10 +
-//             '-- Cost =  3   IO =  3   CPU =    120.807 -- WEZEL_SW_12 AS MIN                 REAL IO = 32, CPU:    395.633 ???'#13#10 +
-//             'SELECT *'#13#10 +
-//             'FROM ('#13#10 +
-//             'SELECT'#13#10 +
-//             '  S.*, '#13#10 +
-//             '  ( SELECT WA1.OZNACZENIE || NVL2(WA1.ADRES, '', ''||WA1.ADRES, '''') FROM WEZEL_ADRES_V WA1 WHERE WA1.ID = S.ID_WEZEL_1) AS ADRES1,'#13#10 +
-//             '  ( SELECT WA2.OZNACZENIE || NVL2(WA2.ADRES, '', ''||WA2.ADRES, '''') FROM WEZEL_ADRES_V WA2 WHERE WA2.ID = S.ID_WEZEL_2) AS ADRES2,'#13#10 +
-//             '  ( SELECT WW1.ELEMENT FROM WEZEL_V WW1 WHERE WW1.ID = S.ID_WEZEL_SW_1) AS ELEMENT1,'#13#10 +
-//             '  ( SELECT WW2.ELEMENT FROM WEZEL_V WW2 WHERE WW2.ID = S.ID_WEZEL_SW_2) AS ELEMENT2,'#13#10 +
-//             '  ( SELECT NAZWA  FROM TYP_SWIATLOWODU T WHERE T.ID = S.ID_TYP_SWIATLOWODU ) AS TYP,'#13#10 +
-//             '  ( SELECT LICZBA FROM TYP_SWIATLOWODU T WHERE T.ID = S.ID_TYP_SWIATLOWODU ) AS LICZBA,'#13#10 +
-//             '  ( SELECT NAZWA  FROM STATUS ST WHERE ST.ID = S.ID_STATUS ) AS STATUS'#13#10 +
-//             ''#13#10 +
-//             'FROM ('#13#10 +
-//             '          SELECT S.*,'#13#10 +
-//             '               ( SELECT   MIN(G.ID_WEZEL) --KEEP (DENSE_RANK FIRST ORDER BY COUNT(*) DESC NULLS LAST)'#13#10 +
-//             '                 FROM     WLOKNO WL'#13#10 +
-//             '                 JOIN     GNIAZDO G ON G.ID = WL.ID_GNIAZDO_1'#13#10 +
-//             '                 WHERE    WL.ID_SWIATLOWOD = S.ID'#13#10 +
-//             '                    AND   WL.ID_WEZEL_KABEL_1 = S.ID_WEZEL_KABEL_1'#13#10 +
-//             '                 /*GROUP BY G.ID_WEZEL*/) AS ID_WEZEL_SW_1,'#13#10 +
-//             '               ( SELECT   MIN(G.ID_WEZEL) --KEEP (DENSE_RANK FIRST ORDER BY COUNT(*) DESC NULLS LAST)'#13#10 +
-//             '                 FROM     WLOKNO WL'#13#10 +
-//             '                 JOIN     GNIAZDO G ON G.ID = WL.ID_GNIAZDO_2'#13#10 +
-//             '                 WHERE    WL.ID_SWIATLOWOD = S.ID'#13#10 +
-//             '                    AND   WL.ID_WEZEL_KABEL_2 = S.ID_WEZEL_KABEL_2'#13#10 +
-//             '                 /*GROUP BY G.ID_WEZEL*/) AS ID_WEZEL_SW_2'#13#10 +
-//             ''#13#10 +
-//             '          FROM ('#13#10 +
-//             '                    SELECT S.*,'#13#10 +
-//             '                         ( SELECT ID_WEZEL FROM WEZEL_KABEL WK1 WHERE WK1.ID_TYP_ELEMENTU = 101 AND WK1.ID_ELEMENT = S.ID AND WK1.LP = S.MIN_LP ) AS ID_WEZEL_1,'#13#10 +
-//             '                         ( SELECT ID_WEZEL FROM WEZEL_KABEL WK2 WHERE WK2.ID_TYP_ELEMENTU = 101 AND WK2.ID_ELEMENT = S.ID AND WK2.LP = S.MIN_LP ) AS ID_WEZEL_2,'#13#10 +
-//             '                         ( SELECT ID       FROM WEZEL_KABEL WK1 WHERE WK1.ID_TYP_ELEMENTU = 101 AND WK1.ID_ELEMENT = S.ID AND WK1.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_1,'#13#10 +
-//             '                         ( SELECT ID       FROM WEZEL_KABEL WK2 WHERE WK2.ID_TYP_ELEMENTU = 101 AND WK2.ID_ELEMENT = S.ID AND WK2.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_2'#13#10 +
-//             '                    FROM ( '#13#10 +
-//             '                            /* subquery na SW, bo nie mo¿na u¿yæ subquery w JOIN na WEZEL_KABEL */'#13#10 +
-//             '                            SELECT SW.ID, SW.NR, SW.DLUGOSC_OPTYCZNA, SW.DLUGOSC_TRASOWA, SW.ID_TYP_SWIATLOWODU, SW.ID_STATUS,'#13#10 +
-//             '                                   ( SELECT MIN(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MIN_LP,'#13#10 +
-//             '                                   ( SELECT MAX(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MAX_LP'#13#10 +
-//             '                                   '#13#10 +
-//             '                            FROM   SWIATLOWOD      SW'#13#10 +
-//             '                            JOIN   SM_UZYTKOWNIK  SMU  ON SMU.ID_SM  = SW.ID_SM AND SMU.ID_UZYTKOWNIK = -1 /*:USERID*/'#13#10 +
-//             '                            WHERE (SW.ID_SM = 309 /*:LOOKUPSM.VALUE*/ OR 309 /*:LOOKUPSM.VALUE*/ = 0)'#13#10 +
-//             '                              AND (UPPER(SW.NR) LIKE UPPER(''%'' || /*:edtFilterNr.Value ||*/ ''%''))'#13#10 +
-//             '                         ) S'#13#10 +
-//             '               ) S'#13#10 +
-//             '     ) S'#13#10 +
-//             '     ) S'#13#10 +
-//             'WHERE ((UPPER(NVL(S.ELEMENT1, '' '')) LIKE UPPER(''%'' || /*:edtFilterLok.Value ||*/ ''%''))'#13#10 +
-//             '   OR  (UPPER(NVL(S.ELEMENT2, '' '')) LIKE UPPER(''%'' || /*:edtFilterLok.Value ||*/ ''%'')))'#13#10 +
-//             '                                                                                            '#13#10 +
-//             'ORDER BY nr2integerleft(S.NR), nr2integer(S.NR), S.NR' );
+  TestQuery( '-- Cost = 72   IO = 69   CPU = 39.877.731'#13#10 +
+             '--                       CPU = 25.550.000 -- bez SMU1 i SMU2'#13#10 +
+             '-- Cost = 33   IO = 33   CPU =    403.013 -- SMU top            -- 0.156 sek'#13#10 +
+             '-- Cost = 10   IO =  9   CPU = 14.440.358 -- bez WKV (LOW)      -- 0.062 sek'#13#10 +
+             '-- Cost = 45   IO = 41   CPU = 52.211.246 '#13#10 +
+             '-- Cost =  3   IO =  3   CPU =    120.807 -- FK 1:1 JOIN -> subq cols           REAL IO = 22, CPU:    273.574 ???'#13#10 +
+             '-- Cost =  3   IO =  3   CPU =    120.807 -- WEZEL_SW_12 AS FIRST               REAL IO = 32, CPU: 28.809.286 ???'#13#10 +
+             '-- Cost =  3   IO =  3   CPU =    120.807 -- WEZEL_SW_12 AS MIN                 REAL IO = 32, CPU:    395.633 ???'#13#10 +
+             'SELECT *'#13#10 +
+             'FROM ('#13#10 +
+             'SELECT'#13#10 +
+             '  S.*, '#13#10 +
+             '  ( SELECT WA1.OZNACZENIE || NVL2(WA1.ADRES, '', ''||WA1.ADRES, '''') FROM WEZEL_ADRES_V WA1 WHERE WA1.ID = S.ID_WEZEL_1) AS ADRES1,'#13#10 +
+             '  ( SELECT WA2.OZNACZENIE || NVL2(WA2.ADRES, '', ''||WA2.ADRES, '''') FROM WEZEL_ADRES_V WA2 WHERE WA2.ID = S.ID_WEZEL_2) AS ADRES2,'#13#10 +
+             '  ( SELECT WW1.ELEMENT FROM WEZEL_V WW1 WHERE WW1.ID = S.ID_WEZEL_SW_1) AS ELEMENT1,'#13#10 +
+             '  ( SELECT WW2.ELEMENT FROM WEZEL_V WW2 WHERE WW2.ID = S.ID_WEZEL_SW_2) AS ELEMENT2,'#13#10 +
+             '  ( SELECT NAZWA  FROM TYP_SWIATLOWODU T WHERE T.ID = S.ID_TYP_SWIATLOWODU ) AS TYP,'#13#10 +
+             '  ( SELECT LICZBA FROM TYP_SWIATLOWODU T WHERE T.ID = S.ID_TYP_SWIATLOWODU ) AS LICZBA,'#13#10 +
+             '  ( SELECT NAZWA  FROM STATUS ST WHERE ST.ID = S.ID_STATUS ) AS STATUS'#13#10 +
+             ''#13#10 +
+             'FROM ('#13#10 +
+             '          SELECT S.*,'#13#10 +
+             '               ( SELECT   MIN(G.ID_WEZEL) --KEEP (DENSE_RANK FIRST ORDER BY COUNT(*) DESC NULLS LAST)'#13#10 +
+             '                 FROM     WLOKNO WL'#13#10 +
+             '                 JOIN     GNIAZDO G ON G.ID = WL.ID_GNIAZDO_1'#13#10 +
+             '                 WHERE    WL.ID_SWIATLOWOD = S.ID'#13#10 +
+             '                    AND   WL.ID_WEZEL_KABEL_1 = S.ID_WEZEL_KABEL_1'#13#10 +
+             '                 /*GROUP BY G.ID_WEZEL*/) AS ID_WEZEL_SW_1,'#13#10 +
+             '               ( SELECT   MIN(G.ID_WEZEL) --KEEP (DENSE_RANK FIRST ORDER BY COUNT(*) DESC NULLS LAST)'#13#10 +
+             '                 FROM     WLOKNO WL'#13#10 +
+             '                 JOIN     GNIAZDO G ON G.ID = WL.ID_GNIAZDO_2'#13#10 +
+             '                 WHERE    WL.ID_SWIATLOWOD = S.ID'#13#10 +
+             '                    AND   WL.ID_WEZEL_KABEL_2 = S.ID_WEZEL_KABEL_2'#13#10 +
+             '                 /*GROUP BY G.ID_WEZEL*/) AS ID_WEZEL_SW_2'#13#10 +
+             ''#13#10 +
+             '          FROM ('#13#10 +
+             '                    SELECT S.*,'#13#10 +
+             '                         ( SELECT ID_WEZEL FROM WEZEL_KABEL WK1 WHERE WK1.ID_TYP_ELEMENTU = 101 AND WK1.ID_ELEMENT = S.ID AND WK1.LP = S.MIN_LP ) AS ID_WEZEL_1,'#13#10 +
+             '                         ( SELECT ID_WEZEL FROM WEZEL_KABEL WK2 WHERE WK2.ID_TYP_ELEMENTU = 101 AND WK2.ID_ELEMENT = S.ID AND WK2.LP = S.MIN_LP ) AS ID_WEZEL_2,'#13#10 +
+             '                         ( SELECT ID       FROM WEZEL_KABEL WK1 WHERE WK1.ID_TYP_ELEMENTU = 101 AND WK1.ID_ELEMENT = S.ID AND WK1.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_1,'#13#10 +
+             '                         ( SELECT ID       FROM WEZEL_KABEL WK2 WHERE WK2.ID_TYP_ELEMENTU = 101 AND WK2.ID_ELEMENT = S.ID AND WK2.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_2'#13#10 +
+             '                    FROM ( '#13#10 +
+             '                            /* subquery na SW, bo nie mo¿na u¿yæ subquery w JOIN na WEZEL_KABEL */'#13#10 +
+             '                            SELECT SW.ID, SW.NR, SW.DLUGOSC_OPTYCZNA, SW.DLUGOSC_TRASOWA, SW.ID_TYP_SWIATLOWODU, SW.ID_STATUS,'#13#10 +
+             '                                   ( SELECT MIN(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MIN_LP,'#13#10 +
+             '                                   ( SELECT MAX(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MAX_LP'#13#10 +
+             '                                   '#13#10 +
+             '                            FROM   SWIATLOWOD      SW'#13#10 +
+             '                            JOIN   SM_UZYTKOWNIK  SMU  ON SMU.ID_SM  = SW.ID_SM AND SMU.ID_UZYTKOWNIK = -1 /*:USERID*/'#13#10 +
+             '                            WHERE (SW.ID_SM = 309 /*:LOOKUPSM.VALUE*/ OR 309 /*:LOOKUPSM.VALUE*/ = 0)'#13#10 +
+             '                              AND (UPPER(SW.NR) LIKE UPPER(''%'' || /*:edtFilterNr.Value ||*/ ''%''))'#13#10 +
+             '                         ) S'#13#10 +
+             '               ) S'#13#10 +
+             '     ) S'#13#10 +
+             '     ) S'#13#10 +
+             'WHERE ((UPPER(NVL(S.ELEMENT1, '' '')) LIKE UPPER(''%'' || /*:edtFilterLok.Value ||*/ ''%''))'#13#10 +
+             '   OR  (UPPER(NVL(S.ELEMENT2, '' '')) LIKE UPPER(''%'' || /*:edtFilterLok.Value ||*/ ''%'')))'#13#10 +
+             '                                                                                            '#13#10 +
+             'ORDER BY nr2integerleft(S.NR), nr2integer(S.NR), S.NR' );
 
   { date: 2014-06-14, file: parse no WHERE after format.sql }
   TestQuery( '   SELECT   P.*'#13#10 +
@@ -4694,43 +4648,43 @@ TestQuery( '       SELECT  W.ID'#13#10 +
              'AND (UPPER(NVL(SMA.ELEMENT, '' '')) LIKE UPPER(''%'' || :edtFilterLok.Value || ''%''))' );
 
   { date: 2014-06-21, file: hang FUNCTION nested calls.sql }
-TestQuery( '  SELECT SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
-           '                    , p_ID_WEZEL => 1'#13#10 +
-           '                    )'#13#10 +
-           '  FROM   IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
-           ';' );
-TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
-           '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
-           '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
-           '                                      , p_ID_WEZEL => 1'#13#10 +
-           '                                      )'#13#10 +
-           '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
-           '  AND    IMP.KOD = ''S'';' );
-TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
-           '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
-           '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
-           '                                      , p_ID_WEZEL => WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.LOKALIZACJA'#13#10 +
-           '                                                                 , p_ID_ELEMENT   => LOKALIZACJA_FIND ( p_SYMBOL => IMP.LOKALIZACJA )'#13#10 +
-           '                                                                 )'#13#10 +
-           '                                      )'#13#10 +
-           '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
-           '  AND    IMP.KOD = ''S'';' );
-TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
-           '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
-           '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
-           '                                      , p_ID_WEZEL => COALESCE( WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.LOKALIZACJA'#13#10 +
-           '                                                                           , p_ID_ELEMENT   => LOKALIZACJA_FIND ( p_SYMBOL => IMP.LOKALIZACJA )'#13#10 +
-           '                                                                           )'#13#10 +
-           '                                                              , WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.STUDNIA'#13#10 +
-           '                                                                           , p_ID_ELEMENT   => STUDNIA_FIND     ( p_NR     => IMP.LOKALIZACJA )'#13#10 +
-           '                                                                           )'#13#10 +
-           '                                                              , WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.SLUP'#13#10 +
-           '                                                                           , p_ID_ELEMENT   => SLUP_FIND        ( p_NR     => IMP.LOKALIZACJA )'#13#10 +
-           '                                                                           )'#13#10 +
-           '                                                              )             '#13#10 +
-           '                                      )'#13#10 +
-           '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
-           '  AND    IMP.KOD = ''S'';' );
+  TestQuery( '  SELECT SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
+             '                    , p_ID_WEZEL => 1'#13#10 +
+             '                    )'#13#10 +
+             '  FROM   IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
+             ';' );
+  TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
+             '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
+             '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
+             '                                      , p_ID_WEZEL => 1'#13#10 +
+             '                                      )'#13#10 +
+             '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
+             '  AND    IMP.KOD = ''S'';' );
+  TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
+             '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
+             '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
+             '                                      , p_ID_WEZEL => WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.LOKALIZACJA'#13#10 +
+             '                                                                 , p_ID_ELEMENT   => LOKALIZACJA_FIND ( p_SYMBOL => IMP.LOKALIZACJA )'#13#10 +
+             '                                                                 )'#13#10 +
+             '                                      )'#13#10 +
+             '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
+             '  AND    IMP.KOD = ''S'';' );
+  TestQuery( '  UPDATE IMP_MUFA_PRZEL_SZAFA IMP'#13#10 +
+             '  SET    ID_TYP_ELEMENTU = ELEMENT_TYPES.SZAFA'#13#10 +
+             '       , ID_ELEMENT      = SZAFA_FIND ( p_NR       => IMP.SYMBOL'#13#10 +
+             '                                      , p_ID_WEZEL => COALESCE( WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.LOKALIZACJA'#13#10 +
+             '                                                                           , p_ID_ELEMENT   => LOKALIZACJA_FIND ( p_SYMBOL => IMP.LOKALIZACJA )'#13#10 +
+             '                                                                           )'#13#10 +
+             '                                                              , WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.STUDNIA'#13#10 +
+             '                                                                           , p_ID_ELEMENT   => STUDNIA_FIND     ( p_NR     => IMP.LOKALIZACJA )'#13#10 +
+             '                                                                           )'#13#10 +
+             '                                                              , WEZEL_FIND ( p_ID_TYP_WEZLA => WEZEL_TYPES.SLUP'#13#10 +
+             '                                                                           , p_ID_ELEMENT   => SLUP_FIND        ( p_NR     => IMP.LOKALIZACJA )'#13#10 +
+             '                                                                           )'#13#10 +
+             '                                                              )             '#13#10 +
+             '                                      )'#13#10 +
+             '  WHERE  IMP.ID_ELEMENT IS NULL'#13#10 +
+             '  AND    IMP.KOD = ''S'';' );
 
   { date: 2014-07-17, file: parse too much brackets.sql }
   TestQuery( 'SELECT     SUM('#13#10 +
