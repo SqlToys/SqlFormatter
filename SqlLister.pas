@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 349   19-03-10 18:04 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 350   19-03-10 18:53 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -242,7 +242,7 @@ type
     procedure  List_Expr               (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_ExprCase           (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_ExprCast           (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
-    procedure  List_ExprConvert        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
+//  procedure  List_ExprConvert        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_ExprFunction       (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
     procedure  List_ExprColumn         (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
@@ -1358,10 +1358,10 @@ begin
   if aNode.Check(gtsiExpr, gtkwCast) then begin
     List_ExprCast(aNode, aListerOpt);
     Exit;
-  end else
-  if aNode.Check(gtsiExpr, gtkwConvert) then begin
-    List_ExprConvert(aNode, aListerOpt);
-    Exit;
+//  end else
+//  if aNode.Check(gtsiExpr, gtkwConvert) then begin
+//    List_ExprConvert(aNode, aListerOpt);
+//    Exit;
   end;
 
 //AddLeftBracket(aNode.BracketsCount);
@@ -1509,29 +1509,35 @@ begin
 
   AddStr(gtkwAs);
 
+  { keywords switch }
+  aNode.Keyword := aNode.KeywordExt;
+
   List_DataType(aNode, aListerOpt);
+
+  { keywords switch again }
+  aNode.Keyword := gtkwCast; { TEST ONLY -- datatype overwrites CAST keyword }
 
   AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, False {Options[ gtstSpaceInsideBracketsSkipFun ]});
 end;
 
 { lists expression CONVERT }
-procedure  TGtSqlFormatLister.List_ExprConvert;
-var lExprTree: TGtSqlNode;
-begin
-  AddStr(gtkwConvert);
-  AddStr(gttkLeftBracket);
-
-  List_DataType(aNode, aListerOpt);
-
-  AddComma;
-  lExprTree := aNode.Find{ByKind}(gtsiExprTree);
-  List_ExprTree(lExprTree, aListerOpt);
-  lExprTree := aNode.Find{ByKind}(gtsiExprTree, nil, '', lExprTree);
-  if Assigned(lExprTree) then AddComma;
-  List_ExprTree(lExprTree, aListerOpt);
-
-  AddStr(gttkRightBracket);
-end;
+//procedure  TGtSqlFormatLister.List_ExprConvert;
+//var lExprTree: TGtSqlNode;
+//begin
+//  AddStr(gtkwConvert);
+//  AddStr(gttkLeftBracket);
+//
+//  List_DataType(aNode, aListerOpt);
+//
+//  AddComma;
+//  lExprTree := aNode.Find{ByKind}(gtsiExprTree);
+//  List_ExprTree(lExprTree, aListerOpt);
+//  lExprTree := aNode.Find{ByKind}(gtsiExprTree, nil, '', lExprTree);
+//  if Assigned(lExprTree) then AddComma;
+//  List_ExprTree(lExprTree, aListerOpt);
+//
+//  AddStr(gttkRightBracket);
+//end;
 
 { lists expression function }
 procedure TGtSqlFormatLister.List_ExprFunction;

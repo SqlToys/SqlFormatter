@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 23    19-03-10 18:05 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 24    19-03-10 18:53 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest0;
@@ -884,28 +884,28 @@ begin
              '          AND D.sales_unit_cx = UPPER(TAB.SalesUnitId_CSF) COLLATE Polish_CI_AI;' );
 
   { date: 2012-09-28, file: buchal query.sql }
-//  TestQuery( 'UPDATE PRODUKT SET CENA_MINIMALNA = ZP.CENA FROM ('#13#10 +
-//             '  SELECT P.ID, SYM.CENA'#13#10 +
-//             '  FROM'#13#10 +
-//             '  PRODUKT P'#13#10 +
-//             '                 JOIN PRODUCENT PR ON PR.ID=P.ID_PRODUCENT'#13#10 +
-//             '                 JOIN      ('#13#10 +
-//             '  SELECT'#13#10 +
-//             '    MIN( P.CENA) AS CENA,'#13#10 +
-//             '    P.KOD'#13#10 +
-//             '  FROM'#13#10 +
-//             '    SRV_A2012.A2012.DBO.DK AS D,'#13#10 +
-//             '    SRV_A2012.A2012.DBO.DP AS P'#13#10 +
-//             '  WHERE'#13#10 +
-//             '        D.ID=P.SUPER'#13#10 +
-//             '    AND D.TYP=0'#13#10 +
-//             '    AND D.RODZAJ=3300'#13#10 +
-//             '    AND D.AKTYWNY=1'#13#10 +
-//             '    AND          P.SUBTYP=0'#13#10 +
-//             '    AND D.DATA >= CONVERT(DATETIME, ''2011-01-01 00:00:00'', 120)'#13#10 +
-//             '    AND D.DATA <= CONVERT(DATETIME, ''2011-03-30 23:59:59'', 120)'#13#10 +
-//             '  GROUP BY P.KOD ) AS Z ON Z.KOD = PR.SYMBOL || '' '' || P.NAZWA_KODOWA'#13#10 +
-//             '  ) AS ZP WHERE ZP.ID=PRODUKT.ID' );
+  TestQuery( 'UPDATE PRODUKT SET CENA_MINIMALNA = ZP.CENA FROM ('#13#10 +
+             '  SELECT P.ID, SYM.CENA'#13#10 +
+             '  FROM'#13#10 +
+             '  PRODUKT P'#13#10 +
+             '                 JOIN PRODUCENT PR ON PR.ID=P.ID_PRODUCENT'#13#10 +
+             '                 JOIN      ('#13#10 +
+             '  SELECT'#13#10 +
+             '    MIN( P.CENA) AS CENA,'#13#10 +
+             '    P.KOD'#13#10 +
+             '  FROM'#13#10 +
+             '    SRV_A2012.A2012.DBO.DK AS D,'#13#10 +
+             '    SRV_A2012.A2012.DBO.DP AS P'#13#10 +
+             '  WHERE'#13#10 +
+             '        D.ID=P.SUPER'#13#10 +
+             '    AND D.TYP=0'#13#10 +
+             '    AND D.RODZAJ=3300'#13#10 +
+             '    AND D.AKTYWNY=1'#13#10 +
+             '    AND          P.SUBTYP=0'#13#10 +
+             '    AND D.DATA >= CONVERT(DATETIME, ''2011-01-01 00:00:00'', 120)'#13#10 +
+             '    AND D.DATA <= CONVERT(DATETIME, ''2011-03-30 23:59:59'', 120)'#13#10 +
+             '  GROUP BY P.KOD ) AS Z ON Z.KOD = PR.SYMBOL || '' '' || P.NAZWA_KODOWA'#13#10 +
+             '  ) AS ZP WHERE ZP.ID=PRODUKT.ID' );
 
   { date: 2012-10-02, file: background queries.sql }
   TestQuery( '     CREATE TABLE  dept_table'#13#10 +
@@ -1099,7 +1099,7 @@ begin
 //TestQuery( 'REVOKE SELECT ON emp FROM tgi;' ); { sprawdziæ dokumentacjê od Oracle i MSSQL !! }
   TestQuery( 'SELECT "ola monola" FROM "ala ma kota" "ala mia³a kota";' );
   TestQuery( 'SELECT 1 FROM dual WHERE a = :a1 AND b = &b2;' );
-//TestQuery( 'SELECT 1 FROM dual WHERE a LIKE ''nic\%%'' ESCAPE ''\'' COLLATE dupa;' );
+  TestQuery( 'SELECT 1 FROM dual WHERE a LIKE ''nic\%%'' ESCAPE ''\'' COLLATE dupa;' );
 
   { date: 2012-10-20, file: upper function name.sql }
   TestQuery( 'select fun (1,2) from dual;' );
@@ -1214,10 +1214,10 @@ begin
              'START WITH  TAB.ID_PORT_1 IN (SELECT ID_PORT FROM TMP_PORTY) OR TAB.ID_PORT_2 IN (SELECT ID_PORT FROM TMP_PORTY);' );
 
   { date: 2012-10-31, file: for update.sql }
-//  TestQuery( 'SELECT  *'#13#10 +
-//             'FROM    WLOKNO W'#13#10 +
-//             'WHERE   W.ID = 128436'#13#10 +
-//             'FOR UPDATE OF W.ID NOWAIT' );
+  TestQuery( 'SELECT  *'#13#10 +
+             'FROM    WLOKNO W'#13#10 +
+             'WHERE   W.ID = 128436'#13#10 +
+             'FOR UPDATE OF W.ID NOWAIT' );
 
   { date: 2012-10-31, file: function skip one expr on line.sql }
   TestQuery( 'CREATE OR REPLACE VIEW SYRION_MUFY_V AS'#13#10 +
@@ -1423,140 +1423,140 @@ begin
              '          ,  to_number ( nrpart ( p.nr, 6 ) ) ASC;' );
 
   { date: 2012-11-17, file: CAST function parse.sql }
-//  TestQuery( 'CREATE OR REPLACE VIEW HD_USLUGA_INTERFACE AS'#13#10 +
-//             'SELECT /*DISTINCT*/'#13#10 +
-//             '       CAST(TAB.ID                      AS NUMBER( 8,0) ) AS ID,'#13#10 +
-//             '       CAST(TAB.HD_PORT_1               AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
-//             '       CAST(TAB.HD_PORT_2               AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
-//             '       CAST(TAB.NRVLAN_1                AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
-//             '       CAST(TAB.NRVLAN_2                AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
-//             '       CAST(TAB.NRVLAN_1                AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
-//             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
-//             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
-//             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
-//             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
-//             '       CAST(TAB.PRZEPLYWNOSC            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
-//             '       CAST(''Y''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
-//             '       CAST(TAB.TR_DROZNA               AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
-//             'FROM   ('#13#10 +
-//             '        SELECT    MIN(ID) AS ID, ID_USLUGA, MIN(WARTOSC) AS PRZEPLYWNOSC,'#13#10 +
-//             '                  CASE WHEN MAX(TR_DROZNA) = ''Y'' AND MIN(TR_DROZNA) = ''Y'' THEN ''Y'''#13#10 +
-//             '                    -- WHEN MAX(TR_DROZNA) = ''N'' AND MIN(TR_DROZNA) = ''N'' THEN ''N'''#13#10 +
-//             '                       ELSE ''N'''#13#10 +
-//             '                  END  TR_DROZNA,'#13#10 +
-//             '                  MAX(CASE WHEN ROWNO = 1 THEN NRVLAN END) AS NRVLAN_1,'#13#10 +
-//             '                  MAX(CASE WHEN ROWNO = 2 THEN NRVLAN END) AS NRVLAN_2,'#13#10 +
-//             '                  MAX(CASE WHEN ROWNO = 1 THEN ID_HD  END) AS HD_PORT_1,'#13#10 +
-//             '                  MAX(CASE WHEN ROWNO = 2 THEN ID_HD  END) AS HD_PORT_2'#13#10 +
-//             '        FROM ('#13#10 +
-//             '                SELECT    TRP.ID, TRP.NRVLAN, PT.ID_HD, P.WARTOSC, UTR.ID_USLUGA,'#13#10 +
-//             '                          NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS TR_DROZNA,'#13#10 +
-//             '                         (SELECT NVL(SUM(1),0)'#13#10 +
-//             '                          FROM   TRANSMISJA_PORTY_ABCDE TRP2'#13#10 +
-//             '                          JOIN   USLUGA_TRANSMISJA UTR2 ON UTR2.ID_TRANSMISJA = TRP2.ID_TRANSMISJA'#13#10 +
-//             '                          JOIN   PORT               PT2 ON PT2.ID = TRP2.ID_PORT'#13#10 +
-//             '                          JOIN   WEZEL               W2 ON W2.ID = PT2.ID_WEZEL'#13#10 +
-//             '                          JOIN   URZADZENIE        URZ2 ON URZ2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 5'#13#10 +
-//             '                          WHERE  UTR2.ID_USLUGA = UTR.ID_USLUGA'#13#10 +
-//             '                          AND    URZ2.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
-//             '                          AND    TRP2.TYP = TRP.TYP'#13#10 +
-//             '                          AND    TRP2.ID <= TRP.ID) ROWNO /* dziki pivot */'#13#10 +
-//             '                FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
-//             '                JOIN      PORT                    PT ON PT.ID = TRP.ID_PORT'#13#10 +
-//             '                JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
-//             '                JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
-//             '                JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
-//             '                LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
-//             '                LEFT JOIN PRZEPLYWNOSC             P ON P.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
-//             '                WHERE     1=1 --TRP.TYP = ''E'' -- 2012-09-28, A.Lemieszek, przypdaek _Akamai.1'#13#10 +
-//             '                  AND     URZ.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
-//             '       ) TAB'#13#10 +
-//             '       GROUP BY   ID_USLUGA'#13#10 +
-//             ') TAB'#13#10 +
-//             'JOIN      USLUGA                 USL ON USL.ID = TAB.ID_USLUGA'#13#10 +
-//             'UNION ALL'#13#10 +
-//             'SELECT'#13#10 +
-//             '       CAST(MIN(TRP.ID)                 AS NUMBER( 8,0) ) AS ID,'#13#10 +
-//             '       CAST(NULL /*PT.ID_HD*/           AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
-//             '       CAST(TRP.NRVLAN                  AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
-//             '       CAST(TRP.NRVLAN                  AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
-//             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
-//             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
-//             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
-//             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
-//             '       CAST(MIN(PRZ.WARTOSC)            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
-//             '       CAST(''N''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
-//             '--     CAST(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS CHAR(1)) AS TRANSMISJA_DROZNA'#13#10 +
-//             '       CAST(CASE WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' THEN ''Y'''#13#10 +
-//             '              -- WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' THEN ''N'''#13#10 +
-//             '                 ELSE ''N'''#13#10 +
-//             '            END                         AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
-//             ''#13#10 +
-//             ''#13#10 +
-//             'FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
-//             'JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
-//             'JOIN      USLUGA                 USL ON USL.ID = UTR.ID_USLUGA'#13#10 +
-//             'JOIN      PORT                    PT ON PT.ID = TRP.ID_PORT'#13#10 +
-//             'JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
-//             'JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
-//             'LEFT JOIN PRZEPLYWNOSC           PRZ ON PRZ.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
-//             'LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
-//             'WHERE     TRP.TYP = ''E'''#13#10 +
-//             'AND       URZ.ID_TYP_URZADZENIA != -6 /* router */'#13#10 +
-//             'AND       TRP.NRVLAN NOT IN ('#13#10 +
-//             '                SELECT    TRP2.NRVLAN'#13#10 +
-//             '                FROM      TRANSMISJA_PORTY_ABCDE TRP2'#13#10 +
-//             '                JOIN      PORT                    PT ON PT.ID = TRP2.ID_PORT'#13#10 +
-//             '                JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
-//             '                JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
-//             '                WHERE     TRP2.TYP = ''E'''#13#10 +
-//             '               AND  TRP2.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
-//             '                AND       URZ.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
-//             ')'#13#10 +
-//             'GROUP BY  UTR.ID_USLUGA, /*NVL(USL.ID_HD,*/ USL.ID_HD, TRP.NRVLAN'#13#10 +
-//             'UNION /*ALL*/'#13#10 +
-//             'SELECT'#13#10 +
-//             '       CAST(MIN(TRP.ID)                 AS NUMBER( 8,0) ) AS ID,'#13#10 +
-//             '       CAST(NULL /*PT.ID_HD*/           AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
-//             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
-//             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
-//             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
-//             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
-//             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
-//             '       CAST(MIN(PRZ.WARTOSC)            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
-//             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
-//             '       CAST(''N''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
-//             '--     CAST(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS CHAR(1)) AS TRANSMISJA_DROZNA'#13#10 +
-//             '       CAST(CASE WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' THEN ''Y'''#13#10 +
-//             '              -- WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' THEN ''N'''#13#10 +
-//             '                 ELSE ''N'''#13#10 +
-//             '            END                         AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
-//             'FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
-//             'JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
-//             'JOIN      USLUGA                 USL ON USL.ID = UTR.ID_USLUGA'#13#10 +
-//             'LEFT JOIN PRZEPLYWNOSC           PRZ ON PRZ.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
-//             'LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
-//             'WHERE     TRP.TYP = ''F'''#13#10 +
-//             'GROUP BY  USL.ID_HD;' );
+  TestQuery( 'CREATE OR REPLACE VIEW HD_USLUGA_INTERFACE AS'#13#10 +
+             'SELECT /*DISTINCT*/'#13#10 +
+             '       CAST(TAB.ID                      AS NUMBER( 8,0) ) AS ID,'#13#10 +
+             '       CAST(TAB.HD_PORT_1               AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
+             '       CAST(TAB.HD_PORT_2               AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
+             '       CAST(TAB.NRVLAN_1                AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
+             '       CAST(TAB.NRVLAN_2                AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
+             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
+             '       CAST(TAB.NRVLAN_1                AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
+             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
+             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
+             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
+             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
+             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
+             '       CAST(TAB.PRZEPLYWNOSC            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
+             '       CAST(''Y''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
+             '       CAST(TAB.TR_DROZNA               AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
+             'FROM   ('#13#10 +
+             '        SELECT    MIN(ID) AS ID, ID_USLUGA, MIN(WARTOSC) AS PRZEPLYWNOSC,'#13#10 +
+             '                  CASE WHEN MAX(TR_DROZNA) = ''Y'' AND MIN(TR_DROZNA) = ''Y'' THEN ''Y'''#13#10 +
+             '                    -- WHEN MAX(TR_DROZNA) = ''N'' AND MIN(TR_DROZNA) = ''N'' THEN ''N'''#13#10 +
+             '                       ELSE ''N'''#13#10 +
+             '                  END  TR_DROZNA,'#13#10 +
+             '                  MAX(CASE WHEN ROWNO = 1 THEN NRVLAN END) AS NRVLAN_1,'#13#10 +
+             '                  MAX(CASE WHEN ROWNO = 2 THEN NRVLAN END) AS NRVLAN_2,'#13#10 +
+             '                  MAX(CASE WHEN ROWNO = 1 THEN ID_HD  END) AS HD_PORT_1,'#13#10 +
+             '                  MAX(CASE WHEN ROWNO = 2 THEN ID_HD  END) AS HD_PORT_2'#13#10 +
+             '        FROM ('#13#10 +
+             '                SELECT    TRP.ID, TRP.NRVLAN, PT.ID_HD, P.WARTOSC, UTR.ID_USLUGA,'#13#10 +
+             '                          NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS TR_DROZNA,'#13#10 +
+             '                         (SELECT NVL(SUM(1),0)'#13#10 +
+             '                          FROM   TRANSMISJA_PORTY_ABCDE TRP2'#13#10 +
+             '                          JOIN   USLUGA_TRANSMISJA UTR2 ON UTR2.ID_TRANSMISJA = TRP2.ID_TRANSMISJA'#13#10 +
+             '                          JOIN   PORT               PT2 ON PT2.ID = TRP2.ID_PORT'#13#10 +
+             '                          JOIN   WEZEL               W2 ON W2.ID = PT2.ID_WEZEL'#13#10 +
+             '                          JOIN   URZADZENIE        URZ2 ON URZ2.ID = W2.ID_ELEMENT AND W2.ID_TYP_WEZLA = 5'#13#10 +
+             '                          WHERE  UTR2.ID_USLUGA = UTR.ID_USLUGA'#13#10 +
+             '                          AND    URZ2.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
+             '                          AND    TRP2.TYP = TRP.TYP'#13#10 +
+             '                          AND    TRP2.ID <= TRP.ID) ROWNO /* dziki pivot */'#13#10 +
+             '                FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
+             '                JOIN      PORT                    PT ON PT.ID = TRP.ID_PORT'#13#10 +
+             '                JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
+             '                JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
+             '                JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
+             '                LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
+             '                LEFT JOIN PRZEPLYWNOSC             P ON P.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
+             '                WHERE     1=1 --TRP.TYP = ''E'' -- 2012-09-28, A.Lemieszek, przypdaek _Akamai.1'#13#10 +
+             '                  AND     URZ.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
+             '       ) TAB'#13#10 +
+             '       GROUP BY   ID_USLUGA'#13#10 +
+             ') TAB'#13#10 +
+             'JOIN      USLUGA                 USL ON USL.ID = TAB.ID_USLUGA'#13#10 +
+             'UNION ALL'#13#10 +
+             'SELECT'#13#10 +
+             '       CAST(MIN(TRP.ID)                 AS NUMBER( 8,0) ) AS ID,'#13#10 +
+             '       CAST(NULL /*PT.ID_HD*/           AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
+             '       CAST(TRP.NRVLAN                  AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
+             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
+             '       CAST(TRP.NRVLAN                  AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
+             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
+             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
+             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
+             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
+             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
+             '       CAST(MIN(PRZ.WARTOSC)            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
+             '       CAST(''N''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
+             '--     CAST(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS CHAR(1)) AS TRANSMISJA_DROZNA'#13#10 +
+             '       CAST(CASE WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' THEN ''Y'''#13#10 +
+             '              -- WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' THEN ''N'''#13#10 +
+             '                 ELSE ''N'''#13#10 +
+             '            END                         AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
+             ''#13#10 +
+             ''#13#10 +
+             'FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
+             'JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
+             'JOIN      USLUGA                 USL ON USL.ID = UTR.ID_USLUGA'#13#10 +
+             'JOIN      PORT                    PT ON PT.ID = TRP.ID_PORT'#13#10 +
+             'JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
+             'JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
+             'LEFT JOIN PRZEPLYWNOSC           PRZ ON PRZ.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
+             'LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
+             'WHERE     TRP.TYP = ''E'''#13#10 +
+             'AND       URZ.ID_TYP_URZADZENIA != -6 /* router */'#13#10 +
+             'AND       TRP.NRVLAN NOT IN ('#13#10 +
+             '                SELECT    TRP2.NRVLAN'#13#10 +
+             '                FROM      TRANSMISJA_PORTY_ABCDE TRP2'#13#10 +
+             '                JOIN      PORT                    PT ON PT.ID = TRP2.ID_PORT'#13#10 +
+             '                JOIN      WEZEL                    W ON W.ID = PT.ID_WEZEL'#13#10 +
+             '                JOIN      URZADZENIE             URZ ON URZ.ID = W.ID_ELEMENT AND W.ID_TYP_WEZLA = 5'#13#10 +
+             '                WHERE     TRP2.TYP = ''E'''#13#10 +
+             '               AND  TRP2.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
+             '                AND       URZ.ID_TYP_URZADZENIA = -6 /* router */'#13#10 +
+             ')'#13#10 +
+             'GROUP BY  UTR.ID_USLUGA, /*NVL(USL.ID_HD,*/ USL.ID_HD, TRP.NRVLAN'#13#10 +
+             'UNION /*ALL*/'#13#10 +
+             'SELECT'#13#10 +
+             '       CAST(MIN(TRP.ID)                 AS NUMBER( 8,0) ) AS ID,'#13#10 +
+             '       CAST(NULL /*PT.ID_HD*/           AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_1,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 8,0) ) AS ID_PORT_INTERFACE_2,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_1,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS SUBINTERFACE_2,'#13#10 +
+             '       CAST(NULL                        AS NUMBER(10,0) ) AS SHAPING_CISCO,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS VLAN,'#13#10 +
+             '       CAST(NULL                        AS NUMBER( 5,0) ) AS GRUPA_HSRP,'#13#10 +
+             '--     CAST(USL.ID_HD/*, USL.ID_W_HD*/  AS NUMBER( 8,0) ) AS ID_USLUGATELE,'#13#10 +
+             '            USL.ID_HD/*, USL.ID_W_HD*/                    AS ID_USLUGATELE,'#13#10 +
+             '       CAST(NULL                        AS NUMBER       ) AS KTO_UTW,'#13#10 +
+             '       CAST(NULL                        AS DATE         ) AS DATA_UTW,'#13#10 +
+             '       CAST(''Y''                         AS CHAR(1)      ) AS GLOWNY_FLAG,'#13#10 +
+             '       CAST(MIN(PRZ.WARTOSC)            AS FLOAT(126)   ) AS RATE_LIMIT, /* kbps */'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(200)) AS UWAGI,'#13#10 +
+             '       CAST(NULL                        AS VARCHAR2(100)) AS UWAGI_ZMIANA,'#13#10 +
+             '       CAST(''N''                         AS CHAR(1)      ) AS ROUTER_FLAG,'#13#10 +
+             '--     CAST(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'') AS CHAR(1)) AS TRANSMISJA_DROZNA'#13#10 +
+             '       CAST(CASE WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''Y'' THEN ''Y'''#13#10 +
+             '              -- WHEN MAX(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' AND MIN(NVL2(TRD.ID_TRANSMISJA, ''Y'', ''N'')) = ''N'' THEN ''N'''#13#10 +
+             '                 ELSE ''N'''#13#10 +
+             '            END                         AS CHAR(1)      ) AS TRANSMISJA_DROZNA'#13#10 +
+             'FROM      TRANSMISJA_PORTY_ABCDE TRP'#13#10 +
+             'JOIN      USLUGA_TRANSMISJA      UTR ON UTR.ID_TRANSMISJA = TRP.ID_TRANSMISJA'#13#10 +
+             'JOIN      USLUGA                 USL ON USL.ID = UTR.ID_USLUGA'#13#10 +
+             'LEFT JOIN PRZEPLYWNOSC           PRZ ON PRZ.ID = TRP.ID_PRZEPLYWNOSC'#13#10 +
+             'LEFT JOIN TRANSMISJA_DROZNA      TRD ON TRD.ID_TRANSMISJA = TRP.ID_TRANSMISJA -- 2012-11-15, AL, przypadek ATMAN.1'#13#10 +
+             'WHERE     TRP.TYP = ''F'''#13#10 +
+             'GROUP BY  USL.ID_HD;' );
 
   { date: 2012-11-17, file: minus expression.sql }
   TestQuery( '       SELECT  W.ID'#13#10 +
@@ -1982,7 +1982,7 @@ begin
              '       OR TRL.ID_TYP_TRANSLACJI = -5 /*AND TRL.NR_VLAN IS NULL*/ );' );
 
   { date: 2013-02-24, file: cast.sql }
-//TestQuery( 'select cast(1+1 as varchar(5)) as value1, convert(int, ''13'', 123) as value2 from dual' );
+  TestQuery( 'select cast(1+1 as varchar(5)) as value1, convert(int, ''13'', 123) as value2 from dual' );
 
   { date: 2013-02-25, file: HD_USL query.sql }
   TestQuery( '   SELECT  USL.NR'#13#10 +
@@ -2946,15 +2946,15 @@ begin
              '                 FROM   DUAL' );
 
   { date: 2013-05-17, file: FOR UPDATE column name.sql }
-//  TestQuery( 'SELECT'#13#10 +
-//             'WLASCICIEL.*'#13#10 +
-//             'FROM'#13#10 +
-//             'WLASCICIEL'#13#10 +
-//             'WHERE'#13#10 +
-//             'WLASCICIEL.ID = :AKTID'#13#10 +
-//             'AND WLASCICIEL.ID_ADRES_SZCZ = ADRES_SZCZ.ID(+)'#13#10 +
-//             'FOR UPDATE OF'#13#10 +
-//             'WLASCICIEL.ID NOWAIT' );
+  TestQuery( 'SELECT'#13#10 +
+             'WLASCICIEL.*'#13#10 +
+             'FROM'#13#10 +
+             'WLASCICIEL'#13#10 +
+             'WHERE'#13#10 +
+             'WLASCICIEL.ID = :AKTID'#13#10 +
+             'AND WLASCICIEL.ID_ADRES_SZCZ = ADRES_SZCZ.ID(+)'#13#10 +
+             'FOR UPDATE OF'#13#10 +
+             'WLASCICIEL.ID NOWAIT' );
 
   { date: 2013-05-25, file: TRUNCATE TABLE.sql }
   TestQuery( 'TRUNCATE TABLE AUDITING;' );
@@ -4568,13 +4568,13 @@ begin
              '           SELECT   UTR.ID_USLUGA'#13#10 +
              '             FROM   USLUGA_TRANSMISJA  UTR'#13#10 +
              '        ) ;' );
-//  TestQuery( '   SELECT   *'#13#10 +
-//             '     FROM   AUDITING  '#13#10 +
-//             '    WHERE   '#13#10 +
-//             '          ( COLUMN_NAME_1 NOT LIKE ''ID\_%'' ESCAPE ''\''   AND   COLUMN_NAME_2 != ''ID''     OR  COLUMN_NAME_3 IS NULL )'#13#10 +
-//             '       OR   :CheckBoxWidokUpr.Value = 0'#13#10 +
-//             ' ORDER BY   ID DESC'#13#10 +
-//             '        ,   COLUMN_NAME;' );
+  TestQuery( '   SELECT   *'#13#10 +
+             '     FROM   AUDITING  '#13#10 +
+             '    WHERE   '#13#10 +
+             '          ( COLUMN_NAME_1 NOT LIKE ''ID\_%'' ESCAPE ''\''   AND   COLUMN_NAME_2 != ''ID''     OR  COLUMN_NAME_3 IS NULL )'#13#10 +
+             '       OR   :CheckBoxWidokUpr.Value = 0'#13#10 +
+             ' ORDER BY   ID DESC'#13#10 +
+             '        ,   COLUMN_NAME;' );
 
   { date: 2014-06-06, file: parse no WHERE in deepest query after format.sql }
   TestQuery( '-- Cost = 72   IO = 69   CPU = 39.877.731'#13#10 +
