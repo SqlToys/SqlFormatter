@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 350   19-03-10 18:53 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 351   19-03-19 20:48 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -2947,10 +2947,12 @@ begin
 //if aNode.Materialized then begin
 //if aNode.KeywordExt.HasSubToken(gtkwMaterialized) then begin
 //if Assigned(aNode.KeywordAfter1) and aNode.KeywordAfter1.HasSubToken(gtkwRefresh) then begin
-  if aNode.KeywordAuxCheck(gtkwRefresh) then begin
+  if aNode.KeywordAuxCheck(gtkwRefresh, gtkwRefresh_On_Demand, gtkwRefresh_Force_On_Demand, gtkwRefresh_Force) then begin
 //    if aNode.Force or aNode.OnDemand then AddStr(gtkwRefresh);
 //    if aNode.Force then AddStr(gtkwForce);
 //    if aNode.OnDemand then AddStr(gtkwOn_Demand);
+
+    AddStr(aNode.KeywordAuxCheckKwd(gtkwRefresh, gtkwRefresh_On_Demand, gtkwRefresh_Force_On_Demand, gtkwRefresh_Force));
 
     lItem := aNode.Find(gtsiExprTree, gtkwStart_With);
     if Assigned(lItem) then begin

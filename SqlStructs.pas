@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 313   19-03-10 15:29 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 314   19-03-19 20:48 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -265,7 +265,7 @@ const
 
 implementation
 
-uses SysUtils, GtStandard, SqlCommon;
+uses SysUtils, GtStandard, SqlCommon, GtExternals;
 
 {------------------------------ Compare Operator ------------------------------}
 
@@ -1114,22 +1114,59 @@ function  TGtSqlNode.KeywordAuxCheck  (aKeywordAux1: TGtLexToken;
                                        aKeywordAux3: TGtLexToken = nil;
                                        aKeywordAux4: TGtLexToken = nil;
                                        aKeywordAux5: TGtLexToken = nil): Boolean;
+
+  { MOVE THIS PROCEDURE TO SqlCommon !!!! }
+  function SameKeywordTokens(aTokenDef, aToken: TGtLexToken): Boolean;
+  begin
+    Result := False;
+    if not Assigned(aTokenDef) then Exit;
+    if not Assigned(aToken) then Exit;
+
+    if aTokenDef = gttkNone then Exit;
+    if aToken = gttkNone then Exit;
+
+    if aTokenDef.Complex and aToken.Complex then begin
+      Result := True;
+      if Result and Assigned(aTokenDef.SubToken1) then Result := Result and SameKeywordTokens(aTokenDef.SubToken1, aToken.SubToken1);
+      if Result and Assigned(aTokenDef.SubToken2) then Result := Result and SameKeywordTokens(aTokenDef.SubToken2, aToken.SubToken2);
+      if Result and Assigned(aTokenDef.SubToken3) then Result := Result and SameKeywordTokens(aTokenDef.SubToken3, aToken.SubToken3);
+      if Result and Assigned(aTokenDef.SubToken4) then Result := Result and SameKeywordTokens(aTokenDef.SubToken4, aToken.SubToken4);
+      if Result and Assigned(aTokenDef.SubToken5) then Result := Result and SameKeywordTokens(aTokenDef.SubToken5, aToken.SubToken5);
+      Exit;
+    end;
+
+    Result := (aTokenDef.TokenKind = gtttKeyword)    and (aToken.TokenKind in [gtttWord, gtttKeyword])
+                                                     and (Hash_DJB_TGI_U32(AnsiUpperCase(aTokenDef.TokenText))
+                                                        = Hash_DJB_TGI_U32(aToken.TokenText))
+                                                     and (AnsiUpperCase(aTokenDef.TokenText) = aToken.TokenText) or
+              (aTokenDef.TokenKind = gtttIdentifier) and (aToken.TokenKind in [gtttWord, gtttIdentifier])     or
+              (aTokenDef.TokenKind = gtttRelevant)   and (Hash_DJB_TGI_U32(AnsiUpperCase(aTokenDef.TokenText))
+                                                        = Hash_DJB_TGI_U32(AnsiUpperCase(aToken.TokenText))) or
+              (aTokenDef.TokenKind = gtttNumber)     and (aToken.TokenKind = gtttNumber)   or
+              (aTokenDef.TokenKind = gtttString)     and (aToken.TokenKind = gtttString);
+  end;
+
 begin
-  Result := Assigned(aKeywordAux1) and ( (KeywordAux1 = aKeywordAux1) or (KeywordAux2 = aKeywordAux1) or
-                                         (KeywordAux3 = aKeywordAux1) or (KeywordAux4 = aKeywordAux1) or
-                                         (KeywordAux5 = aKeywordAux1))or
-            Assigned(aKeywordAux2) and ( (KeywordAux1 = aKeywordAux2) or (KeywordAux2 = aKeywordAux2) or
-                                         (KeywordAux3 = aKeywordAux2) or (KeywordAux4 = aKeywordAux2) or
-                                         (KeywordAux5 = aKeywordAux2))or
-            Assigned(aKeywordAux3) and ( (KeywordAux1 = aKeywordAux3) or (KeywordAux2 = aKeywordAux3) or
-                                         (KeywordAux3 = aKeywordAux3) or (KeywordAux4 = aKeywordAux3) or
-                                         (KeywordAux5 = aKeywordAux3))or
-            Assigned(aKeywordAux4) and ( (KeywordAux1 = aKeywordAux4) or (KeywordAux2 = aKeywordAux4) or
-                                         (KeywordAux3 = aKeywordAux4) or (KeywordAux4 = aKeywordAux4) or
-                                         (KeywordAux5 = aKeywordAux4))or
-            Assigned(aKeywordAux5) and ( (KeywordAux1 = aKeywordAux5) or (KeywordAux2 = aKeywordAux5) or
-                                         (KeywordAux3 = aKeywordAux5) or (KeywordAux4 = aKeywordAux5) or
-                                         (KeywordAux5 = aKeywordAux5));
+//  Result := Assigned(aKeywordAux1) and ( (KeywordAux1 = aKeywordAux1) or (KeywordAux2 = aKeywordAux1) or
+//                                         (KeywordAux3 = aKeywordAux1) or (KeywordAux4 = aKeywordAux1) or
+//                                         (KeywordAux5 = aKeywordAux1))or
+//            Assigned(aKeywordAux2) and ( (KeywordAux1 = aKeywordAux2) or (KeywordAux2 = aKeywordAux2) or
+//                                         (KeywordAux3 = aKeywordAux2) or (KeywordAux4 = aKeywordAux2) or
+//                                         (KeywordAux5 = aKeywordAux2))or
+//            Assigned(aKeywordAux3) and ( (KeywordAux1 = aKeywordAux3) or (KeywordAux2 = aKeywordAux3) or
+//                                         (KeywordAux3 = aKeywordAux3) or (KeywordAux4 = aKeywordAux3) or
+//                                         (KeywordAux5 = aKeywordAux3))or
+//            Assigned(aKeywordAux4) and ( (KeywordAux1 = aKeywordAux4) or (KeywordAux2 = aKeywordAux4) or
+//                                         (KeywordAux3 = aKeywordAux4) or (KeywordAux4 = aKeywordAux4) or
+//                                         (KeywordAux5 = aKeywordAux4))or
+//            Assigned(aKeywordAux5) and ( (KeywordAux1 = aKeywordAux5) or (KeywordAux2 = aKeywordAux5) or
+//                                         (KeywordAux3 = aKeywordAux5) or (KeywordAux4 = aKeywordAux5) or
+//                                         (KeywordAux5 = aKeywordAux5));
+  Result := SameKeywordTokens(aKeywordAux1, KeywordAux1) or SameKeywordTokens(aKeywordAux1, KeywordAux2) or SameKeywordTokens(aKeywordAux1, KeywordAux3) or SameKeywordTokens(aKeywordAux1, KeywordAux4) or SameKeywordTokens(aKeywordAux1, KeywordAux5) or
+            SameKeywordTokens(aKeywordAux2, KeywordAux1) or SameKeywordTokens(aKeywordAux2, KeywordAux2) or SameKeywordTokens(aKeywordAux2, KeywordAux3) or SameKeywordTokens(aKeywordAux2, KeywordAux4) or SameKeywordTokens(aKeywordAux2, KeywordAux5) or
+            SameKeywordTokens(aKeywordAux3, KeywordAux1) or SameKeywordTokens(aKeywordAux3, KeywordAux2) or SameKeywordTokens(aKeywordAux3, KeywordAux3) or SameKeywordTokens(aKeywordAux3, KeywordAux4) or SameKeywordTokens(aKeywordAux3, KeywordAux5) or
+            SameKeywordTokens(aKeywordAux4, KeywordAux1) or SameKeywordTokens(aKeywordAux4, KeywordAux2) or SameKeywordTokens(aKeywordAux4, KeywordAux3) or SameKeywordTokens(aKeywordAux4, KeywordAux4) or SameKeywordTokens(aKeywordAux4, KeywordAux5) or
+            SameKeywordTokens(aKeywordAux5, KeywordAux1) or SameKeywordTokens(aKeywordAux5, KeywordAux2) or SameKeywordTokens(aKeywordAux5, KeywordAux3) or SameKeywordTokens(aKeywordAux5, KeywordAux4) or SameKeywordTokens(aKeywordAux5, KeywordAux5) ;
 end;
 
 { check for auxilinary keyword }

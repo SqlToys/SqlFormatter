@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 24    19-03-10 18:53 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 25    19-03-19 20:49 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest0;
@@ -33,7 +33,7 @@ begin
             StringReplace( StringReplace(
             StringReplace( StringReplace(
             StringReplace(
-            StringReplace( StringReplace(
+            StringReplace( //StringReplace(
             AnsiLowerCase(
             StringReplace( StringReplace(
             StringReplace( StringReplace(
@@ -73,7 +73,7 @@ begin
           { !!! temporary, should be removed !!! }
           , ' as ', ' ', [rfReplaceAll] ), ')as ', ')', [rfReplaceAll] )
           , 'integer', 'int', [rfReplaceAll] )
-          , 'ascending', '', [rfReplaceAll] ), 'asc', '', [rfReplaceAll] )
+          , 'ascending', '', [rfReplaceAll] )//, 'asc', '', [rfReplaceAll] )
           , ' ascending', '', [rfReplaceAll] ), ' asc', '', [rfReplaceAll] )
           , 'ascending ', '', [rfReplaceAll] ), 'asc ', '', [rfReplaceAll] )
           )
@@ -176,7 +176,7 @@ end;
 procedure GtSqlTestRun;
 begin
   { basic SELECT tests first -----------------------------------------------------------------------------------------}
-//TestQuery( 'SELECT a-1 FROM DUAL;' ); { ** SAME AS a - b ** }
+  TestQuery( 'SELECT a-1 FROM DUAL;' ); { ** SAME AS a - b ** }
 
   TestQuery( 'select 1 from dual' );
   TestQuery( 'select -1 from dual' );
@@ -1965,8 +1965,8 @@ begin
 
   { date: 2013-02-22, file: CREATE MATERIALIZED VIEW.sql }
   TestQuery( 'CREATE MATERIALIZED VIEW HD_USLUGA_INTERFACE2_XXX'#13#10 +
-//           'REFRESH FORCE ON DEMAND'#13#10 +
-//           'START WITH TO_DATE(''22-02-2013 15:35:40'', ''DD-MM-YYYY HH24:MI:SS'') NEXT SYSDATE + 1'#13#10 +
+             'REFRESH FORCE ON DEMAND'#13#10 +
+             'START WITH TO_DATE(''22-02-2013 15:35:40'', ''DD-MM-YYYY HH24:MI:SS'') NEXT SYSDATE + 1'#13#10 +
              'AS'#13#10 +
              'SELECT    UTR.ID_USLUGA, UTR.ID_TRANSMISJA, SKL.ID, SKL.LP, TRL.ID_PORT_2, TRL.NR_VLAN'#13#10 +
              ''#13#10 +
@@ -3042,7 +3042,7 @@ begin
              'called_from from auditing;' );
 
   { date: 2013-06-06, file: test DROP TABLE PURGE.sql }
-//TestQuery( 'DROP TABLE   xxx PURGE ;' );
+  TestQuery( 'DROP TABLE   xxx PURGE ;' );
   TestQuery( 'PURGE RECYCLEBIN ;' );
   TestQuery( 'ALTER TABLE   xxx ENABLE ROW MOVEMENT ;' );
   TestQuery( 'ALTER TABLE   xxx deallocate unused;' );
