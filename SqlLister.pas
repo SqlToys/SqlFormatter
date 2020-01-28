@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 351   19-03-19 20:48 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 352   19-03-22 20:00 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -2036,7 +2036,8 @@ begin
     //AddStr(aNode.ColumnName, gtlsColumn, False);
     //AddStr(aNode.Name2, gtlsColumn, False);
       lNode := lNode.Find(gtsiNone, gttkColumnName);
-      if Assigned(lNode) then AddStr(aNode.Name, gtlsColumn);
+    //if Assigned(lNode) then AddStr(aNode.Name, gtlsColumn);
+      if Assigned(lNode) then AddStr(aNode.Name, gtlsColumn, False);
     end;
 
     AddStr(gttkPercent, False);
@@ -3025,8 +3026,10 @@ begin
       lFirst := False;
     end;
 
-  AddStr(gtkwTo);
+//AddStr(gtkwTo);
 //if aKeyword = gtkwRevoke then AddStr(gtkwFrom) else AddStr(gtkwTo);
+  if aNode.KeywordAuxCheck(gtkwTo) then AddStr(gtkwTo);
+  if aNode.KeywordAuxCheck(gtkwFrom) then AddStr(gtkwFrom);
 
   lFirst := True;
   for i := 0 to aNode.Count - 1 do

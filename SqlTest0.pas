@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 25    19-03-19 20:49 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 26    19-03-22 20:01 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest0;
@@ -29,11 +29,11 @@ uses Classes, Dialogs, SysUtils, SqlCommon, SqlParser, SqlLister;
 function QueryTextCompact;
 begin
   Result := Trim(
-            StringReplace( StringReplace(
-            StringReplace( StringReplace(
-            StringReplace( StringReplace(
-            StringReplace(
-            StringReplace( //StringReplace(
+          //StringReplace( StringReplace(
+          //StringReplace( StringReplace(
+          //StringReplace( StringReplace(
+          //StringReplace(
+          //StringReplace( StringReplace(
             AnsiLowerCase(
             StringReplace( StringReplace(
             StringReplace( StringReplace(
@@ -71,11 +71,11 @@ begin
           , ' ||','||',  [rfReplaceAll] ), '|| ','||',  [rfReplaceAll] )
           )
           { !!! temporary, should be removed !!! }
-          , ' as ', ' ', [rfReplaceAll] ), ')as ', ')', [rfReplaceAll] )
-          , 'integer', 'int', [rfReplaceAll] )
-          , 'ascending', '', [rfReplaceAll] )//, 'asc', '', [rfReplaceAll] )
-          , ' ascending', '', [rfReplaceAll] ), ' asc', '', [rfReplaceAll] )
-          , 'ascending ', '', [rfReplaceAll] ), 'asc ', '', [rfReplaceAll] )
+//        , ' as ', ' ', [rfReplaceAll] ), ')as ', ')', [rfReplaceAll] )
+//        , 'integer', 'int', [rfReplaceAll] )
+//        , 'ascending', '', [rfReplaceAll] ), 'asc', '', [rfReplaceAll] )
+//        , ' ascending', '', [rfReplaceAll] ), ' asc', '', [rfReplaceAll] )
+//        , 'ascending ', '', [rfReplaceAll] ), 'asc ', '', [rfReplaceAll] )
           )
           ;
 end;
@@ -1096,7 +1096,7 @@ begin
   TestQuery( 'TRUNCATE TABLE emp_table;' );
   TestQuery( 'GRANT SELECT ON emp TO tgi;' );
   TestQuery( 'DENY SELECT ON emp TO tgi;' );
-//TestQuery( 'REVOKE SELECT ON emp FROM tgi;' ); { sprawdziæ dokumentacjê od Oracle i MSSQL !! }
+  TestQuery( 'REVOKE SELECT ON emp FROM tgi;' ); { sprawdziæ dokumentacjê od Oracle i MSSQL !! }
   TestQuery( 'SELECT "ola monola" FROM "ala ma kota" "ala mia³a kota";' );
   TestQuery( 'SELECT 1 FROM dual WHERE a = :a1 AND b = &b2;' );
   TestQuery( 'SELECT 1 FROM dual WHERE a LIKE ''nic\%%'' ESCAPE ''\'' COLLATE dupa;' );
@@ -2219,8 +2219,8 @@ begin
              '       ,   nr' );
 
   { date: 2013-03-13, file: ALTER TABLE MODIFY.sql }
-//  TestQuery( 'ALTER TABLE EL_URZADZENIE_POMIARY MODIFY STAN_LICZNIKA NULL MODIFY POMIAR_NAT_PRADU NULL MODIFY'#13#10 +
-//             '  POMIAR_NAPIECIA NULL MODIFY POMIAR_REZ_WEWN NULL' );
+  TestQuery( 'ALTER TABLE EL_URZADZENIE_POMIARY MODIFY STAN_LICZNIKA NULL MODIFY POMIAR_NAT_PRADU NULL MODIFY'#13#10 +
+             '  POMIAR_NAPIECIA NULL MODIFY POMIAR_REZ_WEWN NULL' );
 
   { date: 2013-03-13, file: new line after column constraint in CREATE TABLE.sql }
   TestQuery( 'CREATE TABLE   aaaa'#13#10 +
@@ -2661,14 +2661,14 @@ begin
              '           )   ' );
 
   { date: 2013-04-18, file: column with their constraints.sql }
-//  TestQuery( 'CREATE TABLE   aaa'#13#10 +
-//             '           (   id_bbb                '#13#10 +
-//             '               CONSTRAINT aaa$fk_bbb REFERENCES bbb'#13#10 +
-//             '           )   ;' );
-//  TestQuery( ' ALTER TABLE   aaa'#13#10 +
-//             '         ADD   id_bbb'#13#10 +
-//             '  CONSTRAINT   aaa$fk_bbb'#13#10 +
-//             '  REFERENCES   bbb ;' );
+  TestQuery( 'CREATE TABLE   aaa'#13#10 +
+             '           (   id_bbb  INT'#13#10 +
+             '               CONSTRAINT aaa$fk_bbb REFERENCES bbb'#13#10 +
+             '           )   ;' );
+  TestQuery( ' ALTER TABLE   aaa'#13#10 +
+             '         ADD   id_bbb INT'#13#10 +
+             '  CONSTRAINT   aaa$fk_bbb'#13#10 +
+             '  REFERENCES   bbb ;' );
 
   { date: 2013-04-19, file: DELETE FROM intend.sql }
   TestQuery( '  SELECT   ID_GNIAZDO'#13#10 +
@@ -3755,10 +3755,10 @@ begin
   TestQuery( 'select 1 as x, 2 as y from dual;' );
 
   { date: 2013-12-16, file: no ALIAS after AS - terminate keyword.sql }
-//  TestQuery( ' SELECT   CAST(SUM(PRZ.WARTOSC) AS NUMBER(10,2)) || '' Mbps'' AS '#13#10 +
-//             '   FROM   USLUGA_TRANSMISJA  UTR'#13#10 +
-//             '   JOIN   TRANSMISJA          TR ON  TR.ID = UTR.ID_TRANSMISJA   '#13#10 +
-//             '   JOIN   PRZEPLYWNOSC       PRZ ON PRZ.ID =  TR.ID_PRZEPLYWNOSC' );
+  TestQuery( ' SELECT   CAST(SUM(PRZ.WARTOSC) AS NUMBER(10,2)) || '' Mbps'' AS XXX'#13#10 +
+             '   FROM   USLUGA_TRANSMISJA  UTR'#13#10 +
+             '   JOIN   TRANSMISJA          TR ON  TR.ID = UTR.ID_TRANSMISJA   '#13#10 +
+             '   JOIN   PRZEPLYWNOSC       PRZ ON PRZ.ID =  TR.ID_PRZEPLYWNOSC' );
 
   { date: 2013-12-18, file: old BEGIN END.sql }
   TestQuery( 'BEGIN'#13#10 +
@@ -4784,7 +4784,7 @@ begin
              'ORDER BY  U.NR;' );
 
   { date: 2014-10-21, file: parse column datatype.sql }
-//TestQuery( 'create table nic ( nic nic.nic%type );' );
+  TestQuery( 'create table nic ( nic nic.nic%type );' );
 
 
 
