@@ -43,7 +43,7 @@ type
                      gtsiClauseTables,  gtsiClauseAlter,
                      gtsiProgram,
                      gtsiOther,
-                     // nowe, do pouk³adania
+                     // nowe, do poukÂ³adania
                      gtsiTableRef,
 
                      gtssWhenThenCondExpr,   gtssClauseFields,
