@@ -1,4 +1,4 @@
-# SQL Formatter
+# SQL Format (previous project SQL Formatter)
 This is a small free program written with Delphi, which is able to format sql queries with several options. Started somewhere in 2010, now ready to show up but still requires a lot of work.
 
 ## Features
