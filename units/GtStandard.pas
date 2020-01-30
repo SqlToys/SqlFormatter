@@ -20,7 +20,7 @@ function  strIf(Which: Boolean; StrTrue: String; StrFalse: String=''): String;
 function  intIf(Which: Boolean; IntTrue: Integer; IntFalse: Integer=0): Integer;
 //function  strCase(Which: Integer; Str1, Str2, Str3: String): String;
 
-{ ³amanie stringów }
+{ Â³amanie stringÃ³w }
 function  strBreakOnFirst(Ch: Char; Str: String; var Str1, Str2: String; aRemoveFirstChar: Boolean = True): Boolean;
 function  strBreakOnFirst1(Ch: Char; Str: String; aRemoveFirstChar: Boolean = True): String;
 function  strBreakOnFirst2(Ch: Char; Str: String; aRemoveFirstChar: Boolean = True): String;
@@ -38,19 +38,19 @@ function  strCountChars(Ch: Char; Str: String): Integer;
 function  strCountSubStr(Ch: Char; Str: String): Integer;
 function  strLeadChar(Ch: Char; Str: String; Len: Integer=2): String;
 
-{ uzupe³nianie znaków na koñcu stringa }
+{ uzupeÂ³nianie znakÃ³w na koÃ±cu stringa }
 function  strEndChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 function  strEndBkSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 function  strEndSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 function  strEndDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 
-{ uzupe³nianie znaków na pocz¹tku stringa }
+{ uzupeÂ³nianie znakÃ³w na poczÂ¹tku stringa }
 function  strBegChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 function  strBegBkSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 function  strBegSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 function  strBegDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 
-{ uzupe³nianie znaków na pocz¹tku i koñcu stringa }
+{ uzupeÂ³nianie znakÃ³w na poczÂ¹tku i koÃ±cu stringa }
 function  strBegEndChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 function  strBegEndDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 
@@ -59,7 +59,7 @@ function  strSubString(Str: String; aPos: Integer; aLen: Integer): String;
 function  strLeft(Str: String; aLen: Integer): String;
 function  strRight(Str: String; aLen: Integer): String;
 
-{ cytowanie stringów }
+{ cytowanie stringÃ³w }
 function QuoteStr(Str: String): String;
 function QuoteVar(var V: Variant): Boolean;
 function QuoteVarStr(V: Variant): Variant;
@@ -115,7 +115,7 @@ function GtDateTimeToStr(DateTime: TDateTime): String;
 function GtDaysTimeToStr(DateTime: TDateTime): String;
 function GtSecsTimeToStr(DateTime: TDateTime): String;
 
-function GtGetSuperTimeBase: Boolean; // OSTRO¯NIE SZK£O
+function GtGetSuperTimeBase: Boolean; // OSTROÂ¯NIE SZKÂ£O
 function GtNowSuper: TDateTime;
 function GtNowSuperUTC: TDateTime;
 function GtNowSuperRef1000: TDateTime;
@@ -131,7 +131,7 @@ function GtStrToDaysTime(Str: String): TDateTime;
 
 function GtDateIntWeekNo(IntDateTime: Integer): Integer;
 
-{ funkcje do realizacji blokad - oszczêdzaj¹ parê linijek kodu }
+{ funkcje do realizacji blokad - oszczÃªdzajÂ¹ parÃª linijek kodu }
 function DecToZero(var LockCnt: Integer): Boolean;
 function IncFromZero(var LockCnt: Integer): Boolean;
 
@@ -148,30 +148,30 @@ implementation
 
 uses Windows, SysUtils, Variants, Math;
 
-{ zmienia wartoœæ zmiennej i zwraca jej wartoœæ sprzed zmiany }
+{ zmienia wartoÅ“Ã¦ zmiennej i zwraca jej wartoÅ“Ã¦ sprzed zmiany }
 function  GetAndPutBool(var B: Boolean; N: Boolean): Boolean;
 begin
   Result:=B;
   B:=N;
 end;
 
-{ ustawia zmienna i zwraca jej wartoœæ sprzed zmiany }
+{ ustawia zmienna i zwraca jej wartoÅ“Ã¦ sprzed zmiany }
 function  GetAndSetBool(var B: Boolean): Boolean;
 begin
   Result := GetAndPutBool(B, True);
 end;
 
-{ kasuje zmienna i zwraca jej wartoœæ sprzed zmiany }
+{ kasuje zmienna i zwraca jej wartoÅ“Ã¦ sprzed zmiany }
 function  GetAndClrBool(var B: Boolean): Boolean;
 begin
   Result := GetAndPutBool(B, False);
 end;
 
-{ wykonuje operacjê OR na dwu wartoœciach Boolean }
+{ wykonuje operacjÃª OR na dwu wartoÅ“ciach Boolean }
 { funkcja przydatna w dwu przypadkach }
-{ 1. Aby operacja zajmowa³a mniej miejsca np BOR(Result, A=B) zamiast Result:=Result or (A=B) }
-{ 2. W przypadku jak wy¿ej wartoœæ drugiego wyra¿enie zostanie zawsze okreœlona, }
-{    przydatne jeœli drugie wyra¿enie jest funkcj¹ }
+{ 1. Aby operacja zajmowaÂ³a mniej miejsca np BOR(Result, A=B) zamiast Result:=Result or (A=B) }
+{ 2. W przypadku jak wyÂ¿ej wartoÅ“Ã¦ drugiego wyraÂ¿enie zostanie zawsze okreÅ“lona, }
+{    przydatne jeÅ“li drugie wyraÂ¿enie jest funkcjÂ¹ }
 function  BOR(var B1: Boolean; B2: Boolean): Boolean;
 begin
   B1:=B1 or B2;
@@ -185,8 +185,8 @@ begin
 end;
 
 { funkcja zwraca Str1 gdy Which=True lub Str2 w przeciwnym wypadku }
-{ funkcja przydatna przy sklejaniu stringów do zapytañ - mo¿na u¿yæ warunku w }
-{ jednej operacji przypisania tekstu kwerendy bez sklejania elementów kwerendy }
+{ funkcja przydatna przy sklejaniu stringÃ³w do zapytaÃ± - moÂ¿na uÂ¿yÃ¦ warunku w }
+{ jednej operacji przypisania tekstu kwerendy bez sklejania elementÃ³w kwerendy }
 function  strIf(Which: Boolean; StrTrue: String; StrFalse: String=''): String;
 begin
   if Which then Result:=StrTrue else Result:=StrFalse;
@@ -198,9 +198,9 @@ begin
   if Which then Result:=IntTrue else Result:=IntFalse;
 end;
 
-{ dzieli string na dwa - przed i po pierwszym wyst¹pieniu znaku Ch }
-{ True - jeœli podzia³ wykonany }
-{ UWAGA: funkcja wycina znak oddzielaj¹cy z pocz¹tku Str2 (lub niewycina) }
+{ dzieli string na dwa - przed i po pierwszym wystÂ¹pieniu znaku Ch }
+{ True - jeÅ“li podziaÂ³ wykonany }
+{ UWAGA: funkcja wycina znak oddzielajÂ¹cy z poczÂ¹tku Str2 (lub niewycina) }
 function strBreakOnFirst(Ch: Char; Str: String; var Str1, Str2: String; aRemoveFirstChar: Boolean = True): Boolean;
 var i: Integer;
 begin
@@ -234,9 +234,9 @@ begin
   strBreakOnFirst(Ch, Str, Str1, Result, aRemoveFirstChar);
 end;
 
-{ dzieli string na dwa - przed i po ostatnim wyst¹pieniu znaku Ch }
-{ True - jeœli podzia³ wykonany }
-{ UWAGA: funkcja wycina znak oddzielaj¹cy z koñca Str1 (lub niewycina) }
+{ dzieli string na dwa - przed i po ostatnim wystÂ¹pieniu znaku Ch }
+{ True - jeÅ“li podziaÂ³ wykonany }
+{ UWAGA: funkcja wycina znak oddzielajÂ¹cy z koÃ±ca Str1 (lub niewycina) }
 function strBreakOnLastNew(Ch: Char; Str: String; var Str1, Str2: String; aRemoveLastChar: Boolean = True): Boolean;
 var i: Integer;
 begin
@@ -251,7 +251,7 @@ begin
   end;
 
   if Str1='' then begin // changed on 2015-06-15 for Sql Formatter
-    { nie by³o zamiany }
+    { nie byÂ³o zamiany }
     Str1 := Str2;
     Str2 := '';
   end else begin
@@ -311,8 +311,8 @@ begin
   Result:=Str1;
 end;
 
-{ zwraca N-ty ci¹g ze stringa zawieraj¹cego ci¹gi rozdzielone znakiem Ch }
-{ UWAGA: kolejne ci¹gi musz¹ byæ cytowane cudzys³owem }
+{ zwraca N-ty ciÂ¹g ze stringa zawierajÂ¹cego ciÂ¹gi rozdzielone znakiem Ch }
+{ UWAGA: kolejne ciÂ¹gi muszÂ¹ byÃ¦ cytowane cudzysÂ³owem }
 function strBreakOn(Ch: Char; No: Integer; Str: String): String;
 var SL: TStringList;
 begin
@@ -336,7 +336,7 @@ begin
   while Pos(ChFrom, Result)>0 do Result[Pos(ChFrom, Result)]:=ChTo;
 end;
 
-{ wycina kropkê koñcz¹c¹ tekst w stringu }
+{ wycina kropkÃª koÃ±czÂ¹cÂ¹ tekst w stringu }
 function strNoEndDot(Str: String): String;
 begin
   Result:=Trim(Str);
@@ -345,13 +345,13 @@ begin
   if Result[Length(Result)]='.' then Delete(Result, Length(Result), 1);
 end;
 
-{ dodaje ³añcuch Str2 do Str rozdzielaj¹c je separatorem jeœli potrzeba }
+{ dodaje Â³aÃ±cuch Str2 do Str rozdzielajÂ¹c je separatorem jeÅ“li potrzeba }
 procedure strAddSep(var Str: String; Sep,Str2: String);
 begin
   if Str='' then Str:=Str2 else Str:=Str + Sep + Str2;
 end;
 
-{ zlicza iloœæ wyst¹pieñ znaku Ch w ³añcuchu Str }
+{ zlicza iloÅ“Ã¦ wystÂ¹pieÃ± znaku Ch w Â³aÃ±cuchu Str }
 function  strCountChars(Ch: Char; Str: String): Integer;
 var i: Integer;
 begin
@@ -365,7 +365,7 @@ begin
   until i=0;
 end;
 
-{ zlicza iloœæ ci¹gów znaków rozdzielonych znakiem Ch }
+{ zlicza iloÅ“Ã¦ ciÂ¹gÃ³w znakÃ³w rozdzielonych znakiem Ch }
 function  strCountSubStr(Ch: Char; Str: String): Integer;
 begin
   if Str=''
@@ -379,7 +379,7 @@ begin
   while Length(Result)<Len do Result:=Ch+Result;
 end;
 
-{ uzupe³nia brakuj¹cy znak na koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cy znak na koÃ±cu stringa }
 function  strEndChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 begin
   if Length(Str)=0 then
@@ -388,25 +388,25 @@ begin
   if Str[Length(Str)]<>Ch then Result:=Str+Ch else Result:=Str;
 end;
 
-{ uzupe³nia brakuj¹cy backslash na koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cy backslash na koÃ±cu stringa }
 function  strEndBkSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strEndChar(Str, '\', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹cy slash na koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cy slash na koÃ±cu stringa }
 function  strEndSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strEndChar(Str, '/', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹c¹ kropkê na koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cÂ¹ kropkÃª na koÃ±cu stringa }
 function  strEndDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strEndChar(Str, '.', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹cy znak na pocz¹tku stringa }
+{ uzupeÂ³nia brakujÂ¹cy znak na poczÂ¹tku stringa }
 function  strBegChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 begin
   if Length(Str)=0 then
@@ -415,31 +415,31 @@ begin
   if Str[1]<>Ch then Result:=Ch+Str else Result:=Str;
 end;
 
-{ uzupe³nia brakuj¹c¹ kropkê na pocz¹tku stringa }
+{ uzupeÂ³nia brakujÂ¹cÂ¹ kropkÃª na poczÂ¹tku stringa }
 function  strBegBkSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strBegChar(Str, '\', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹cy slash na pocz¹tku stringa }
+{ uzupeÂ³nia brakujÂ¹cy slash na poczÂ¹tku stringa }
 function  strBegSlash(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strBegChar(Str, '/', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹c¹ kropkê na pocz¹tku stringa }
+{ uzupeÂ³nia brakujÂ¹cÂ¹ kropkÃª na poczÂ¹tku stringa }
 function  strBegDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strBegChar(Str, '.', EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹cy znak na pocz¹tku i koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cy znak na poczÂ¹tku i koÃ±cu stringa }
 function  strBegEndChar(Str: String; Ch: Char; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strBegChar( strEndChar(Str, Ch, EmptyIfEmpty), Ch, EmptyIfEmpty);
 end;
 
-{ uzupe³nia brakuj¹c¹ kropkê na pocz¹tku i koñcu stringa }
+{ uzupeÂ³nia brakujÂ¹cÂ¹ kropkÃª na poczÂ¹tku i koÃ±cu stringa }
 function  strBegEndDot(Str: String; EmptyIfEmpty: Boolean=True): String;
 begin
   Result:=strBegEndChar(Str, '.', EmptyIfEmpty);
@@ -485,7 +485,7 @@ begin
   end;
 end;
 
-{ cytuje string zawarty w zmiennej wariantowej w podwójne uszy }
+{ cytuje string zawarty w zmiennej wariantowej w podwÃ³jne uszy }
 function DblQuoteVar(var V: Variant): Boolean;
 begin
   Result:=False;
@@ -502,7 +502,7 @@ begin
   Result:=V;
 end;
 
-{ cytuje string zawarty w zmiennej wariantowej w podwójne uszy }
+{ cytuje string zawarty w zmiennej wariantowej w podwÃ³jne uszy }
 function DblQuoteVarStr(V: Variant): Variant;
 begin
   DblQuoteVar(V);
@@ -521,7 +521,7 @@ begin
   Result:='"'+Str+'"';
 end;
 
-{ wy³uskuje cytowany string }
+{ wyÂ³uskuje cytowany string }
 function UnQuoteStr(Str: String): String;
 begin
   Result:=Str;
@@ -531,7 +531,7 @@ begin
     then Result:=Copy(Str, 2, Length(Str)-2);
 end;
 
-{ wy³uskuje cytowany string }
+{ wyÂ³uskuje cytowany string }
 function UnDblQuoteStr(Str: String): String;
 begin
   Result:=Str;
@@ -541,7 +541,7 @@ begin
     then Result:=Copy(Str, 2, Length(Str)-2);
 end;
 
-{ wy³uskuje delimiter ze stringa }
+{ wyÂ³uskuje delimiter ze stringa }
 function GtGetStrDelimiter(Str: String): Char;
 begin
   Result:=';';
@@ -594,7 +594,7 @@ begin
   until Str = '';
 end;
 
-{ zamienia variant na string, dbaj¹c o ominiêcie wyj¹tku przy konwersji typów }
+{ zamienia variant na string, dbajÂ¹c o ominiÃªcie wyjÂ¹tku przy konwersji typÃ³w }
 function Var2Str(V: Variant): String;
 begin
   if V=UnAssigned then Result:='' else Result:=V;
@@ -612,8 +612,8 @@ begin
   if a > b then Result := a else Result := b;
 end;
 
-{ sprawdza czy parametr jest zerem, wtedy zamienia na podan¹ wartoœæ }
-{ czasem przydatne przy dzieleniu w mianowniku i przy normalizacji wartoœci niezerowych }
+{ sprawdza czy parametr jest zerem, wtedy zamienia na podanÂ¹ wartoÅ“Ã¦ }
+{ czasem przydatne przy dzieleniu w mianowniku i przy normalizacji wartoÅ“ci niezerowych }
 function IfZero(aInt: Integer; aIfZero: Integer=1): Integer;
 begin
   if aInt<>0
@@ -621,8 +621,8 @@ begin
     else Result := aIfZero;
 end;
 
-{ sprawdza czy parametr jest zerem, wtedy zamienia na podan¹ wartoœæ }
-{ czasem przydatne przy dzieleniu w mianowniku i przy normalizacji wartoœci niezerowych }
+{ sprawdza czy parametr jest zerem, wtedy zamienia na podanÂ¹ wartoÅ“Ã¦ }
+{ czasem przydatne przy dzieleniu w mianowniku i przy normalizacji wartoÅ“ci niezerowych }
 function IfZero(aDbl: Double; aIfZero: Double=1): Double;
 begin
   if ABS(aDbl)>1e-9
@@ -646,7 +646,7 @@ begin
            ((aRGB div $10000) mod 256 { R });
 end;
 
-{ zamienia liczbê szestnastkow¹ na integer }
+{ zamienia liczbÃª szestnastkowÂ¹ na integer }
 function HexToInt(Hex: String): Integer;
 begin
   Result := 0;
@@ -659,7 +659,7 @@ begin
   end;
 end;
 
-{ zamienia liczbê szestnastkow¹ na int64 }
+{ zamienia liczbÃª szestnastkowÂ¹ na int64 }
 function HexToInt64(Hex: String): Int64;
 begin
   Result := 0;
@@ -674,13 +674,13 @@ end;
 {--------------------------------------  --------------------------------------}
 {--------------------------- Funkcje liczenia czasu ---------------------------}
 
-{ zwraca bie¿¹cy czas jako string }
+{ zwraca bieÂ¿Â¹cy czas jako string }
 function GtNowToStr: String;
 begin
   Result:=GtDateTimeToStr(Now);
 end;
 
-{ zamienia datê na string w formacie YYYY-MM-DD }
+{ zamienia datÃª na string w formacie YYYY-MM-DD }
 function GtDateToStr(Date: TDateTime): String;
 var Y,M,D: Word;
 begin
@@ -709,7 +709,7 @@ begin
             strLeadChar('0', IntToStr(Trunc(1e3*Frac(24*60*60*1e3*Super))), 3);
 end;
 
-{ zamienia datê i czas na string w formacie YYYY-MM-DD hh:nn:ss }
+{ zamienia datÃª i czas na string w formacie YYYY-MM-DD hh:nn:ss }
 function GtDateTimeToStr(DateTime: TDateTime): String;
 begin
   Result:=GtDateToStr(DateTime) + ' ' + GtTimeToStr(DateTime);
@@ -737,9 +737,9 @@ var GtQueryPerfFirst: Int64;
     GtQueryTimeZone: TDateTime=0;
     GtQueryReliable: Boolean;
 
-{ ustala bazê dla metod ustalania bie¿¹cego czasu z wysok¹ precyzj¹ }
-{ UWAGA: niesprawdza³em s³usnoœci - ale ponoæ warto dosyæ czêsto wo³aæ t¹ metodê }
-{ w przypadku gdy komputer wchodzi w tryb uœpienia i/lub obs³uguje SpeedStep }
+{ ustala bazÃª dla metod ustalania bieÂ¿Â¹cego czasu z wysokÂ¹ precyzjÂ¹ }
+{ UWAGA: niesprawdzaÂ³em sÂ³usnoÅ“ci - ale ponoÃ¦ warto dosyÃ¦ czÃªsto woÂ³aÃ¦ tÂ¹ metodÃª }
+{ w przypadku gdy komputer wchodzi w tryb uÅ“pienia i/lub obsÂ³uguje SpeedStep }
 function GtGetSuperTimeBase: Boolean;
 var TZ: TTimeZoneInformation;
     GtQueryPerfFreqLocal: Int64;
@@ -747,7 +747,7 @@ begin
   Result:=False;
   if GtQueryDontCount<>0 then Exit;
 
-  { ustal strefê czasow¹ i zmianê czasu }
+  { ustal strefÃª czasowÂ¹ i zmianÃª czasu }
   GetTimeZoneInformation(TZ);
   GtQueryTimeZone:=TZ.Bias/24/60;
 
@@ -757,7 +757,7 @@ begin
   try
     Inc(GtQueryDontCount);
 
-    // potrzebne do super dok³adnego mierzenia czasu
+    // potrzebne do super dokÂ³adnego mierzenia czasu
     QueryPerformanceFrequency(GtQueryPerfFreq);
     QueryPerformanceCounter(GtQueryPerfFirst);
     GtQueryDateTime:=Now;
@@ -768,7 +768,7 @@ begin
   end;
 end;
 
-{ zwraca bie¿¹cy czas z super precyzj¹ 1 mikrosekundy }
+{ zwraca bieÂ¿Â¹cy czas z super precyzjÂ¹ 1 mikrosekundy }
 function GtNowSuper: TDateTime;
 var GtQueryPerfNow: Int64;
     GtQuerySuperNow, GtQueryOrdinaryNow, GtQueryDifference: TDateTime;
@@ -780,9 +780,9 @@ begin
     QueryPerformanceCounter(GtQueryPerfNow);
     GtQuerySuperNow:=GtQueryDateTime + (GtQueryPerfNow-GtQueryPerfFirst)/GtQueryPerfFreq/24/60/60;
 
-    { weryfikuje ró¿nicê czasu - jeœli ró¿nica nie przekracza rozdzielczoœci }
-    { zegara systemowego GetLocalTime - to uznajê ¿e jest OK }
-    { warto przyblokowaæ oddanie czasu do systemu przed opuszczeniem tej procedury }
+    { weryfikuje rÃ³Â¿nicÃª czasu - jeÅ“li rÃ³Â¿nica nie przekracza rozdzielczoÅ“ci }
+    { zegara systemowego GetLocalTime - to uznajÃª Â¿e jest OK }
+    { warto przyblokowaÃ¦ oddanie czasu do systemu przed opuszczeniem tej procedury }
     GtQueryOrdinaryNow:=Now;
     GtQueryDifference:=GtQuerySuperNow - GtQueryOrdinaryNow;
     GtQueryReliable:=ABS(GtQueryDifference) < 0.015;
@@ -799,7 +799,7 @@ begin
   end;
 end;
 
-{ zwraca bie¿¹cy czas z super precyzj¹ 1 mikrosekundy wg czasu uniwersalnego }
+{ zwraca bieÂ¿Â¹cy czas z super precyzjÂ¹ 1 mikrosekundy wg czasu uniwersalnego }
 function GtNowSuperUTC: TDateTime;
 begin
   Result:=GtNowSuper + GtQueryTimeZone;
@@ -817,13 +817,13 @@ begin
   Result := Result + GtNowSuper;
 end;
 
-{ zwraca bie¿¹cy czas jako string z super precyzj¹ 1 mikrosekundy }
+{ zwraca bieÂ¿Â¹cy czas jako string z super precyzjÂ¹ 1 mikrosekundy }
 function GtNowToStrSuper: String;
 begin
   Result:=GtDateTimeToStrSuper(GtNowSuper, GtQueryReliable);
 end;
 
-{ zamienia datê i czas na string w formacie YYYY-MM-DD hh:nn:ss zzzzzz }
+{ zamienia datÃª i czas na string w formacie YYYY-MM-DD hh:nn:ss zzzzzz }
 function GtDateTimeToStrSuper(DateTime: TDateTime; Super: Boolean=True): String;
 var i: Integer;
 begin
@@ -831,13 +831,13 @@ begin
           GtTimeToStr(DateTime) + '   ' +
           GtSuperToStr(DateTime);
 
-  { wstawia XXX w miejsca mikrosekund jeœli czas nie jest superdok³adny }
+  { wstawia XXX w miejsca mikrosekund jeÅ“li czas nie jest superdokÂ³adny }
   if not Super then
     for i:=0 to 4 do
       Result[Length(Result)]:='X';
 end;
 
-{ zamienia string w formacie YYYY-MM-DD na datê }
+{ zamienia string w formacie YYYY-MM-DD na datÃª }
 function GtStrToDate(Str: String): TDateTime;
 var S1, S2: String;
     R, M, D: Word;
@@ -867,7 +867,7 @@ begin
   Result:=EncodeTime(G, M, S, 0);
 end;
 
-{ zamienia string w formacie YYYY-MM-DD hh:nn:ss na datê i czas }
+{ zamienia string w formacie YYYY-MM-DD hh:nn:ss na datÃª i czas }
 function GtStrToDateTime(Str: String): TDateTime;
 begin
   Result:=GtStrToDate(Str) + GtStrToTime(Str);
@@ -879,38 +879,38 @@ begin
   Result:=StrToInt(strBreakOnFirst1(' ', Trim(Str))) + GtStrToTime(Str);
 end;
 
-{ zamienia datê i czas liczony w minutach od 2005-01-01 na numer tygodnia od 2005-01-01 }
+{ zamienia datÃª i czas liczony w minutach od 2005-01-01 na numer tygodnia od 2005-01-01 }
 function GtDateIntWeekNo(IntDateTime: Integer): Integer;
 begin
  Result := Trunc( (IntDateTime + 5*24*60 -6*60)/60/24/7 );
 end;
 
-{ zmniejsza licznik o 1, blokuje zejœcie poni¿ej zera, zwraca True gdy ostatni dekrement }
+{ zmniejsza licznik o 1, blokuje zejÅ“cie poniÂ¿ej zera, zwraca True gdy ostatni dekrement }
 function DecToZero(var LockCnt: Integer): Boolean;
 begin
   Result:=LockCnt=1;
   if LockCnt>0 then Dec(LockCnt);
 end;
 
-{ zwiêksza licznik o 1, zwraca True gdy pierwszy inkrement }
+{ zwiÃªksza licznik o 1, zwraca True gdy pierwszy inkrement }
 function IncFromZero(var LockCnt: Integer): Boolean;
 begin
   Result:=LockCnt=0;
   Inc(LockCnt);
-  { korekta licznika, niepotrzebna bo DecToZero nieschodzi poni¿ej zera }
-  { przydatne jeœli zawartoœæ licznika jest podmieniana w szczególnych przypadkach }
-  { póki co niepotrzebujê }
+  { korekta licznika, niepotrzebna bo DecToZero nieschodzi poniÂ¿ej zera }
+  { przydatne jeÅ“li zawartoÅ“Ã¦ licznika jest podmieniana w szczegÃ³lnych przypadkach }
+  { pÃ³ki co niepotrzebujÃª }
   // if LockCnt<0 then LockCnt:=0;
 end;
 
-{ ró¿nicuje dwa zbiory wyliczeniowe, zwraca true jeœli mia³y elementy wspólne }
+{ rÃ³Â¿nicuje dwa zbiory wyliczeniowe, zwraca true jeÅ“li miaÂ³y elementy wspÃ³lne }
 function GtSetSub(var aSet: ByteSet; aSub: ByteSet): Boolean;
 begin
   Result := aSub * aSet <> [];
   aSet   := aSet - aSub;
 end;
 
-{ wykonuje zaokr¹glenie liczby metod¹ matematyczn¹ }
+{ wykonuje zaokrÂ¹glenie liczby metodÂ¹ matematycznÂ¹ }
 function CRound(C: Currency; Dec: Integer=2): Currency;
 const WDec: array [-4..4] of Currency = ( 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000 );
 var T: Currency;
@@ -923,7 +923,7 @@ begin
   Result := WDec[-Dec] * T;
 end;
 
-{ wykonuje zaokr¹glenie liczby metod¹ matematyczn¹ - tak jak to robimy w polsce }
+{ wykonuje zaokrÂ¹glenie liczby metodÂ¹ matematycznÂ¹ - tak jak to robimy w polsce }
 function FRound(F: Double; Dec: Integer=2): Double;
 const WDec: array [-6..4] of Double = ( 0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000 );
 begin
@@ -935,6 +935,6 @@ end;
 begin
   CntGtNowSuper := 0;
 
-  // potrzebne do super dok³adnego mierzenia czasu
+  // potrzebne do super dokÂ³adnego mierzenia czasu
   GtGetSuperTimeBase;
 end.
