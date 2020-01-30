@@ -33,7 +33,7 @@ function AllocMemSize: Cardinal;
 
 implementation
 
-{ funkcja pobrana z internetu w 2005 roku, modu³ GeneralHashFunctions }
+{ funkcja pobrana z internetu w 2005 roku, moduÂ³ GeneralHashFunctions }
 function Hash_RS_S32 (Str: String): LongInt;
 const b = 378551;
 var a : LongInt;
@@ -48,7 +48,7 @@ Begin
   Result := Result and $7FFFFFFF;
 end;
 
-{ funkcja pobrana z internetu w 2011 roku, modu³ GeneralHashFunctions }
+{ funkcja pobrana z internetu w 2011 roku, moduÂ³ GeneralHashFunctions }
 function Hash_RS_U32 (Str: String): Cardinal;
 const b = 378551;
 var
@@ -75,7 +75,7 @@ begin
   Result := Result and $7FFFFFFF;
 end;
 
-{ funkcja przepisana w pcciagu z C++, z przeróbka na Cardinal }
+{ funkcja przepisana w pcciagu z C++, z przerÃ³bka na Cardinal }
 function Hash_DJB_U32 (Str: String): Cardinal;
 var i: Integer;
 begin
@@ -85,9 +85,9 @@ begin
     Result := (Result shl 5) + Result + Ord(Str[i]);
 end;
 
-{ funkcja DJB, z przeróbkami }
-{ TGI: zmieniona wartoœæ pocz¹tkowa na 0, hash pustego stringa bêdzie zerem }
-{ TGI: hash pojedynczego znaku bêdzie jego kodem ASCII }
+{ funkcja DJB, z przerÃ³bkami }
+{ TGI: zmieniona wartoÅ“Ã¦ poczÂ¹tkowa na 0, hash pustego stringa bÃªdzie zerem }
+{ TGI: hash pojedynczego znaku bÃªdzie jego kodem ASCII }
 function Hash_DJB_TGI_U32 (Str: String): Cardinal;
 var i: Integer;
 begin
