@@ -7,9 +7,9 @@
 {$ENDIF}
 unit GtRegistry;
 
-{ Klasa jest przeznaczona dla obiektów, które regularnie zapisuj¹ i odczytuj¹ dane z rejestru, }
-{ szczególnie informacje diagnostyczne. Do jednorazowych i/lub pojedynczych operacji zapiu i }
-{ odczytu z rejestru warto u¿ywaæ metody uproszczone. Gdy  }
+{ Klasa jest przeznaczona dla obiektÃ³w, ktÃ³re regularnie zapisujÂ¹ i odczytujÂ¹ dane z rejestru, }
+{ szczegÃ³lnie informacje diagnostyczne. Do jednorazowych i/lub pojedynczych operacji zapiu i }
+{ odczytu z rejestru warto uÂ¿ywaÃ¦ metody uproszczone. Gdy  }
 
 interface
 
@@ -17,7 +17,7 @@ uses Windows, Registry, Classes,
      GtStandard;
 
 {--------------------------------------  --------------------------------------}
-{-------------------------- Klasa dostêpu do rejestru -------------------------}
+{-------------------------- Klasa dostÃªpu do rejestru -------------------------}
 
 type
   TGtRegistry = class (TRegistry)
@@ -58,9 +58,9 @@ type
   end;
 
 {--------------------------------------  --------------------------------------}
-{------------------------------- Funkcje ogólne -------------------------------}
+{------------------------------- Funkcje ogÃ³lne -------------------------------}
 
-{ UWAGA - Ostatnim parametrem funkcji odczytu jest wartoœæ domyœlna, zwracana w przypadku braku podanego klucza }
+{ UWAGA - Ostatnim parametrem funkcji odczytu jest wartoÅ“Ã¦ domyÅ“lna, zwracana w przypadku braku podanego klucza }
 
 //function regGetDbl(RootKey: HKEY; sKeyName: String): Double;
 //function regGetInt(RootKey: HKEY; sKeyName: String; aValue: Integer=0): Integer;
@@ -84,8 +84,8 @@ function regCreateKey(RootKey: HKEY; sKeyName: String): Boolean;
 function regDeleteKey(RootKey: HKEY; sKeyName: String): Boolean;
 function regDeleteVal(RootKey: HKEY; sKeyName: String): Boolean;
 
-{------------------------------ Funkcje skrócone ------------------------------}
-{--------------------------- dla kluczy u¿ytkownika ---------------------------}
+{------------------------------ Funkcje skrÃ³cone ------------------------------}
+{--------------------------- dla kluczy uÂ¿ytkownika ---------------------------}
 
 function rguGetKeyNames(sKeyName: String): TStrings;
 function rguGetValNames(sKeyName: String): TStrings;
@@ -111,7 +111,7 @@ function rguCreateKey(sKeyName: String): Boolean;
 function rguDeleteKey(sKeyName: String): Boolean;
 function rguDeleteVal(sKeyName: String): Boolean;
 
-{------------------------------ Funkcje skrócone ------------------------------}
+{------------------------------ Funkcje skrÃ³cone ------------------------------}
 {----------------------------- dla kluczy maszyny -----------------------------}
 
 function rgmGetKeyNames(sKeyName: String): TStrings;
@@ -137,7 +137,7 @@ implementation
 uses SysUtils, Variants;
 
 {--------------------------------------  --------------------------------------}
-{------------------------------- Funkcje ogólne -------------------------------}
+{------------------------------- Funkcje ogÃ³lne -------------------------------}
 
 function regGetKeyNames(RootKey: HKEY; sKeyName: String): TStrings;
 var Reg: TRegistry;
@@ -539,8 +539,8 @@ begin
   end;
 end;
 
-{------------------------------ Funkcje skrócone ------------------------------}
-{--------------------------- dla kluczy u¿ytkownika ---------------------------}
+{------------------------------ Funkcje skrÃ³cone ------------------------------}
+{--------------------------- dla kluczy uÂ¿ytkownika ---------------------------}
 
 function rguGetDbl(sKeyName: String): Double;
 begin
@@ -647,7 +647,7 @@ begin
   Result:=regDeleteVal(HKEY_CURRENT_USER, sKeyName);
 end;
 
-{------------------------------ Funkcje skrócone ------------------------------}
+{------------------------------ Funkcje skrÃ³cone ------------------------------}
 {----------------------------- dla kluczy maszyny -----------------------------}
 
 function rgmGetKeyNames(sKeyName: String): TStrings;
@@ -731,7 +731,7 @@ begin
 end;
 
 {--------------------------------------  --------------------------------------}
-{-------------------------- Klasa dostêpu do rejestru -------------------------}
+{-------------------------- Klasa dostÃªpu do rejestru -------------------------}
 
 { konstruktor klasy }
 constructor TGtRegistry.Create(aRootKey: HKEY; aKeyName: String='');
@@ -753,7 +753,7 @@ begin
   inherited Destroy;
 end;
 
-{ pobiera obiekt obs³ugi podleg³ej ga³êzi rejestru }
+{ pobiera obiekt obsÂ³ugi podlegÂ³ej gaÂ³Ãªzi rejestru }
 function    TGtRegistry.GetRegSub(sKeyName: String): TGtRegistry;
 var i: Integer;
     sKey, sName: String;
@@ -768,7 +768,7 @@ begin
   if sName<>'' then Result:=Result.GetRegSub(sName);
 end;
 
-{ funkcja czyta liczbê rzeczywist¹, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta liczbÃª rzeczywistÂ¹, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetDbl(sKeyName: String; aValue: Double=0): Double;
 var sKey, sName: String;
 begin
@@ -779,7 +779,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta liczbê ca³kowit¹, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta liczbÃª caÂ³kowitÂ¹, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetInt(sKeyName: String; aValue: Integer=0): Integer;
 var sKey, sName: String;
 begin
@@ -790,7 +790,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta string, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta string, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetStr(sKeyName: String; aValue: String=''): String;
 var sKey, sName: String;
 begin
@@ -801,7 +801,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta wartoœæ logiczn¹, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta wartoÅ“Ã¦ logicznÂ¹, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetBool(sKeyName: String; aValue: Boolean=False): Boolean;
 var sKey, sName: String;
 begin
@@ -812,7 +812,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta datê, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta datÃª, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetDate(sKeyName: String; aValue: TDate=0): TDate;
 var sKey, sName: String;
 begin
@@ -823,7 +823,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta czas, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta czas, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetTime(sKeyName: String; aValue: TTime=0): TTime;
 var sKey, sName: String;
 begin
@@ -834,7 +834,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta datê i czas, zwraca podan¹ wartoœæ gdy brak klucza }
+{ funkcja czyta datÃª i czas, zwraca podanÂ¹ wartoÅ“Ã¦ gdy brak klucza }
 function    TGtRegistry.GetDateTime(sKeyName: String; aValue: TDateTime=0): TDateTime;
 var sKey, sName: String;
 begin
@@ -845,7 +845,7 @@ begin
            else Result:=aValue;
 end;
 
-{ funkcja czyta wartoœæ wariantow¹ }
+{ funkcja czyta wartoÅ“Ã¦ wariantowÂ¹ }
 function    TGtRegistry.GetVar(sKeyName: String): Variant;
 var sKey, sName: String;
 begin
@@ -863,7 +863,7 @@ begin
     end;
 end;
 
-{ funkcja czyta wartoœæ tabeli wariantowej }
+{ funkcja czyta wartoÅ“Ã¦ tabeli wariantowej }
 function    TGtRegistry.GetVarArray(sKeyName: String): VariantArray;
 var i,Hi,Low: Integer;
 begin
@@ -875,7 +875,7 @@ begin
     Result[i]:=GetStr(sKeyName + '\' + IntToStr(i));
 end;
 
-{ zapisuje wartoœæ rzeczywist¹ }
+{ zapisuje wartoÅ“Ã¦ rzeczywistÂ¹ }
 function    TGtRegistry.PutDbl(sKeyName: String; aValue: Double): Boolean;
 var sKey, sName: String;
 begin
@@ -888,7 +888,7 @@ begin
     end;
 end;
 
-{ zapisuje wartoœæ ca³kowit¹ }
+{ zapisuje wartoÅ“Ã¦ caÂ³kowitÂ¹ }
 function    TGtRegistry.PutInt(sKeyName: String; aValue: Integer): Boolean;
 var sKey, sName: String;
 begin
@@ -914,7 +914,7 @@ begin
     end;
 end;
 
-{ zapisuje wartoœæ logiczn¹ }
+{ zapisuje wartoÅ“Ã¦ logicznÂ¹ }
 function    TGtRegistry.PutBool(sKeyName: String; aValue: Boolean): Boolean;
 var sKey, sName: String;
 begin
@@ -927,7 +927,7 @@ begin
     end;
 end;
 
-{ zapisuje datê }
+{ zapisuje datÃª }
 function    TGtRegistry.PutDate(sKeyName: String; aValue: TDate): Boolean;
 var sKey, sName: String;
 begin
@@ -953,7 +953,7 @@ begin
     end;
 end;
 
-{ zapisuje datê i czas }
+{ zapisuje datÃª i czas }
 function    TGtRegistry.PutDateTime(sKeyName: String; aValue: TDateTime): Boolean;
 var sKey, sName: String;
 begin
@@ -966,7 +966,7 @@ begin
     end;
 end;
 
-{ zapisuje wartoœæ wariantow¹ }
+{ zapisuje wartoÅ“Ã¦ wariantowÂ¹ }
 function    TGtRegistry.PutVar(sKeyName: String; aValue: Variant): Boolean;
 begin
   case VarType(aValue) of
@@ -989,7 +989,7 @@ begin
   end;
 end;
 
-{ zapisuje wartoœæ tablicy wariantowej }
+{ zapisuje wartoÅ“Ã¦ tablicy wariantowej }
 function    TGtRegistry.PutVarArray(sKeyName: String; aValue: VariantArray): Boolean;
 var i,j: Integer;
     sKey, sName: String;
@@ -1015,22 +1015,22 @@ begin
 
     if not Result then GetRegSub(sKey).DeleteAll;
   except
-    { coœ niewysz³o, kasuje klucz, lepiej niezapisaæ warianta ni¿ zapisaæ kawa³ek }
+    { coÅ“ niewyszÂ³o, kasuje klucz, lepiej niezapisaÃ¦ warianta niÂ¿ zapisaÃ¦ kawaÂ³ek }
     GetRegSub(sKey).DeleteAll;
     raise;
   end;
 end;
 
-{ inkrementuje wartoœæ ca³kowit¹ }
+{ inkrementuje wartoÅ“Ã¦ caÂ³kowitÂ¹ }
 function    TGtRegistry.IncInt(sKeyName: String; aValue: Integer=1): Integer;
 begin
   Result:=aValue + GetInt(sKeyName);
   PutInt(sKeyName, Result);
 end;
 
-{ usuwa wszystkie klucze i wszystkie wartoœci z tej ga³êzi rejestru }
-{ UWAGA: nie wolno robiæ w tym miejscu DeleteKey('') bo obiekt jest sk³adowany }
-{        przy kolejnym dostêpie zwróci niepotrzebne wyj¹tki }
+{ usuwa wszystkie klucze i wszystkie wartoÅ“ci z tej gaÂ³Ãªzi rejestru }
+{ UWAGA: nie wolno robiÃ¦ w tym miejscu DeleteKey('') bo obiekt jest skÂ³adowany }
+{        przy kolejnym dostÃªpie zwrÃ³ci niepotrzebne wyjÂ¹tki }
 procedure   TGtRegistry.DeleteAll;
 var i: Integer;
     SL: TStringList;
@@ -1046,8 +1046,8 @@ begin
   end;
 end;
 
-{ metoda odtwarza ga³¹Ÿ rejestru, jeœli zosta³aby usuniêta w czasie pracy programu }
-{ nie ma sensu tworzyæ ga³êzi przy odczycie - nic siê wtedy nieodczyta } 
+{ metoda odtwarza gaÂ³Â¹Å¸ rejestru, jeÅ“li zostaÂ³aby usuniÃªta w czasie pracy programu }
+{ nie ma sensu tworzyÃ¦ gaÂ³Ãªzi przy odczycie - nic siÃª wtedy nieodczyta } 
 procedure   TGtRegistry.ReCreateKey;
 var FPath: String;
 begin
