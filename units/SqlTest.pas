@@ -1,7 +1,7 @@
-(* $Header: /SQL Toys/SqlFormat/SqlTest0.pas 26    19-03-22 20:01 Tomek $
+(* $Header: /SQL Toys/units/SqlTest.pas 27    19-03-23 17:12 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
-unit SqlTest0;
+unit SqlTest;
 
 interface
 
@@ -48,7 +48,7 @@ begin
             StringReplace( StringReplace(
             StringReplace( StringReplace(
             StringReplace( StringReplace(
-            { 2^10 - da radÃª z 1024 spacjami pod rzÂ¹d }
+            { 2^10 - da radê z 1024 spacjami pod rz¹d }
             StringReplace( StringReplace( StringReplace( StringReplace( StringReplace(
             StringReplace( StringReplace( StringReplace( StringReplace( StringReplace(
             StringReplace( StringReplace( StringReplace(
@@ -187,8 +187,8 @@ begin
 
   { date: 2013-01-08, file: Basic Queries - Expressions.sql }
   TestQuery( '/* ALGEBRA - proste operacje */' );
-  TestQuery( '/* dodaÃ¦ operacje ze zmianÂ¹ znaku - minus/reverse */' );   { TODO !!! }
-  TestQuery( '/* dodaÃ¦ operacje z nawiasami */' );
+  TestQuery( '/* dodaæ operacje ze zmian¹ znaku - minus/reverse */' );   { TODO !!! }
+  TestQuery( '/* dodaæ operacje z nawiasami */' );
   TestQuery( 'SELECT a + b ;' );
   TestQuery( 'SELECT a - b ;' );
   TestQuery( 'SELECT a * b ;' );
@@ -196,7 +196,7 @@ begin
   TestQuery( 'SELECT a % b ;' );
   TestQuery( 'SELECT a || b;' );
 
-  TestQuery( '/* zmiana poziomu pojedyncza i podwÃ³jna */' );
+  TestQuery( '/* zmiana poziomu pojedyncza i podwójna */' );
   TestQuery( 'SELECT a + b + c;' );
   TestQuery( 'SELECT a + b - c;' );
   TestQuery( 'SELECT a + b * c;' );
@@ -234,7 +234,7 @@ begin
   TestQuery( 'SELECT a || b % c;' );
   TestQuery( 'SELECT a || b || c;' );
 
-  TestQuery( '/* czy po zmianach poziomu prawidÂ³owe parsowanie */' );
+  TestQuery( '/* czy po zmianach poziomu prawid³owe parsowanie */' );
   TestQuery( 'SELECT a + b + c + d;' );
   TestQuery( 'SELECT a + b + c - d;' );
   TestQuery( 'SELECT a + b + c * d;' );
@@ -462,7 +462,7 @@ begin
   TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c)' );
 
   { date: 2014-01-30, file: old BRACKETS condition 2.sql }
-  TestQuery( '/* po FORMAT jest problem z niewÂ³aÂœciwym listowaniem nawiasÃ³w */'#13#10 +
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
              'SELECT  *'#13#10 +
              'FROM    tab'#13#10 +
              'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
@@ -522,11 +522,11 @@ begin
              'FROM    tab'#13#10 +
              'WHERE   ((a=a AND b=b)  OR  c=c);' );
   TestQuery( 'SELECT 1 FROM tab WHERE (((a)+b) > c);' );
-  TestQuery( '/* po FORMAT jest problem z niewÂ³aÂœciwym listowaniem nawiasÃ³w */'#13#10 +
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
              'SELECT  *'#13#10 +
              'FROM    tab'#13#10 +
              'WHERE   ((a=a AND b=b)  OR  c=c);' );
-  TestQuery( '/* po FORMAT jest problem z niewÂ³aÂœciwym listowaniem nawiasÃ³w */'#13#10 +
+  TestQuery( '/* po FORMAT jest problem z niew³aœciwym listowaniem nawiasów */'#13#10 +
              'SELECT  *'#13#10 +
              'FROM    tab'#13#10 +
              'WHERE   ((a=a AND b=b)  OR  (c=c AND d=d))'#13#10 +
@@ -570,7 +570,7 @@ begin
              'order by 1' );
 
   { date: 2012-12-30, file: Basic Queries - Conditions.sql }
-  TestQuery( '/* (Line: 15) WARUNKI - operatory porÃ³wnania */' );
+  TestQuery( '/* (Line: 15) WARUNKI - operatory porównania */' );
   TestQuery( 'SELECT * FROM a WHERE a = 1;' );
   TestQuery( 'SELECT * FROM a WHERE a < 1;' );
   TestQuery( 'SELECT * FROM a WHERE a > 1;' );
@@ -578,7 +578,7 @@ begin
   TestQuery( 'SELECT * FROM a WHERE a >= 1; /* NOT < */' );
   TestQuery( 'SELECT * FROM a WHERE a <> 1; /* NOT = */' );
   TestQuery( 'SELECT * FROM a WHERE a != 1; /* NOT = */' );
-  TestQuery( '/* WARUNKI - podstawowe wyraÂ¿enia zÂ³oÂ¿one */' );
+  TestQuery( '/* WARUNKI - podstawowe wyra¿enia z³o¿one */' );
   TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2;' );
   TestQuery( 'SELECT * FROM b WHERE a=1 AND b=2;' );
   TestQuery( 'SELECT * FROM b WHERE a=1 OR b=2 OR c=3;' );
@@ -714,8 +714,8 @@ begin
   TestQuery( 'SELECT 1;SELECT 2;' );
 
   { date: 2012-01-28, file: MinQueries.sql }
-  TestQuery( '/* Demo peÂ³nego bÂ³ÃªdÃ³w parsera SQL v0.3 */' );
-  TestQuery( '/* aktualnie do dziaÂ³ania wymaga podania DDL-i dla tabel.*/' );
+  TestQuery( '/* Demo pe³nego b³êdów parsera SQL v0.3 */' );
+  TestQuery( '/* aktualnie do dzia³ania wymaga podania DDL-i dla tabel.*/' );
   TestQuery( '/* Highlighter dedykowany dla PlusMemo - do poprawki.*/' );
 
   TestQuery( 'CREATE TABLE emp_table ( deptno INT, empname VARCHAR(100) );' );
@@ -933,7 +933,7 @@ begin
   TestQuery( '       DROP TABLE  dept_table;');
 
   { date: 2012-10-02, file: parsing condition.sql }
-  TestQuery( '-- zamiana zapasÃ³w jeÂœli wskazujÂ¹ wÃªzÂ³y odwrotnie do kierunku punktÃ³w charakterystycznych.'#13#10 +
+  TestQuery( '-- zamiana zapasów jeœli wskazuj¹ wêz³y odwrotnie do kierunku punktów charakterystycznych.'#13#10 +
              'UPDATE    WEZEL_KABEL'#13#10 +
              'SET       ID_WEZEL_1 = ID_WEZEL_2'#13#10 +
              '  ,       ID_WEZEL_2 = ID_WEZEL_1'#13#10 +
@@ -978,7 +978,7 @@ begin
 
              '       CASE WHEN ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2)  OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2)'#13#10 +
              '              OR ID_PORT_2 = TO_NUMBER(:qEdit.ID_PORT_2B) OR ID_PORT_2B = TO_NUMBER(:qEdit.ID_PORT_2B)'#13#10 +
-             '       THEN ''OSIAGNIÃŠTY'''#13#10 +
+             '       THEN ''OSIAGNIÊTY'''#13#10 +
              '       ELSE ''-''||''-''||''-'' '#13#10 +
              '       END AS KONIEC_OSIAGNIETY'#13#10 +
              'FROM ('#13#10 +
@@ -1023,7 +1023,7 @@ begin
              'FROM        TRANSMISJA_SKLADNIKI TSA'#13#10 +
              'JOIN        TRANSMISJA_SKL_PORTY TS ON TS.ID = TSA.ID'#13#10 +
              'LEFT JOIN   TRANSMISJA_DROZNA   TRD ON TRD.ID_TRANSMISJA = TS.ID_TRANSMISJA_SKL'#13#10 +
-             'WHERE       TSA.LP != 999 /* tylko uporzÂ¹dkowane skÂ³adniki */'#13#10 +
+             'WHERE       TSA.LP != 999 /* tylko uporz¹dkowane sk³adniki */'#13#10 +
              'AND         TSA.ID_TRANSMISJA IN (  SELECT ID_TRANSMISJA_SKL'#13#10 +
              '                                    FROM   TRANSMISJA_SKLADNIKI'#13#10 +
              '                                    WHERE  ID_TRANSMISJA_SKL IS NOT NULL'#13#10 +
@@ -1096,8 +1096,8 @@ begin
   TestQuery( 'TRUNCATE TABLE emp_table;' );
   TestQuery( 'GRANT SELECT ON emp TO tgi;' );
   TestQuery( 'DENY SELECT ON emp TO tgi;' );
-  TestQuery( 'REVOKE SELECT ON emp FROM tgi;' ); { sprawdziÃ¦ dokumentacjÃª od Oracle i MSSQL !! }
-  TestQuery( 'SELECT "ola monola" FROM "ala ma kota" "ala miaÂ³a kota";' );
+  TestQuery( 'REVOKE SELECT ON emp FROM tgi;' ); { sprawdziæ dokumentacjê od Oracle i MSSQL !! }
+  TestQuery( 'SELECT "ola monola" FROM "ala ma kota" "ala mia³a kota";' );
   TestQuery( 'SELECT 1 FROM dual WHERE a = :a1 AND b = &b2;' );
   TestQuery( 'SELECT 1 FROM dual WHERE a LIKE ''nic\%%'' ESCAPE ''\'' COLLATE dupa;' );
 
@@ -1333,7 +1333,7 @@ begin
              'select nr, max(x) x, max(y) y, max(x_prime) x_prime, max(y_prime) y_prime'#13#10 +
              'from ('#13#10 +
              ''#13#10 +
-             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''Â£Ã³dS%'''#13#10 +
+             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''£ódS%'''#13#10 +
              'union all'#13#10 +
              'select  t.name, null, null,'#13#10 +
              '        CASE WHEN COORD_X_DETAILS BETWEEN    1 AND    9 THEN COORD_X_DETAILS / 10'#13#10 +
@@ -1348,7 +1348,7 @@ begin
              '             WHEN COORD_y_DETAILS BETWEEN 1000 AND 9999 THEN COORD_y_DETAILS / 10000'#13#10 +
              '             ELSE 0'#13#10 +
              '        END + t.coord_y y'#13#10 +
-             'from v_tdr_char_points t where t.name like ''Â£Ã³dS%'''#13#10 +
+             'from v_tdr_char_points t where t.name like ''£ódS%'''#13#10 +
              ''#13#10 +
              ')  tab'#13#10 +
              'group by nr'#13#10 +
@@ -1360,7 +1360,7 @@ begin
              'from ('#13#10 +
              'select nr, max(x) x, max(y) y, max(x_prime) x_prime, max(y_prime) y_prime'#13#10 +
              'from ('#13#10 +
-             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''Â£Ã³dS%'''#13#10 +
+             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''£ódS%'''#13#10 +
              'union all'#13#10 +
              'select  t.name, null, null,'#13#10 +
              '        CASE WHEN COORD_X_DETAILS BETWEEN    1 AND    9 THEN COORD_X_DETAILS / 10'#13#10 +
@@ -1375,7 +1375,7 @@ begin
              '             WHEN COORD_y_DETAILS BETWEEN 1000 AND 9999 THEN COORD_y_DETAILS / 10000'#13#10 +
              '             ELSE 0'#13#10 +
              '        END + t.coord_y y'#13#10 +
-             'from v_tdr_char_points t where t.name like ''Â£Ã³dS%'''#13#10 +
+             'from v_tdr_char_points t where t.name like ''£ódS%'''#13#10 +
              ')  tab'#13#10 +
              'group by nr'#13#10 +
              ') tab'#13#10 +
@@ -1614,8 +1614,8 @@ begin
              '     REFERENCES TRANSPORT;' );
 
   { date: 2012-11-24, file: lister long expression.sql }
-  TestQuery( '       SELECT  SUBSTR ( DECODE ( S1.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''wÂ³Ã³kno: '' || DECODE ( S1.NR, NULL, NULL, S1.NR || ''#'' ) || DECODE ( W1.NR_ODCINKA, NULL, TO_CHAR ( W1.NR ), W1.NR_ODCINKA ) ) || ' +
-                                     'DECODE ( S2.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''wÂ³Ã³kno: '' || DECODE ( S2.NR, NULL, NULL, S2.NR || ''#'' ) || DECODE ( W2.NR_ODCINKA, NULL, TO_CHAR ( W2.NR ), W2.NR_ODCINKA ) ) || ' +
+  TestQuery( '       SELECT  SUBSTR ( DECODE ( S1.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''w³ókno: '' || DECODE ( S1.NR, NULL, NULL, S1.NR || ''#'' ) || DECODE ( W1.NR_ODCINKA, NULL, TO_CHAR ( W1.NR ), W1.NR_ODCINKA ) ) || ' +
+                                     'DECODE ( S2.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''w³ókno: '' || DECODE ( S2.NR, NULL, NULL, S2.NR || ''#'' ) || DECODE ( W2.NR_ODCINKA, NULL, TO_CHAR ( W2.NR ), W2.NR_ODCINKA ) ) || ' +
                                      'DECODE ( K1.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''para: '' || DECODE ( K1.NR, NULL, NULL, K1.NR || ''#'' ) || DECODE ( PR1.NR_ODCINKA, NULL, TO_CHAR ( PR1.NR ), PR1.NR_ODCINKA ) ) || ' +
                                      'DECODE ( K2.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''para: '' || DECODE ( K2.NR, NULL, NULL, K2.NR || ''#'' ) || DECODE ( PR2.NR_ODCINKA, NULL, TO_CHAR ( PR2.NR ), PR2.NR_ODCINKA ) ) || ' +
                                      'DECODE ( P1.SYMBOL, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''patchcord: '' || P1.SYMBOL ) || ' +
@@ -1626,8 +1626,8 @@ begin
                                      'DECODE ( KK2.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''koncentryk: '' || KK2.NR ) || ' +
                                      'DECODE ( KI1.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''kabel: '' || KI1.NR ) || ' +
                                      'DECODE ( KI2.NR, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''kabel: '' || KI2.NR ) || ' +
-                                     'DECODE ( UW1.ID, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''wÂ³Ã³kno urz: '' || URZ1.NR ) || ' +
-                                     'DECODE ( UW2.ID, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''wÂ³Ã³kno urz: '' || URZ2.NR ), 3 )'#13#10 +
+                                     'DECODE ( UW1.ID, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''w³ókno urz: '' || URZ1.NR ) || ' +
+                                     'DECODE ( UW2.ID, NULL, '''', CHR ( 13 ) || CHR ( 10 ) || ''w³ókno urz: '' || URZ2.NR ), 3 )'#13#10 +
              '         FROM  GNIAZDO G'#13#10 +
              '    LEFT JOIN  WLOKNO W1 ON ( W1.ID_GNIAZDO_1 = G.ID OR W1.ID_GNIAZDO_2 = G.ID )'#13#10 +
              '    LEFT JOIN  WLOKNO W2 ON ( W2.ID_GNIAZDO_1 = G.ID OR W2.ID_GNIAZDO_2 = G.ID ) AND ( W1.ID <> W2.ID )'#13#10 +
@@ -1778,7 +1778,7 @@ begin
              '      ,ut.obca_flag as czy_obca'#13#10 +
              '      ,st.status'#13#10 +
              '      ,(select nvl(max(data), ut.data_utw) from drk.rek__log_01'#13#10 +
-             '            where obiekt = ''UsÂ³uga tele.'' and id_obiektu = ut.id_uslugatele and opis = ''Zmiana statusu'') as data_zmiany_statusu'#13#10 +
+             '            where obiekt = ''Us³uga tele.'' and id_obiektu = ut.id_uslugatele and opis = ''Zmiana statusu'') as data_zmiany_statusu'#13#10 +
              '      ,ut.data_uruchomienia'#13#10 +
              '      ,ut.data_zakonczenia'#13#10 +
              '      ,ut.uwagi_kanal as uwagi_dla_klienta'#13#10 +
@@ -1787,7 +1787,7 @@ begin
              '      ,case pr_ok_flag'#13#10 +
              '            when ''Y'' then'#13#10 +
              '                 case ut.pr_nr'#13#10 +
-             '                        when 0 then ''Abon. staÂ³y'''#13#10 +
+             '                        when 0 then ''Abon. sta³y'''#13#10 +
              '                        when 1 then ''Limit ruchu GB'''#13#10 +
              '                        when 11 then ''Limit ruchu Mb'''#13#10 +
              '                        when 2 then ''N-ty percentyl'''#13#10 +
@@ -2055,7 +2055,7 @@ begin
              'FROM      WLOKNO WL'#13#10 +
              'LEFT JOIN WEZEL_KABEL WK1 ON WK1.ID = WL.ID_WEZEL_KABEL_1'#13#10 +
              'LEFT JOIN WEZEL_KABEL WK2 ON WK2.ID = WL.ID_WEZEL_KABEL_2'#13#10 +
-             '-- dÂ³ugoÂœÃ¦ optyczna z ostatniego pomiaru'#13#10 +
+             '-- d³ugoœæ optyczna z ostatniego pomiaru'#13#10 +
              'LEFT JOIN ('#13#10 +
              '          SELECT *'#13#10 +
              '          FROM   WLOKNO_POMIAR WP2'#13#10 +
@@ -3499,7 +3499,7 @@ begin
 
   { date: 2013-09-11, file: old ORDER BY too much empty lines.sql }
   TestQuery( '    SELECT   ''W''                                                                   AS       TYP'#13#10 +
-             '         ,   ''wyposaÂ¿enie''                                                         AS  TYP_OPIS'#13#10 +
+             '         ,   ''wyposa¿enie''                                                         AS  TYP_OPIS'#13#10 +
              '         ,   WU.ID'#13#10 +
              '         ,   WU.NAZWA'#13#10 +
              '         ,   TWU.NAZWA || CASE WHEN WU2.ID IS NOT NULL THEN '' - '' END || WU2.NAZWA AS TWU_NAZWA'#13#10 +
@@ -3516,7 +3516,7 @@ begin
              ' UNION ALL'#13#10 +
              ''#13#10 +
              '    SELECT   ''U''                                                                   AS          TYP'#13#10 +
-             '         ,   ''wewnÃªtrzne''                                                          AS     TYP_OPIS'#13#10 +
+             '         ,   ''wewnêtrzne''                                                          AS     TYP_OPIS'#13#10 +
              '         ,   W.ID_ELEMENT                                                          AS           ID'#13#10 +
              '         ,   W.ELEMENT                                                             AS        NAZWA'#13#10 +
              '         ,   NULL                                                                  AS    TWU_NAZWA'#13#10 +
@@ -3539,7 +3539,7 @@ begin
              ' UNION ALL'#13#10 +
              ''#13#10 +
              '    SELECT   ''L''                                                                   AS          TYP'#13#10 +
-             '         ,   ''poÂ³Â¹czone''                                                           AS     TYP_OPIS'#13#10 +
+             '         ,   ''po³¹czone''                                                           AS     TYP_OPIS'#13#10 +
              '         ,   U.ID                                                                  AS           ID'#13#10 +
              '         ,   U.NR                                                                  AS        NAZWA'#13#10 +
              '         ,   NULL                                                                  AS    TWU_NAZWA'#13#10 +
@@ -3591,7 +3591,7 @@ begin
              ''#13#10 +
              'UNION ALL'#13#10 +
              ''#13#10 +
-             'SELECT SZP.POZYCJA, COALESCE(TSZP.NAZWA, ''pÃ³Â³ka'') AS TYP, SZP.UWAGI, 9998, SZP.ID, SZP.WYMIAR, SZP.B_ZAJMUJEU,'#13#10 +
+             'SELECT SZP.POZYCJA, COALESCE(TSZP.NAZWA, ''pó³ka'') AS TYP, SZP.UWAGI, 9998, SZP.ID, SZP.WYMIAR, SZP.B_ZAJMUJEU,'#13#10 +
              '       NULL'#13#10 +
              'FROM   SZAFA_POLKA SZP'#13#10 +
              '       LEFT JOIN TYP_SZAFA_POLKA TSZP ON SZP.ID_TYP_SZAFA_POLKA = TSZP.ID'#13#10 +
@@ -3910,7 +3910,7 @@ begin
              '         W31 NULLS FIRST, NR31, W32, NR32'#13#10 +
              ';' );
   TestQuery( '    SELECT   ''W''                                                                   AS       TYP'#13#10 +
-             '         ,   ''wyposaÂ¿enie''                                                         AS  TYP_OPIS'#13#10 +
+             '         ,   ''wyposa¿enie''                                                         AS  TYP_OPIS'#13#10 +
              '         ,   WU.ID'#13#10 +
              '         ,   WU.NAZWA'#13#10 +
              '         ,   TWU.NAZWA || CASE WHEN WU2.ID IS NOT NULL THEN '' - '' END || WU2.NAZWA AS TWU_NAZWA'#13#10 +
@@ -3927,7 +3927,7 @@ begin
              ' UNION ALL   '#13#10 +
              ''#13#10 +
              '    SELECT   ''U''                                                                   AS          TYP'#13#10 +
-             '         ,   ''wewnÃªtrzne''                                                          AS     TYP_OPIS'#13#10 +
+             '         ,   ''wewnêtrzne''                                                          AS     TYP_OPIS'#13#10 +
              '         ,   W.ID_ELEMENT                                                          AS           ID'#13#10 +
              '         ,   W.ELEMENT                                                             AS        NAZWA'#13#10 +
              '         ,   NULL                                                                  AS    TWU_NAZWA'#13#10 +
@@ -3950,7 +3950,7 @@ begin
              ' UNION ALL   '#13#10 +
              ''#13#10 +
              '    SELECT   ''L''                                                                   AS          TYP'#13#10 +
-             '         ,   ''poÂ³Â¹czone''                                                           AS     TYP_OPIS'#13#10 +
+             '         ,   ''po³¹czone''                                                           AS     TYP_OPIS'#13#10 +
              '         ,   U.ID                                                                  AS           ID'#13#10 +
              '         ,   U.NR                                                                  AS        NAZWA'#13#10 +
              '         ,   NULL                                                                  AS    TWU_NAZWA'#13#10 +
@@ -4144,7 +4144,7 @@ begin
              'select nr, max(x) x, max(y) y, max(x_prime) x_prime, max(y_prime) y_prime'#13#10 +
              'from ('#13#10 +
              ''#13#10 +
-             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''Â£Ã³dS%'''#13#10 +
+             'select  st.nr, st.x, st.y, null as x_prime, null as y_prime from studnia st where nr like ''£ódS%'''#13#10 +
              'union all'#13#10 +
              'select  t.name, null, null,'#13#10 +
              '        CASE WHEN COORD_X_DETAILS BETWEEN    1 AND    9 THEN COORD_X_DETAILS / 10'#13#10 +
@@ -4159,7 +4159,7 @@ begin
              '             WHEN COORD_y_DETAILS BETWEEN 1000 AND 9999 THEN COORD_y_DETAILS / 10000'#13#10 +
              '             ELSE 0'#13#10 +
              '        END + t.coord_y y'#13#10 +
-             'from v_tdr_char_points t where t.name like ''Â£Ã³dS%'''#13#10 +
+             'from v_tdr_char_points t where t.name like ''£ódS%'''#13#10 +
              ''#13#10 +
              ')  tab'#13#10 +
              'group by nr'#13#10 +
@@ -4619,7 +4619,7 @@ begin
              '                         ( SELECT ID       FROM WEZEL_KABEL WK1 WHERE WK1.ID_TYP_ELEMENTU = 101 AND WK1.ID_ELEMENT = S.ID AND WK1.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_1,'#13#10 +
              '                         ( SELECT ID       FROM WEZEL_KABEL WK2 WHERE WK2.ID_TYP_ELEMENTU = 101 AND WK2.ID_ELEMENT = S.ID AND WK2.LP = S.MIN_LP ) AS ID_WEZEL_KABEL_2'#13#10 +
              '                    FROM ( '#13#10 +
-             '                            /* subquery na SW, bo nie moÂ¿na uÂ¿yÃ¦ subquery w JOIN na WEZEL_KABEL */'#13#10 +
+             '                            /* subquery na SW, bo nie mo¿na u¿yæ subquery w JOIN na WEZEL_KABEL */'#13#10 +
              '                            SELECT SW.ID, SW.NR, SW.DLUGOSC_OPTYCZNA, SW.DLUGOSC_TRASOWA, SW.ID_TYP_SWIATLOWODU, SW.ID_STATUS,'#13#10 +
              '                                   ( SELECT MIN(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MIN_LP,'#13#10 +
              '                                   ( SELECT MAX(LP) FROM WEZEL_KABEL WKM WHERE WKM.ID_TYP_ELEMENTU = 101 AND WKM.ID_ELEMENT = SW.ID ) AS MAX_LP'#13#10 +

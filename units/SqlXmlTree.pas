@@ -1,11 +1,11 @@
-(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 15    19-01-13 15:22 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlXmlTree.pas 16    19-03-23 12:51 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
 
 interface
 
-uses SqlStructs;
+uses SqlNode;
 
 function  XmlQuote(aStr: String): String;
 

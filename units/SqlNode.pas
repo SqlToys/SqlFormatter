@@ -1,11 +1,11 @@
-(* $Header: /SQL Toys/SqlFormat/SqlStructs.pas 314   19-03-19 20:48 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlNode.pas 315   19-03-23 12:51 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
   {$DEBUGINFO OFF}
   {$LOCALSYMBOLS OFF}
 {$ENDIF}
-unit SqlStructs;
+unit SqlNode;
 
 interface
 
@@ -43,7 +43,7 @@ type
                      gtsiClauseTables,  gtsiClauseAlter,
                      gtsiProgram,
                      gtsiOther,
-                     // nowe, do poukÂ³adania
+                     // nowe, do pouk³adania
                      gtsiTableRef,
 
                      gtssWhenThenCondExpr,   gtssClauseFields,

@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 352   19-03-22 20:00 Tomek $
+(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 353   19-03-23 12:51 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -10,7 +10,7 @@ unit SqlLister;
 interface
 
 uses Classes,
-     GtTokenizers, SqlStructs, SqlParser;
+     GtTokenizers, SqlNode, SqlParser;
 
 {------------------------------ Class Hierarchy -------------------------------}
 
@@ -690,7 +690,7 @@ begin
 //end;
 
   if (aStyle = gtlsOperator) then begin
-    { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siÃª do identyfikatora }
+    { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siê do identyfikatora }
     if {Options[ gtstSpaceAroundOperator ] or} (UpperCase(aStr)='AND') or (UpperCase(aStr)='OR') or (UpperCase(aStr)='NOT')
       then AddSpace;
   end else
@@ -1052,7 +1052,7 @@ begin
     aIntendToken := nil;
   end;
 
-  { unikamy problemu podwÃ³jnego pomijana w subqueries }
+  { unikamy problemu podwójnego pomijana w subqueries }
   if SkipClauseNewLine and SkipNextNewLine then SkipNextNewLine := False;
 
   { commit not commited text }
@@ -3386,7 +3386,7 @@ begin
 
     AddSpace;
     if SubQueryIntendSpace > 0 then AddSpace(SubQueryIntendSpace);
-    SkipNextNewLine := False; { chyba tak juÂ¿ ma teraz byÃ¦ }
+    SkipNextNewLine := False; { chyba tak ju¿ ma teraz byæ }
 //  SkipNextNewLine := True; //not SubQueryNewLine;
     if SubQueryIntend then NewLineIntend := Length(RawText);
 
@@ -3470,7 +3470,7 @@ begin
   if aNode.Check(gtsiDml, gtkwSelect) then  begin
     lItem := aNode.Find(gtsiExprList, gtkwOrder_By);
     if Assigned(lItem) then begin
-      // odstÃªp identyczny jak dla UNION
+      // odstêp identyczny jak dla UNION
 //      if Options[ gtstEmptyLineAroundUnion ] and Assigned(aQuery.Find{ByKind} (gtsiUnions)) then AddEmptyLine;
 
       List_Clause_Expr(lItem, aListerOpt, gtkwOrder_By, ClauseAppendCondition);
@@ -3614,7 +3614,7 @@ begin
   end;
   if lMaxKeywordSpace > 0 then ML_ClauseKeyword := lMaxKeywordSpace;
 
-  { Max Clause Intend + Clause Body Space powinna byÃ¦ wielokrotnoÂœciÂ¹ 2, Â¿eby Â³adnie siÃª ukÂ³adaÂ³y blokowe intendacje }
+  { Max Clause Intend + Clause Body Space powinna byæ wielokrotnoœci¹ 2, ¿eby ³adnie siê uk³ada³y blokowe intendacje }
   if (ML_ClauseKeyword + ClauseBodySpace) mod 2 > 0 then Inc(ML_ClauseKeyword);
 
   BeginFormattedFile;
