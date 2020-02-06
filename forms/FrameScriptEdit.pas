@@ -1,4 +1,4 @@
-﻿(* $Header: /SQL Toys/SqlFormatter/FrameScriptEdit.pas 66    19-03-23 12:52 Tomek $
+﻿(* $Header: /SQL Toys/forms/FrameScriptEdit.pas 67    19-03-23 19:31 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.16                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -324,7 +324,7 @@ begin
     ScriptLister.FormattingMode  := gtfoText;
 
     SetScriptListerOptions(ScriptLister);
-    SetScriptFormatOptions(ScriptLister, aScriptFormat);
+  //SetScriptFormatOptions(ScriptLister, aScriptFormat);
 
     StatusLogStartTime;
   //SqlToysConvert_ExecuteAll(Parser.QueryList, ScriptLister.Options, ScriptLister.CaseOpt);
@@ -415,7 +415,7 @@ begin
     try
       ScriptLister.FormattingMode  := gtfoText;
       SetScriptListerOptions(ScriptLister);
-      SetScriptFormatOptions(ScriptLister, True);
+    //SetScriptFormatOptions(ScriptLister, True);
       ScriptLister.List_SqlParser(Parser);
       ScriptEdit.Font.Style := [];
       ScriptTabToSpaces(ScriptLister.SL);
