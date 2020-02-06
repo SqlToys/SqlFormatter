@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlLister.pas 353   19-03-23 12:51 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 354   19-03-23 19:32 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -95,7 +95,7 @@ type
     BracketLevel: Integer;
     CaseLevel: Integer;
     // LastLineEmpty: Boolean;
-    LastEmptyLines: Integer;
+    // LastEmptyLines: Integer;
 
     SkipOutput: Boolean;
     SkipOutput_LineCount,
@@ -167,12 +167,16 @@ type
   protected
     { list and formatting methods }
     procedure  AddCurrLine; override;
-    procedure  AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False); overload;
-    procedure  AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
-                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
-    procedure  AddClauseNode(aNode:TGtSqlNode; aAppend: Boolean = False); overload;
-    procedure  AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken{Def};
-                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
+//    procedure  AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False); overload;
+//    procedure  AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
+//                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
+//    procedure  AddClauseNode(aNode:TGtSqlNode; aAppend: Boolean = False); overload;
+//    procedure  AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken{Def};
+//                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
+//    procedure  AddClause(aClause: TGtLexToken = nil); overload;
+    procedure  AddClause(aClause: TGtLexToken = nil; aIntendToken: TGtLexToken = nil); overload;
+//    procedure  AddClauseNode(aNode:TGtSqlNode); overload;
+    procedure  AddClauseNode(aNode: TGtSqlNode; aIntendToken: TGtLexToken = nil); overload;
     procedure  AddComma; virtual;
     procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
 
@@ -184,14 +188,14 @@ type
 
     procedure  AddNewLine(aNode: TGtSqlNode; aToken: TGtLexToken);
 
-    function   ClauseAppendCondition: Boolean;
+//  function   ClauseAppendCondition: Boolean;
   public
     // Dialect: TGtSqlDialect;
 
-    { intendation }
-    ClauseIntend: Boolean;
-    SubQueryIntend: Boolean;
-    SubQueryIntendSpace: Integer;     // >0 -> yes | =0 -> no
+    { intendation -- TO REMOVE !!! }
+//  ClauseIntend: Boolean;
+//  SubQueryIntend: Boolean;
+//  SubQueryIntendSpace: Integer;     // >0 -> yes | =0 -> no
 
 //  MaxSetLeftExprToIntend,           // max length of set expr left side to be intended
 //  MaxTableNameToIntend,             // max length of table name to be intended
@@ -202,18 +206,18 @@ type
   //MaxClauseToIntend: Integer;       // max length of clause keyword to be intended
   //LinesNoAfterQuery: Integer;       // no of lines after query
   private
-    ClauseBodySpace: Integer;         // between intended clause and its body
+//  ClauseBodySpace: Integer;         // between intended clause and its body
 
-    NewLineIntend: Integer;
-    SkipClauseNewLine,
-    SkipNextNewLine,
-    SkipSemicolonAfterThisQuery,
-    FirstClause: Boolean;
+//  NewLineIntend: Integer;
+//  SkipClauseNewLine,
+//  SkipNextNewLine,
+//  SkipSemicolonAfterThisQuery,
+//  FirstClause: Boolean;
 
     SubQueryLevel: Integer;
 
     // ML_xxx ==>> Max Length of xxx
-    ML_ClauseKeyword: Integer;        // Max Length of Clause Keyword
+  //ML_ClauseKeyword: Integer;        // Max Length of Clause Keyword
   //ML_SetExpr_LeftSide,              // Max Length of left side of set expr (column name)
   //ML_ColumnName,                    // Max Length of column name for column def, PK, FK, UK, Check, CREATE TABLE.
   //ML_DataType,                      // Max Length of data type for column def, PK, FK, UK, Check, CREATE TABLE.
@@ -311,9 +315,9 @@ type
                                         aNameStyle: TGtLexTokenStyle=gtlsPlainText;
                                         aKeywordStyle: TGtLexTokenStyle=gtlsPlainText); virtual;
     procedure  List_Clause_Expr        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken: TGtLexToken{Def}; aClauseAppend: Boolean); virtual;
+                                        aClauseToken: TGtLexToken{Def}{; aClauseAppend: Boolean}); virtual;
     procedure  List_Clause_Cond        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken: TGtLexToken{Def}; aClauseAppend: Boolean); virtual;
+                                        aClauseToken: TGtLexToken{Def}{; aClauseAppend: Boolean}); virtual;
   public
     procedure  List_SqlParser          (aNode: TGtSqlParser);
   end;
@@ -347,7 +351,7 @@ begin
   BracketLevel    := 0;
   CaseLevel       := 0;
 
-  LastEmptyLines  := 0;
+//LastEmptyLines  := 0;
 
   SkipOutput      := False;
   SkipOutput_LineCount := 0;
@@ -552,7 +556,7 @@ begin
     { commit current line }
     AddCurrLine;
 
-    LastEmptyLines := 0;
+  //LastEmptyLines := 0;
   end else
   if aIle = -1 then begin
     { it is done if last line was empty }
@@ -568,10 +572,10 @@ begin
   if aIle = -1 then begin
     { adds single empty line }
     AddCurrLine;
-    Inc(LastEmptyLines);
+  //Inc(LastEmptyLines);
   end else begin
     for i := 1 to aIle do AddCurrLine;
-    Inc(LastEmptyLines, aIle);
+  //Inc(LastEmptyLines, aIle);
   end;
 end;
 
@@ -849,14 +853,15 @@ end;
 { formatted file footer }
 procedure TGtSqlProtoLister.EndFormattedFile;
 begin
-  if Trim(RawText) <> '' then begin
-    AddEmptyLine;
-  end else begin
-    while LastEmptyLines > 0 do begin
-      SL.Delete(SL.Count -1);
-      Dec(LastEmptyLines);
-    end;
-  end;
+  AddEmptyLine;
+//if Trim(RawText) <> '' then begin
+//  AddEmptyLine;
+//end else begin
+//  while LastEmptyLines > 0 do begin
+//    SL.Delete(SL.Count -1);
+//    Dec(LastEmptyLines);
+//  end;
+//end;
 
   case FormattingMode of
     gtfoHtml : SL.Add('</FONT></BODY>');
@@ -937,17 +942,17 @@ begin
 
   // Dialect := gtdlNone;
 
-  ML_ClauseKeyword           := 6; //15;//CREATE TABLE-12,INSERT INTO-11,DROP CONSTRAINT-15
-  ClauseBodySpace            := 3; //2;//1;
+//ML_ClauseKeyword           := 6; //15;//CREATE TABLE-12,INSERT INTO-11,DROP CONSTRAINT-15
+//ClauseBodySpace            := 3; //2;//1;
 
-  SubQueryIntend             := True;
-  SubQueryIntendSpace        := 0; //2;//0;
+//SubQueryIntend             := True;
+//SubQueryIntendSpace        := 0; //2;//0;
 
-  NewLineIntend   := 0;
-  SkipNextNewLine := False;
-  SkipClauseNewLine:=False;
-  SkipSemicolonAfterThisQuery := False;
-  FirstClause     := False;
+//NewLineIntend   := 0;
+//SkipNextNewLine := False;
+//SkipClauseNewLine:=False;
+//SkipSemicolonAfterThisQuery := False;
+//FirstClause     := False;
 
   SubQueryLevel := 0;
 
@@ -983,80 +988,80 @@ end;
 { adds current line (RawText or FormText) to output string list, commits current line }
 procedure TGtSqlFormatLister.AddCurrLine;
 begin
-  if SkipNextNewLine then begin
-    SkipNextNewLine := False;
-    Exit;
-  end;
+//if SkipNextNewLine then begin
+//  SkipNextNewLine := False;
+//  Exit;
+//end;
 
   inherited AddCurrLine;
-  LastEmptyLines := 0;
+//LastEmptyLines := 0;
 
-  AddSpace(NewLineIntend);
+  AddSpace; //(NewLineIntend);
 end;
 
 { adds clause to script }
-procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def} = nil; aAppend: Boolean = False);
-begin
-  AddClause(aClause, nil, aAppend);
-end;
+//procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken = nil);
+//begin
+//  AddClause(aClause, nil);
+//end;
+//
+//{ adds clause to script }
+//procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode);
+//begin
+//  AddClauseNode(aNode, nil);
+//end;
 
 { adds clause to script }
-procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aAppend: Boolean = False);
-begin
-  AddClauseNode( aNode, nil, aAppend );
-end;
-
-{ adds clause to script }
-procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken{Def};
-                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False);
+procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken = nil);
 begin
   if not Assigned(aNode) then Exit;
 
   if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
-    then AddClause(aNode.Keyword, nil, aAppend, aRemoveClauseBodySpace)
-    else AddClause(aNode.KeywordExt, nil, aAppend, aRemoveClauseBodySpace);
+//    then AddClause(aNode.Keyword, nil, aAppend, aRemoveClauseBodySpace)
+//    else AddClause(aNode.KeywordExt, nil, aAppend, aRemoveClauseBodySpace);
+    then AddClause(aNode.Keyword, nil)
+    else AddClause(aNode.KeywordExt, nil);
 end;
 
 
 { adds clause to script }
-procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken{Def}; aIntendToken: TGtLexToken{Def};
-                                       aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False);
+procedure TGtSqlFormatLister.AddClause(aClause: TGtLexToken = nil; aIntendToken: TGtLexToken = nil);
 
-procedure AddIntendToken;
+//procedure AddIntendToken;
+//begin
+//  if Assigned(aIntendToken) then begin
+//    AddSpace(1);
+//    if aIntendToken.TokenText = ''
+//      then AddSpace(1)
+//      else AddStr(aIntendToken, False); // bracket or comma
+//    AddSpace(ClauseBodySpace - 2);
+//  end else begin
+//    AddSpace(ClauseBodySpace);
+//  end;
+//end;
+
+//var lDoIntend: Boolean;
+//    lLength: Integer;
 begin
-  if Assigned(aIntendToken) then begin
-    AddSpace(1);
-    if aIntendToken.TokenText = ''
-      then AddSpace(1)
-      else AddStr(aIntendToken, False); // bracket or comma
-    AddSpace(ClauseBodySpace - 2);
-  end else begin
-    AddSpace(ClauseBodySpace);
-  end;
-end;
+//if Assigned(aClause) then lLength := Length(aClause.TokenText) else lLength := 0;
 
-var lDoIntend: Boolean;
-    lLength: Integer;
-begin
-  if Assigned(aClause) then lLength := Length(aClause.TokenText) else lLength := 0;
-
-  lDoIntend := ClauseIntend and not aAppend and
-              (lLength < ML_ClauseKeyword + ClauseBodySpace) and
-              (aClause <> gtkwBegin) and (aClause <> gtkwEnd);
+//lDoIntend := ClauseIntend and not aAppend and
+//            (lLength < ML_ClauseKeyword + ClauseBodySpace) and
+//            (aClause <> gtkwBegin) and (aClause <> gtkwEnd);
 
   { aRemoveClauseBodySpace (OLD: add clause back) - bez nowego wiersza np. column subquery w SELECT }
-  if aRemoveClauseBodySpace and (Trim(RawText) = ',') and ClauseIntend and not aAppend
-  and Assigned(aIntendToken) and (not Assigned(aClause) or (aClause = gttkNone)) then begin
-    RemSpace(ClauseBodySpace);
-    AddIntendToken;
-    aIntendToken := nil;
-  end;
+//if aRemoveClauseBodySpace and (Trim(RawText) = ',') and ClauseIntend and not aAppend
+//and Assigned(aIntendToken) and (not Assigned(aClause) or (aClause = gttkNone)) then begin
+//  RemSpace(ClauseBodySpace);
+//  AddIntendToken;
+//  aIntendToken := nil;
+//end;
 
   { unikamy problemu podwójnego pomijana w subqueries }
-  if SkipClauseNewLine and SkipNextNewLine then SkipNextNewLine := False;
+//if SkipClauseNewLine and SkipNextNewLine then SkipNextNewLine := False;
 
   { commit not commited text }
-  if ClauseIntend and not aAppend and (Trim(RawText) <> '') {and not SkipClauseNewLine} then AddCurrLine;
+//if ClauseIntend and not aAppend and (Trim(RawText) <> '') {and not SkipClauseNewLine} then AddCurrLine;
 
   { empty line before clause }
 //if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and not FirstClause and {not LastLineEmpty and}
@@ -1069,26 +1074,28 @@ begin
 //        (aClause = gtkwSet) or (aClause = gtkwValues))
 //    then AddEmptyLine;
 
-  FirstClause := False;
+//FirstClause := False;
 
   { right intend clause spaces }
 //if lDoIntend and Options[ gtstRightIntend ] and (ML_ClauseKeyword - lLength > 0) then AddSpace(ML_ClauseKeyword - lLength);
 
   { clause }
-  if (aClause = gttkComma) and not lDoIntend
-    then AddComma
-    else AddStr(aClause, not lDoIntend);
+  if aClause = gttkComma then AddComma else AddStr(aClause);
+//if (aClause = gttkComma) and not lDoIntend
+//  then AddComma
+//  else AddStr(aClause, not lDoIntend);
 
-  if not lDoIntend then begin
-    AddStr(aIntendToken);
-    Exit;
-  end;
+  AddStr(aIntendToken);
+//if not lDoIntend then begin
+//  AddStr(aIntendToken);
+//  Exit;
+//end;
 
   { left intend clause spaces }
 //if not Options[ gtstRightIntend ] then AddSpace(ML_ClauseKeyword - lLength);
 
   { intend token or clause body space }
-  AddIntendToken;
+//AddIntendToken;
 end;
 
 { adds formatting options for comma }
@@ -1177,10 +1184,10 @@ begin
 end;
 
 { checks if clause should appends to prev token }
-function TGtSqlFormatLister.ClauseAppendCondition;
-begin
-  Result := (SubQueryLevel > 0) and not SubQueryIntend;
-end;
+//function TGtSqlFormatLister.ClauseAppendCondition;
+//begin
+//  Result := (SubQueryLevel > 0) and not SubQueryIntend;
+//end;
 
 { lists item }
 procedure TGtSqlFormatLister.List;
@@ -1260,7 +1267,7 @@ begin
     gtsiProgram:
       if aNode.Check(gtsiProgram, gtkwBegin) then begin
                                      List_Clause_Name        (aNode, aListerOpt, gtkwBegin, nil);
-                                     SkipSemicolonAfterThisQuery := True;
+                                   //SkipSemicolonAfterThisQuery := True;
                                      end else
       if aNode.Check(gtsiProgram, gtkwEnd) then List_Clause_Name (aNode, aListerOpt, gtkwEnd, nil) else
       if aNode.Check(gtsiProgram, gtkwReturn) then begin
@@ -1575,7 +1582,7 @@ begin
   //AddStr(aNode.Name1, gtlsAggrFunction);
     AddStr(lNode.Name, gtlsAggrFunction);
     List_Clause_Expr(lNode.Find(gtsiExprList, gtkwOrder_By),
-                     aListerOpt {+ [gtloSkipOneExprOnLine]}, gtkwOrder_By, True {ClauseAppendCondition});
+                     aListerOpt {+ [gtloSkipOneExprOnLine]}, gtkwOrder_By); //, True {ClauseAppendCondition});
     AddRightBracket;
   end;
 end;
@@ -2335,7 +2342,7 @@ begin
   if not Assigned(aNode) then Exit;
 
   if (aNode.Keyword {Operand} = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
-    then AddClause(gtkwUpdate, ClauseAppendCondition)
+    then AddClause(gtkwUpdate) //, ClauseAppendCondition)
     else
   if (aNode.Keyword {Operand} = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
     AddClause(aNode.KeywordExt);
@@ -2346,7 +2353,7 @@ begin
   if (aNode.Keyword {Operand} = gttkComma) then begin
 //    if not Options[ gtstCommaAtNewLine ] then begin
       AddComma;
-      AddClause(nil, ClauseAppendCondition);
+      AddClause(nil); //, ClauseAppendCondition);
 //    end else begin
 //      AddClause(gttkComma, ClauseAppendCondition);
 //    end;
@@ -2355,7 +2362,7 @@ begin
     then aNode := aNode
   //else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ), ClauseAppendCondition );
   //else AddClause( aNode.KeywordExt, ClauseAppendCondition );
-    else AddClauseNode( aNode, ClauseAppendCondition );
+    else AddClauseNode( aNode ); //, ClauseAppendCondition );
 
   { table name or query }
   lSubQuery := aNode.Find(gtsiDml, gtkwSelect);
@@ -2435,12 +2442,12 @@ end;
 { lists CREATE TABLE }
 procedure TGtSqlFormatLister.List_CreateTable;
 var lItem: TGtSqlNode;
-    {i,} j, cnt, cnt2, lIntend{, lDataTypeLen}: Integer;
+    {i,} j, cnt, cnt2 {, lIntend, lDataTypeLen}: Integer;
   //lNewLine: Boolean;
 begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreate;
-  lIntend := NewLineIntend;
+//lIntend := NewLineIntend;
 
   { list: CREATE [[GLOBAL] TEMPORARY] TABLE table-name }
 //if aNode.Temporary then begin
@@ -2469,7 +2476,7 @@ begin
 
   { list: spacings }
   AddClause(gttkLeftBracket);
-  if ClauseIntend then NewLineIntend := Length( RawText ) - ML_ClauseKeyword - ClauseBodySpace;
+//if ClauseIntend then NewLineIntend := Length( RawText ) - ML_ClauseKeyword - ClauseBodySpace;
 
   { check max column name and datatype length }
 //ML_ColumnName := 0;
@@ -2600,7 +2607,7 @@ begin
 //    end;
 
   { prevents empty line before closing bracket }
-  SkipNextNewLine := RawText = '';
+//SkipNextNewLine := RawText = '';
 
   AddClause(gttkRightBracket);
 
@@ -2612,7 +2619,7 @@ begin
 //  end;
   AddStr(aNode.KeywordAuxCheckKwd(gtkwOn_Commit_Preserve_Rows, gtkwOn_Commit_Delete_Rows));
 
-  NewLineIntend := lIntend;
+//NewLineIntend := lIntend;
 //ML_ColumnName := 0;
 //ML_DataType   := 0;
 end;
@@ -3058,9 +3065,9 @@ begin
   if not Assigned(aNode) then Exit;
 
 //if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) {and not SkipClauseNewLine} then AddEmptyLine;
 
-  AddClause(aClauseToken, aClauseAppend);
+  AddClause(aClauseToken); //, aClauseAppend);
 
   List_ExprList(aNode, aListerOpt);
 end;
@@ -3071,16 +3078,16 @@ begin
   if not Assigned(aNode) then Exit;
 
 //if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) {and not SkipClauseNewLine} then AddEmptyLine;
 
-  AddClause(aClauseToken, aClauseAppend);
+  AddClause(aClauseToken); //, aClauseAppend);
 
   List_CondTree(aNode, aListerOpt);
 end;
 
 { lists SELECT clause }
 procedure TGtSqlFormatLister.List_Select;
-var lMaxLineLength: Integer;
+var //lMaxLineLength: Integer;
     lNode: TGtSqlNode;
 
   { calculates }
@@ -3121,16 +3128,16 @@ begin
   if not Assigned(aNode) then Exit;
 
   { store latest }
-  lMaxLineLength := SkipOutput_MaxLineLength;
-  if (aNode.Owner.Owner.Kind <> gtsiUnions) and
-  not Assigned(aNode.Owner.Find{ByKind}(gtsiUnions)) then begin
-    SkipOutput_MaxLineLength := 0;
-  end;
+//lMaxLineLength := SkipOutput_MaxLineLength;
+//if (aNode.Owner.Owner.Kind <> gtsiUnions) and
+//not Assigned(aNode.Owner.Find{ByKind}(gtsiUnions)) then begin
+//  SkipOutput_MaxLineLength := 0;
+//end;
   // lMaxExprAlias := ML_ExprAlias;
   // ML_ExprAlias  := 0;
 
   { commit not commited text }
-  if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
+//if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
   { add new line before clause }
 //if Options[ gtstEmptyLineBeforeClause ] and not SkipClauseNewLine and
@@ -3138,10 +3145,10 @@ begin
 //   ((SubQueryLevel = 0) or
 //    (SubQueryLevel > 0) and not Options[ gtstEmptyLineBeforeClauseSkipSubquery ]) and
 //     aNode.GetQuery.Owner.Check(gtsiDml, gtkwInsert)
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine //and
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) {and not SkipClauseNewLine} //and
     then AddEmptyLine;
 
-  AddClause(gtkwSelect, ClauseAppendCondition);
+  AddClause(gtkwSelect); //, ClauseAppendCondition);
 
   { BNF: [DISTINCT] }
 //if aNode.KeywordExt = gtkwDistinct then begin
@@ -3177,10 +3184,10 @@ begin
   { list }
   List_ExprList(aNode, aListerOpt);
 
-  if (aNode.Owner.Owner.Kind <> gtsiUnions) and
-  not Assigned(aNode.Owner.Find{ByKind}(gtsiUnions)) then begin
-    SkipOutput_MaxLineLength := lMaxLineLength;
-  end;
+//if (aNode.Owner.Owner.Kind <> gtsiUnions) and
+//not Assigned(aNode.Owner.Find{ByKind}(gtsiUnions)) then begin
+//  SkipOutput_MaxLineLength := lMaxLineLength;
+//end;
 end;
 
 { lists FOR UPDATE clause }
@@ -3188,7 +3195,7 @@ procedure  TGtSqlFormatLister.List_ForUpdate;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Expr(aNode, aListerOpt, gtkwFor_Update_Of, ClauseAppendCondition);
+  List_Clause_Expr(aNode, aListerOpt, gtkwFor_Update_Of); //, ClauseAppendCondition);
 
 //AddStr(aNode.KeywordAfter1);
 //if aNode.NoWait then AddStr(gtkwNoWait);
@@ -3198,7 +3205,7 @@ end;
 { lists UNION | MINUS | INTERSECT }
 procedure  TGtSqlFormatLister.List_SetOp;
 var lNextQuery: TGtSqlNode;
-    lSkipClauseNewLine: Boolean;
+    //lSkipClauseNewLine: Boolean;
 begin
   if not Assigned(aNode) then Exit;
 
@@ -3206,33 +3213,33 @@ begin
   if not Assigned(lNextQuery) or (lNextQuery.Count = 0) then Exit;
 
   { commit not commited text }
-  if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
+//if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
 //if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
 //if aNode.EmptyLineBefore then AddCurrLine;
   if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddCurrLine;
 
-  lSkipClauseNewLine := SkipClauseNewLine;
-  SkipClauseNewLine := True;
+//lSkipClauseNewLine := SkipClauseNewLine;
+//SkipClauseNewLine := True;
 
-  if aNode.Check(gtsiUnions, gtkwUnion) then AddClause(gtkwUnion,    ClauseAppendCondition) else
-  if aNode.Check(gtsiUnions, gtkwMinus) then AddClause(gtkwMinus,    ClauseAppendCondition) else
-  if aNode.Check(gtsiUnions, gtkwIntersect) then AddClause(gtkwIntersect,ClauseAppendCondition) else
+  if aNode.Check(gtsiUnions, gtkwUnion) then AddClause(gtkwUnion) {,    ClauseAppendCondition} else
+  if aNode.Check(gtsiUnions, gtkwMinus) then AddClause(gtkwMinus) {,    ClauseAppendCondition} else
+  if aNode.Check(gtsiUnions, gtkwIntersect) then AddClause(gtkwIntersect{,ClauseAppendCondition}) else
   if aNode.Check(gtsiUnions, gtkwUnion_All) then  begin
-                                                    AddClause(gtkwUnion,  ClauseAppendCondition);
+                                                    AddClause(gtkwUnion); //,  ClauseAppendCondition);
                                                     AddStr(gtkwAll, gtlsUnion);
                                                   end;
 
-  SkipClauseNewLine := lSkipClauseNewLine;
+//SkipClauseNewLine := lSkipClauseNewLine;
 
   { commit not commited text }
-  if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
+//if ClauseIntend and (Trim(RawText) <> '') then AddCurrLine;
 
 //if {Options[gtstEmptyLineBeforeClause] and} Options[gtstEmptyLineAroundUnion] then AddCurrLine;
 //if aNode.EmptyLineAfter then AddCurrLine;
   if aNode.KeywordAuxCheck(gttkEmptyLineAfter) then AddCurrLine;
 
-  FirstClause := True;
+//FirstClause := True;
 
   List_DML(lNextQuery, aListerOpt);
 end;
@@ -3263,7 +3270,7 @@ begin
 
   AddClause(gtkwValues_LeftBracket);
   List_ExprList(aNode, aListerOpt);
-  if ClauseIntend then AddSpace(ClauseBodySpace);
+//if ClauseIntend then AddSpace(ClauseBodySpace);
   AddStr(gttkRightBracket);
 end;
 
@@ -3275,7 +3282,7 @@ begin
 
   AddClause(gttkLeftBracket);
   List_ExprList(aNode, aListerOpt);
-  if ClauseIntend then AddSpace(ClauseBodySpace);
+//if ClauseIntend then AddSpace(ClauseBodySpace);
   AddStr(gttkRightBracket);
 end;
 
@@ -3289,7 +3296,7 @@ begin
   if not Assigned(aNode) then Exit;
 
 //if aNode.EmptyLineBefore and not SkipClauseNewLine then AddEmptyLine;
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) and not SkipClauseNewLine then AddEmptyLine;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) {and not SkipClauseNewLine} then AddEmptyLine;
 
 //lMaxTableName         := ML_TableName;
 //lMaxAliasName         := ML_AliasName;
@@ -3345,15 +3352,15 @@ end;
 
 { lists DML statement }
 procedure TGtSqlFormatLister.List_DML;
-var lIntend{, i, lQueryLines}: Integer;
-    lSkipClauseNewLine{, lLongQuery}: Boolean;
+var //lIntend{, i, lQueryLines}: Integer;
+    //lSkipClauseNewLine{, lLongQuery}: Boolean;
     lKeywordStyle: TGtLexTokenStyle;
     lItem, lNode: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
-  lIntend := NewLineIntend;
-  lSkipClauseNewLine := SkipClauseNewLine;
-  SkipClauseNewLine := False;
+//lIntend := NewLineIntend;
+//lSkipClauseNewLine := SkipClauseNewLine;
+//SkipClauseNewLine := False;
 
   if aNode.IsSubQuery then Inc(SubQueryLevel);
 
@@ -3370,9 +3377,9 @@ begin
 
     if (aNode.KeywordExt {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
       AddClause( {JoinOperatorToToken(} aNode.KeywordExt {Operand} {)},
-                 gttkLeftBracket,
-                 ClauseAppendCondition,
-                 aNode.Owner.Check(gtsiExprTree) or aNode.Owner.Check(gtsiCond) or aNode.Owner.Check(gtsiCondTree));
+                 gttkLeftBracket );
+               //ClauseAppendCondition,
+               //aNode.Owner.Check(gtsiExprTree) or aNode.Owner.Check(gtsiCond) or aNode.Owner.Check(gtsiCondTree));
 
     //AddLeftBracket(aQuery.BracketsCount - 1);
       AddLeftBracket(aNode, True);
@@ -3385,12 +3392,12 @@ begin
       then AddClause(nil);
 
     AddSpace;
-    if SubQueryIntendSpace > 0 then AddSpace(SubQueryIntendSpace);
-    SkipNextNewLine := False; { chyba tak ju¿ ma teraz byæ }
+//  if SubQueryIntendSpace > 0 then AddSpace(SubQueryIntendSpace);
+//  SkipNextNewLine := False; { chyba tak ju¿ ma teraz byæ }
 //  SkipNextNewLine := True; //not SubQueryNewLine;
-    if SubQueryIntend then NewLineIntend := Length(RawText);
+//  if SubQueryIntend then NewLineIntend := Length(RawText);
 
-    SkipClauseNewLine := False;
+//  SkipClauseNewLine := False;
 //  SkipClauseNewLine := Options [ gtstEmptyLineBeforeClauseSkipSubquery ];
   end;
   aListerOpt := aListerOpt - [gtloSkipFrom];
@@ -3432,7 +3439,7 @@ begin
   if aNode.Check(gtsiDml, gtkwInsert) then  List_TabRef     (aNode.Find(gtsiTableRef),                 aListerOpt);
   if aNode.Check(gtsiDml, gtkwInsert) then  List_Fields     (aNode.Find(gtssClauseFields),             aListerOpt);
   if aNode.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aNode.Find(gtsiClauseTables, gtkwUpdate), aListerOpt);
-  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto); //, ClauseAppendCondition);
 //  if aQuery.Check(gtsiDml, gtkwSelect) and
 //  // (aQuery.ObjectName <> '')         then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.ObjectName, gtlsTable);
 //     (aQuery.Name1 <> '')              then  List_Clause_Name(nil, aListerOpt, gtkwInto, nil, aQuery.Name1,      gtlsTable);
@@ -3447,7 +3454,7 @@ begin
 //      AddClause       (gtkwDelete_From, ClauseAppendCondition);
 //      List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt + [gtloSkipFrom]);
 //    end else begin
-      AddClause       (gtkwDelete, ClauseAppendCondition);
+      AddClause       (gtkwDelete); //, ClauseAppendCondition);
     //List_ExprList   (lItem, aListerOpt);
       List_ExprList   (aNode.Find(gtsiExprList, gtkwDelete), aListerOpt);
       List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt);
@@ -3457,14 +3464,14 @@ begin
   if aNode.Check(gtsiDml, gtkwSelect) or
      aNode.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom),   aListerOpt);
   if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
-     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwWhere),      aListerOpt, gtkwWhere, ClauseAppendCondition);
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwWhere),      aListerOpt, gtkwWhere); //, ClauseAppendCondition);
   if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
-     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwConnect_By), aListerOpt, gtkwConnect_By, ClauseAppendCondition);
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwConnect_By), aListerOpt, gtkwConnect_By); //, ClauseAppendCondition);
   if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
-     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwStart_With), aListerOpt, gtkwStart_With, ClauseAppendCondition);
-  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwGroup_By),   aListerOpt, gtkwGroup_By, ClauseAppendCondition);
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwStart_With), aListerOpt, gtkwStart_With); //, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwGroup_By),   aListerOpt, gtkwGroup_By); //, ClauseAppendCondition);
   if aNode.Check(gtsiDml, gtkwSelect) or aNode.Check(gtsiDml, gtkwUpdate) or
-     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwHaving),     aListerOpt, gtkwHaving, ClauseAppendCondition);
+     aNode.Check(gtsiDml, gtkwDelete) then  List_Clause_Cond(aNode.Find(gtsiCondTree, gtkwHaving),     aListerOpt, gtkwHaving); //, ClauseAppendCondition);
   if aNode.Check(gtsiDml, gtkwInsert) then  List_DML        (aNode.Find(gtsiDml, gtkwSelect),          aListerOpt);
   if aNode.Check(gtsiDml, gtkwSelect) then  List_SetOp      (aNode.Find{ByKind} (gtsiUnions),          aListerOpt);
   if aNode.Check(gtsiDml, gtkwSelect) then  begin
@@ -3473,21 +3480,21 @@ begin
       // odstêp identyczny jak dla UNION
 //      if Options[ gtstEmptyLineAroundUnion ] and Assigned(aQuery.Find{ByKind} (gtsiUnions)) then AddEmptyLine;
 
-      List_Clause_Expr(lItem, aListerOpt, gtkwOrder_By, ClauseAppendCondition);
+      List_Clause_Expr(lItem, aListerOpt, gtkwOrder_By); //, ClauseAppendCondition);
     end;
   end;
   if aNode.Check(gtsiDml, gtkwSelect) then  List_ForUpdate  (aNode.Find(gtsiExprList, gtkwFor_Update), aListerOpt);
-  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwLimit),      aListerOpt, gtkwLimit, ClauseAppendCondition);
-  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwReturning),  aListerOpt, gtkwReturning, ClauseAppendCondition);
-  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto,      ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwLimit),      aListerOpt, gtkwLimit); //, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwReturning),  aListerOpt, gtkwReturning); //, ClauseAppendCondition);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto); //,      ClauseAppendCondition);
 
   { subquery wrapper }
   if aNode.IsSubQuery and not(aNode.Owner.Check(gtsiUnions) or aNode.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
-    NewLineIntend := lIntend;
-    SkipClauseNewLine := lSkipClauseNewLine;
+  //NewLineIntend := lIntend;
+  //SkipClauseNewLine := lSkipClauseNewLine;
 
-      AddClause(nil, gttkRightBracket, ClauseAppendCondition);
+      AddClause(nil, gttkRightBracket); //, ClauseAppendCondition);
 
     //AddRightBracket(aQuery.BracketsCount - 1);
       AddRightBracket(aNode, True);
@@ -3603,19 +3610,19 @@ end;
 
 { lists SqlParser }
 procedure TGtSqlFormatLister.List_SqlParser;
-var i, lMaxKeywordSpace, lKeywordSpace: Integer;
+var i{, lMaxKeywordSpace, lKeywordSpace}: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  lMaxKeywordSpace := 0;
-  for i := 0 to aNode.QueryList.Count-1 do begin
-    lKeywordSpace := GetClauseKeywordSpace(aNode.QueryList[i]);
-    if lKeywordSpace > lMaxKeywordSpace then lMaxKeywordSpace := lKeywordSpace;
-  end;
-  if lMaxKeywordSpace > 0 then ML_ClauseKeyword := lMaxKeywordSpace;
+//lMaxKeywordSpace := 0;
+//for i := 0 to aNode.QueryList.Count-1 do begin
+//  lKeywordSpace := GetClauseKeywordSpace(aNode.QueryList[i]);
+//  if lKeywordSpace > lMaxKeywordSpace then lMaxKeywordSpace := lKeywordSpace;
+//end;
+//if lMaxKeywordSpace > 0 then ML_ClauseKeyword := lMaxKeywordSpace;
 
   { Max Clause Intend + Clause Body Space powinna byæ wielokrotnoœci¹ 2, ¿eby ³adnie siê uk³ada³y blokowe intendacje }
-  if (ML_ClauseKeyword + ClauseBodySpace) mod 2 > 0 then Inc(ML_ClauseKeyword);
+//if (ML_ClauseKeyword + ClauseBodySpace) mod 2 > 0 then Inc(ML_ClauseKeyword);
 
   BeginFormattedFile;
 
@@ -3627,27 +3634,27 @@ begin
 
       BracketLevel := 0;
       SubQueryLevel := 0;
-      FirstClause := True;
+    //FirstClause := True;
 
       List( aNode.QueryList[ i ], [] );
-      SkipNextNewLine := False;
+//    SkipNextNewLine := False;
 
 //    if (aNode.QueryList.Count > 1) or not Options[ gtstNoSemicolonOnSingleQuery ] then begin
       //if aNode.QueryList[i].Semicolon and not SkipSemicolonAfterThisQuery then begin
       //if aNode.QueryList[i].KeywordAfter1.HasSubToken(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
-        if aNode.QueryList[i].KeywordAuxCheck(gttkSemicolon) and not SkipSemicolonAfterThisQuery then begin
+        if aNode.QueryList[i].KeywordAuxCheck(gttkSemicolon) {and not SkipSemicolonAfterThisQuery} then begin
         //if Options[ gtstSpaceBeforeSemicolon ] then AddSpace else RemSpace;
           AddStr( gttkSemicolon, False );
         end;
 //    end;
-      SkipSemicolonAfterThisQuery := False;
+    //SkipSemicolonAfterThisQuery := False;
 
       AddCurrLine;
 //      if LinesNoAfterQuery > 0
 //        then AddEmptyLine( IntIf(Options[gtstLinesNoAfterQuery], LinesNoAfterQuery, -1) )
 //        else AddCurrLine;
 
-      SkipNextNewLine := False;
+//    SkipNextNewLine := False;
     end;
 
   EndFormattedFile;

@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/SqlFormat/SqlCommon.pas 37    19-01-13 13:17 Tomek $
+(* $Header: /SQL Toys/units/SqlCommon.pas 38    19-03-23 19:32 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -247,7 +247,7 @@ procedure YaRegistryPutColor   (aStyle: TGtLexTokenStyle; aColor: String);
 procedure YaRegistryPutBIU     (aStyle: TGtLexTokenStyle; aBold, aItalic, aUnderline: Boolean);
 
 procedure SetScriptListerOptions(aScriptLister: TGtSqlProtoLister);
-procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
+//procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
 
 {----------------------------- SQL Keyword Tokens -----------------------------}
 var
@@ -636,41 +636,41 @@ begin
 end;
 
 { set format options for script lister }
-procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
-//var //lOpt: TGtListerSettings;
-    //lCase: TGtListerCaseSettings;
-begin
-//  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
-//    do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
-
-  if aScriptFormat then begin { Format }
-//    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
-//      do aScriptFormater.Options [lOpt] := GtRegistryGetBool (lOpt);
-
-    aScriptFormater.ClauseIntend               := True;
-    aScriptFormater.SubQueryIntend             := True;
-    aScriptFormater.SubQueryIntendSpace        := 0; //2;
-
-  //aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
-  //aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
-
-  //aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
-
-  //aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
-  //aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));
-
-  //aScriptFormater.MaxShortQueryLines    := StrToInt(rguGetStr(YA_SET_KEY_SHORT_QUERY,  '20'));
-  //aScriptFormater.MaxClauseToIntend     := StrToInt(rguGetStr(YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT,  '15'));
-  //aScriptFormater.MaxIdentifierLen      := StrToInt(rguGetStr(YA_SET_KEY_MAX_IDENTIFIER_LEN,  '30'));
-
-  //aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
-  end else begin { Compact }
-  //aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
-  //aScriptFormater.Options [ gtstNoSemicolonOnSingleQuery ] := GtRegistryGetBool (gtstNoSemicolonOnSingleQuery);
-
-    aScriptFormater.SubQueryIntend             := False;
-  end;
-end;
+//procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
+////var //lOpt: TGtListerSettings;
+//    //lCase: TGtListerCaseSettings;
+//begin
+////  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
+////    do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
+//
+////if aScriptFormat then begin { Format }
+////    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
+////      do aScriptFormater.Options [lOpt] := GtRegistryGetBool (lOpt);
+//
+////  aScriptFormater.ClauseIntend               := True;
+////  aScriptFormater.SubQueryIntend             := True;
+////  aScriptFormater.SubQueryIntendSpace        := 0; //2;
+//
+//  //aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
+//  //aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
+//
+//  //aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
+//
+//  //aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
+//  //aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));
+//
+//  //aScriptFormater.MaxShortQueryLines    := StrToInt(rguGetStr(YA_SET_KEY_SHORT_QUERY,  '20'));
+//  //aScriptFormater.MaxClauseToIntend     := StrToInt(rguGetStr(YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT,  '15'));
+//  //aScriptFormater.MaxIdentifierLen      := StrToInt(rguGetStr(YA_SET_KEY_MAX_IDENTIFIER_LEN,  '30'));
+//
+//  //aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
+////end else begin { Compact }
+//  //aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
+//  //aScriptFormater.Options [ gtstNoSemicolonOnSingleQuery ] := GtRegistryGetBool (gtstNoSemicolonOnSingleQuery);
+//
+//  //aScriptFormater.SubQueryIntend             := False;
+////end;
+//end;
 
 begin
   StatusLogStartTime1 := 0;
