@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlLister.pas 354   19-03-23 19:32 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 356   19-03-23 21:06 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -29,11 +29,11 @@ type
 type
   TGtSqlFormattingOption   =( gtfoText, gtfoHtml, gtfoTreeView, gtfoRtf{, gtfoXml} );
 
-  TGtSqlListerOptions      =( gtloTextOnly, //gtloSkipOneExprOnLineREMOVED, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLineREMOVED,
+  TGtSqlListerOptions      =( //gtloTextOnly, //gtloSkipOneExprOnLineREMOVED, gtloSkipSubCaseFormatREMOVED, gtloSkipOneCondOnLineREMOVED,
                               gtloTableConstraint, gtloAlterTableConstraint,
                               gtloSameAsPrevClause, //gtloCondLeftSideOrderREMOVED, gtloCondEqualSwapREMOVED,
                               gtloSingleColumn, //gtloOnLeftSideIntendREMOVED, gtloOnRightSideIntendREMOVED, gtloExprAliasIntendREMOVED,
-                              gtloSkipFrom
+                              gtloSkipFromREMOVED
                             );
   TGtSqlListerOptionsSet   =set of TGtSqlListerOptions;
 
@@ -79,9 +79,9 @@ type
     KeywordStyle: TGtLexTokenStyle;
     BracketLevel, CaseLevel: Integer;
 
-    SkipOutput: Boolean;
-    SkipOutput_LineCount,
-    SkipOutput_MaxLineLength: Integer;
+  //SkipOutput: Boolean;
+  //SkipOutput_LineCount,
+  //SkipOutput_MaxLineLength: Integer;
   end;
 
 {--------------------------------- SQL Lister ---------------------------------}
@@ -97,18 +97,18 @@ type
     // LastLineEmpty: Boolean;
     // LastEmptyLines: Integer;
 
-    SkipOutput: Boolean;
-    SkipOutput_LineCount,
-    SkipOutput_MaxLineLength: Integer;
+    //SkipOutput: Boolean;
+    //SkipOutput_LineCount,
+    //SkipOutput_MaxLineLength: Integer;
 
     FormColors : array [TGtLexTokenStyle, gtfoHtml .. High(TGtSqlFormattingOption)] of String;
     FormStyles : array [TGtLexTokenStyle] of TFontStyles;
 
     { state methods }
-    function    GetState: TGtSqlListerState;
-    procedure   SetState(aState: TGtSqlListerState);
+  //function    GetState: TGtSqlListerState;
+  //procedure   SetState(aState: TGtSqlListerState);
 
-    property    State: TGtSqlListerState read GetState write SetState;
+  //property    State: TGtSqlListerState read GetState write SetState;
 
     { list methods }
     procedure   Add(aRawStr: String; aFormStr: String='');
@@ -116,7 +116,7 @@ type
     procedure   RemSpace(aIle: Integer = -1);
     procedure   AddCurrLine; virtual;
     procedure   AddEmptyLine(aIle: Integer = -1); //(aAppend: Boolean = False);
-    function    RemoveFormatting(aStr: String): String;
+  //function    RemoveFormatting(aStr: String): String;
 
     function    BracketLevelStyle(aToken: TGtLexToken): TGtLexTokenStyle;
     function    CaseLevelStyle: TGtLexTokenStyle;
@@ -175,10 +175,10 @@ type
 //                         aAppend: Boolean = False; aRemoveClauseBodySpace: Boolean = False); overload;
 //    procedure  AddClause(aClause: TGtLexToken = nil); overload;
     procedure  AddClause(aClause: TGtLexToken = nil; aIntendToken: TGtLexToken = nil); overload;
-//    procedure  AddClauseNode(aNode:TGtSqlNode); overload;
+  //procedure  AddClauseNode(aNode:TGtSqlNode); overload;
     procedure  AddClauseNode(aNode: TGtSqlNode; aIntendToken: TGtLexToken = nil); overload;
     procedure  AddComma; virtual;
-    procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
+  //procedure  AddCommaAfterExpr(aListerOpt: TGtSqlListerOptionsSet);
 
     procedure  AddLeftBracket(aCount: Integer=1); overload;
     procedure  AddRightBracket(aCount: Integer=1); overload;
@@ -186,7 +186,7 @@ type
     procedure  AddLeftBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
     procedure  AddRightBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
 
-    procedure  AddNewLine(aNode: TGtSqlNode; aToken: TGtLexToken);
+    procedure  AddNewLine(aNode: TGtSqlNode); //; aToken: TGtLexToken);
 
 //  function   ClauseAppendCondition: Boolean;
   public
@@ -235,7 +235,7 @@ type
     procedure   SaveToFile(aFileName: String);
 
     procedure   List         (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet);
-    procedure   List_NoOutput(aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet);
+  //procedure   List_NoOutput(aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet);
   protected
     function   CheckSpaceNeedBeforeExpression: Boolean;
     function   GetClauseKeywordSpace   (aNode: TGtSqlNode): Integer;
@@ -353,9 +353,9 @@ begin
 
 //LastEmptyLines  := 0;
 
-  SkipOutput      := False;
-  SkipOutput_LineCount := 0;
-  SkipOutput_MaxLineLength := 0;
+//SkipOutput      := False;
+//SkipOutput_LineCount := 0;
+//SkipOutput_MaxLineLength := 0;
 
   SL := TStringList.Create;
   SL.DefaultEncoding := TEncoding.ANSI;
@@ -385,34 +385,34 @@ begin
 end;
 
 { gets lister state }
-function    TGtSqlProtoLister.GetState;
-begin
-  Result.RawText                  := RawText;
-  Result.FormText                 := FormText;
-
-  Result.KeywordStyle             := FKeywordStyle;
-  Result.BracketLevel             := BracketLevel;
-  Result.CaseLevel                := CaseLevel;
-
-  Result.SkipOutput               := SkipOutput;
-  Result.SkipOutput_LineCount     := SkipOutput_LineCount;
-  Result.SkipOutput_MaxLineLength := SkipOutput_MaxLineLength;
-end;
+//function    TGtSqlProtoLister.GetState;
+//begin
+//  Result.RawText                  := RawText;
+//  Result.FormText                 := FormText;
+//
+//  Result.KeywordStyle             := FKeywordStyle;
+//  Result.BracketLevel             := BracketLevel;
+//  Result.CaseLevel                := CaseLevel;
+//
+//  Result.SkipOutput               := SkipOutput;
+//  Result.SkipOutput_LineCount     := SkipOutput_LineCount;
+//  Result.SkipOutput_MaxLineLength := SkipOutput_MaxLineLength;
+//end;
 
 { sets listet state }
-procedure   TGtSqlProtoLister.SetState;
-begin
-  RawText                  := aState.RawText;
-  FormText                 := aState.FormText;
-
-  FKeywordStyle            := aState.KeywordStyle;
-  BracketLevel             := aState.BracketLevel;
-  CaseLevel                := aState.CaseLevel;
-
-  SkipOutput               := aState.SkipOutput;
-  SkipOutput_LineCount     := aState.SkipOutput_LineCount;
-  SkipOutput_MaxLineLength := aState.SkipOutput_MaxLineLength;
-end;
+//procedure   TGtSqlProtoLister.SetState;
+//begin
+//  RawText                  := aState.RawText;
+//  FormText                 := aState.FormText;
+//
+//  FKeywordStyle            := aState.KeywordStyle;
+//  BracketLevel             := aState.BracketLevel;
+//  CaseLevel                := aState.CaseLevel;
+//
+//  SkipOutput               := aState.SkipOutput;
+//  SkipOutput_LineCount     := aState.SkipOutput_LineCount;
+//  SkipOutput_MaxLineLength := aState.SkipOutput_MaxLineLength;
+//end;
 
 { sets color }
 procedure TGtSqlProtoLister.SetStyle (aStyle: TGtLexTokenStyle; aRGB: Integer; aBold, aItalic, aUnderline: Boolean);
@@ -533,16 +533,16 @@ end;
 { adds current line (RawText or FormText) to output string list, commits current line }
 procedure TGtSqlProtoLister.AddCurrLine;
 begin
-  if SkipOutput then begin
-    if Length(RawText) > SkipOutput_MaxLineLength then SkipOutput_MaxLineLength := Length(RawText);
-    Inc(SkipOutput_LineCount);
-  end else begin
+//if SkipOutput then begin
+//  if Length(RawText) > SkipOutput_MaxLineLength then SkipOutput_MaxLineLength := Length(RawText);
+//  Inc(SkipOutput_LineCount);
+//end else begin
     case FormattingMode of
       gtfoHtml : SL.Add(FormText + gtHtmlNewLine);
       gtfoRtf  : SL.Add(FormText + gtRtfNewLine)
     else         SL.Add(RawText);
     end;
-  end;
+//end;
 
   RawText  := '';
   FormText := '';
@@ -563,9 +563,9 @@ begin
     if SL.Count = 0 then Exit;
 
     case FormattingMode of
-      gtfoHtml : if RemoveFormatting(SL[SL.Count-1]) = gtHtmlNewLine then Exit;
-      gtfoRtf  : if RemoveFormatting(SL[SL.Count-1]) = gtRtfNewLine_trim then Exit;
-    else         if RemoveFormatting(SL[SL.Count-1]) = '' then Exit;
+      gtfoHtml : if {RemoveFormatting}Trim(SL[SL.Count-1]) = gtHtmlNewLine then Exit;
+      gtfoRtf  : if {RemoveFormatting}Trim(SL[SL.Count-1]) = gtRtfNewLine_trim then Exit;
+    else         if {RemoveFormatting}Trim(SL[SL.Count-1]) = '' then Exit;
     end;
   end;
 
@@ -580,10 +580,10 @@ begin
 end;
 
 { TODO: removes formatting tags from string }
-function TGtSqlProtoLister.RemoveFormatting(aStr: String): String;
-begin
-  Result := Trim(aStr);
-end;
+//function TGtSqlProtoLister.RemoveFormatting(aStr: String): String;
+//begin
+//  Result := Trim(aStr);
+//end;
 
 { returns token style for nested brackets }
 function TGtSqlProtoLister.BracketLevelStyle(aToken: TGtLexToken): TGtLexTokenStyle;
@@ -1109,19 +1109,19 @@ begin
 end;
 
 { adds comma after expression inside column/expr list }
-procedure TGtSqlFormatLister.AddCommaAfterExpr;
-begin
-//  if Options[ gtstOneExprOnLine ] and not (gtloSkipOneExprOnLine in aListerOpt) then begin
-//    if not Options[ gtstCommaAtNewLine ] then begin
-//      AddComma;
-//      AddClause(nil);
-//    end else begin
-//      AddClause(gttkComma)
-//    end;
-//  end else begin
-    AddComma;
-//  end;
-end;
+//procedure TGtSqlFormatLister.AddCommaAfterExpr;
+//begin
+////  if Options[ gtstOneExprOnLine ] and not (gtloSkipOneExprOnLine in aListerOpt) then begin
+////    if not Options[ gtstCommaAtNewLine ] then begin
+////      AddComma;
+////      AddClause(nil);
+////    end else begin
+////      AddClause(gttkComma)
+////    end;
+////  end else begin
+//    AddComma;
+////  end;
+//end;
 
 { adds left bracket }
 procedure TGtSqlFormatLister.AddLeftBracket(aCount: Integer=1);
@@ -1176,7 +1176,7 @@ begin
 end;
 
 { adds NewLine when NewLineBefore node is found }
-procedure TGtSqlFormatLister.AddNewLine(aNode: TGtSqlNode; aToken: TGtLexToken);
+procedure TGtSqlFormatLister.AddNewLine(aNode: TGtSqlNode); //; aToken: TGtLexToken);
 begin
   if not Assigned(aNode) then Exit;
 //if Assigned(aNode.Find(gtsiNone, aToken)) then AddClause;
@@ -1283,27 +1283,27 @@ begin
 end;
 
 { Silent list wo. output to check max. line length }
-procedure TGtSqlFormatLister.List_NoOutput;
-var lState: TGtSqlListerState;
-begin
-  lState := State;
-
-  try
-    SkipOutput := True;
-
-    SkipOutput_LineCount := 0;
-    SkipOutput_MaxLineLength := 0;
-
-    List (aNode, aListerOpt);
-
-    if Length(RawText) > SkipOutput_MaxLineLength then SkipOutput_MaxLineLength := Length(RawText);
-
-    if SkipOutput_MaxLineLength > lState.SkipOutput_MaxLineLength then lState.SkipOutput_MaxLineLength := SkipOutput_MaxLineLength;
-    if SkipOutput_LineCount > lState.SkipOutput_LineCount then lState.SkipOutput_LineCount := SkipOutput_LineCount;
-  finally
-    State := lState;
-  end;
-end;
+//procedure TGtSqlFormatLister.List_NoOutput;
+//var lState: TGtSqlListerState;
+//begin
+//  lState := State;
+//
+//  try
+//    SkipOutput := True;
+//
+//    SkipOutput_LineCount := 0;
+//    SkipOutput_MaxLineLength := 0;
+//
+//    List (aNode, aListerOpt);
+//
+//    if Length(RawText) > SkipOutput_MaxLineLength then SkipOutput_MaxLineLength := Length(RawText);
+//
+//    if SkipOutput_MaxLineLength > lState.SkipOutput_MaxLineLength then lState.SkipOutput_MaxLineLength := SkipOutput_MaxLineLength;
+//    if SkipOutput_LineCount > lState.SkipOutput_LineCount then lState.SkipOutput_LineCount := SkipOutput_LineCount;
+//  finally
+//    State := lState;
+//  end;
+//end;
 
 { checks if space before expression is needed }
 function TGtSqlFormatLister.CheckSpaceNeedBeforeExpression;
@@ -1450,7 +1450,7 @@ begin
 
 //if Options[ gtstCaseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
 //if aNode.NewLineBefore then AddClause;
-  AddNewLine(aNode, gttkNewLineBefore);
+  AddNewLine(aNode); //, gttkNewLineBefore);
   AddStr(gtkwCase);
 
   { [expression] }
@@ -1466,13 +1466,13 @@ begin
       if Assigned(lCaseExpr) then begin
         lNode := aNode[i].Find(gtsiExprTree, gtkwWhen);
       //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
-        AddNewLine(aNode, gttkNewLineBefore);
+        AddNewLine(aNode); //, gttkNewLineBefore);
         AddStr(gtkwWhen);
         List_ExprTree(lNode, aListerOpt);
       end else begin
         lNode := aNode[i].Find(gtsiCondTree, gtkwWhen);
       //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
-        AddNewLine(lNode, gttkNewLineBefore);
+        AddNewLine(lNode); //, gttkNewLineBefore);
         AddStr(gtkwWhen);
         List_CondTree(lNode, aListerOpt);
       end;
@@ -1482,7 +1482,7 @@ begin
 
       lNode := aNode[i].Find(gtsiExprTree, gtkwThen);
     //if Assigned(lNode) and lNode.NewLineBefore then AddClause;
-      AddNewLine(lNode, gttkNewLineBefore);
+      AddNewLine(lNode); //, gttkNewLineBefore);
       AddStr(gtkwThen);
       List_ExprTree(lNode, aListerOpt);
     end;
@@ -1492,7 +1492,7 @@ begin
   if Assigned(lElseExpr) then begin
   //if Options[ gtstCaseElseAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
   //if lElseExpr.NewLineBefore then AddClause;
-    AddNewLine(lElseExpr, gttkNewLineBefore);
+    AddNewLine(lElseExpr); //, gttkNewLineBefore);
     AddStr(gtkwElse);
     List_ExprTree(lElseExpr, aListerOpt);
   end;
@@ -1500,8 +1500,8 @@ begin
 //if Options[ gtstCaseEndAtNewLine ] and not lSkipSubCaseFormat then AddClause(nil);
 //if Assigned(lNode) and lNode.NewLineBefore or
 //   Assigned(lElseExpr) and lElseExpr.NewLineBefore then AddClause;
-  AddNewLine(lNode, gttkNewLineBefore);
-  AddNewLine(lElseExpr, gttkNewLineBefore);
+  AddNewLine(lNode); //, gttkNewLineBefore);
+  AddNewLine(lElseExpr); //, gttkNewLineBefore);
 
   AddStr(gtkwEnd);
 end;
@@ -1681,7 +1681,7 @@ begin
   lFirst := True;
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Kind in [gtsiExpr, gtsiExprTree] then begin
-      if not lFirst then AddCommaAfterExpr(aListerOpt);
+      if not lFirst then AddComma; //AddCommaAfterExpr(aListerOpt);
       List(aNode[i], aListerOpt);
 
 //      if (i < aNode.Count -1) and not aNode[i].Check(gtsiExpr, gttkFunParameter)
@@ -1744,7 +1744,7 @@ begin
   lNode := aNode.Find(gtsiNone, gtkwAs);
 //if (aNode.AliasName <> '') and not SkipOutput and
 //if (aNode.Name1 <> '') and not SkipOutput and
-  if Assigned(lNode)     and not SkipOutput and
+  if Assigned(lNode)     and {not SkipOutput and}
     ((Length(RawText) = 0) or (RawText[Length(RawText)] <> '*')) {skip alias after star expr.} then begin
 //    if (gtloExprAliasIntend in aListerOpt) and (SkipOutput_MaxLineLength > Length(RawText))
 //      then AddSpace(SkipOutput_MaxLineLength - Length(RawText) + 1);
@@ -1835,7 +1835,7 @@ end;
 { lists set expressions list }
 procedure TGtSqlFormatLister.List_SetExprList;
 var i {, lML_SetExpr_LeftSide}: Integer;
-    b: Boolean;
+    lFirst: Boolean;
 //  lCol: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
@@ -1857,13 +1857,13 @@ begin
   { SET }
   AddClause(gtkwSet);
 
-  b := False;
+  lFirst := True;
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Check(gtsiSetExpr) then begin
-      if b then AddCommaAfterExpr(aListerOpt);
+      if not lFirst then AddComma; //AddCommaAfterExpr(aListerOpt);
 
       List_SetExpr(aNode[i], aListerOpt);
-      b := True;
+      lFirst := False;
     end;
 
 //ML_SetExpr_LeftSide := lML_SetExpr_LeftSide;
@@ -2117,7 +2117,7 @@ begin
     if (aNode[i].Kind = gtsiConstraint) then begin
     //if Options[ gtstCreateTable_ColConsBreakLine ] then AddClause;
     //if aNode[i].NewLineBefore then AddClause;
-      AddNewLine(aNode[i], gttkNewLineBefore);
+      AddNewLine(aNode[i]); //, gttkNewLineBefore);
       List_Constraint(aNode[i], aListerOpt + [gtloSingleColumn]);
 //    if aNode[i].NewLineAfter then AddCurrLine;
     end;
@@ -2357,9 +2357,9 @@ begin
 //    end else begin
 //      AddClause(gttkComma, ClauseAppendCondition);
 //    end;
-  end else
-  if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
-    then aNode := aNode
+  end //else
+//  if (aNode.Keyword {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt)
+//    then aNode := aNode
   //else AddClause( JoinOperatorToToken( aNode.Keyword {Operand}, aNode.JoinInnerKeyword, aNode.JoinOuterKeyword ), ClauseAppendCondition );
   //else AddClause( aNode.KeywordExt, ClauseAppendCondition );
     else AddClauseNode( aNode ); //, ClauseAppendCondition );
@@ -2562,7 +2562,7 @@ begin
 //          then AddCurrLine;
       //if (cnt2 = 0) and aNode[j].EmptyLineBefore
       //    then AddEmptyLine;
-        if (cnt2 = 0) then AddNewLine(aNode[j], gttkEmptyLineBefore);
+        if (cnt2 = 0) then AddNewLine(aNode[j]); //, gttkEmptyLineBefore);
 
         if cnt > 0 then begin
 //          if Options[ gtstCommaAtNewLine ] then begin
@@ -3375,7 +3375,7 @@ begin
   { subquery wrapper }
   if aNode.IsSubQuery and not(aNode.Owner.Check(gtsiUnions) or aNode.Owner.Check(gtsiDDL, gtkwCreate_Table)) then begin
 
-    if (aNode.KeywordExt {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
+  //if (aNode.KeywordExt {Operand} = gtkwFrom) and (gtloSkipFrom in aListerOpt) then else begin
       AddClause( {JoinOperatorToToken(} aNode.KeywordExt {Operand} {)},
                  gttkLeftBracket );
                //ClauseAppendCondition,
@@ -3383,7 +3383,7 @@ begin
 
     //AddLeftBracket(aQuery.BracketsCount - 1);
       AddLeftBracket(aNode, True);
-    end;
+  //end;
 
     { subquery at new line when in FROM/JOIN, IN condition, SELECT expr }
     if aNode.Owner.Check(gtsiClauseTables) or aNode.Owner.Check(gtsiCond) or aNode.Owner.Check(gtsiCondTree) or
@@ -3400,7 +3400,7 @@ begin
 //  SkipClauseNewLine := False;
 //  SkipClauseNewLine := Options [ gtstEmptyLineBeforeClauseSkipSubquery ];
   end;
-  aListerOpt := aListerOpt - [gtloSkipFrom];
+//aListerOpt := aListerOpt - [gtloSkipFrom];
 
   { calculate query lines no }
 //  if Options [ gtstEmptyLineBeforeClauseSkipShort ] {and not SkipClauseNewLine} then begin

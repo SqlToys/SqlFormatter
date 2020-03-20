@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlTest.pas 27    19-03-23 17:12 Tomek $
+(* $Header: /SQL Toys/units/SqlTest.pas 28    19-03-23 21:06 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest;
@@ -4785,16 +4785,6 @@ begin
 
   { date: 2014-10-21, file: parse column datatype.sql }
   TestQuery( 'create table nic ( nic nic.nic%type );' );
-
-
-
-
-
-
-
-
-//TestFinish;
-  ShowMessage('Test finished on ' + IntToStr(TestQueryCount) + ' queries with ' + IntToStr(TestQueryErrors) + ' errors !!!' );
 end;
 
 end.
