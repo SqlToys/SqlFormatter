@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlTest.pas 28    19-03-23 21:06 Tomek $
+(* $Header: /SQL Toys/units/SqlTest.pas 29    19-03-24 21:50 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.05.17                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlTest;
@@ -29,11 +29,6 @@ uses Classes, Dialogs, SysUtils, SqlCommon, SqlParser, SqlLister;
 function QueryTextCompact;
 begin
   Result := Trim(
-          //StringReplace( StringReplace(
-          //StringReplace( StringReplace(
-          //StringReplace( StringReplace(
-          //StringReplace(
-          //StringReplace( StringReplace(
             AnsiLowerCase(
             StringReplace( StringReplace(
             StringReplace( StringReplace(
@@ -69,15 +64,7 @@ begin
           , ' /', '/',   [rfReplaceAll] ), '/ ', '/',   [rfReplaceAll] )
           , ' %', '%',   [rfReplaceAll] ), '% ', '%',   [rfReplaceAll] )
           , ' ||','||',  [rfReplaceAll] ), '|| ','||',  [rfReplaceAll] )
-          )
-          { !!! temporary, should be removed !!! }
-//        , ' as ', ' ', [rfReplaceAll] ), ')as ', ')', [rfReplaceAll] )
-//        , 'integer', 'int', [rfReplaceAll] )
-//        , 'ascending', '', [rfReplaceAll] ), 'asc', '', [rfReplaceAll] )
-//        , ' ascending', '', [rfReplaceAll] ), ' asc', '', [rfReplaceAll] )
-//        , 'ascending ', '', [rfReplaceAll] ), 'asc ', '', [rfReplaceAll] )
-          )
-          ;
+          ));
 end;
 
 { compacts query with text replace function }

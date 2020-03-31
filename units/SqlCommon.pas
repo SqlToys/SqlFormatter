@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlCommon.pas 38    19-03-23 19:32 Tomek $
+(* $Header: /SQL Toys/units/SqlCommon.pas 39    19-03-24 21:50 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.26                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -27,17 +27,6 @@ const
 
   YA_VERSION_KEY = YA_COMMON_KEY + 'Version';
 
-  { editor }
-//YA_SET_KEY_TAB_MAX_LEN            : String = YA_SETTINGS_KEY + 'TableMaxLen';
-//YA_SET_KEY_ALIAS_MAX_LEN          : String = YA_SETTINGS_KEY + 'AliasMaxLen';
-//YA_SET_KEY_SET_MAX_LEN            : String = YA_SETTINGS_KEY + 'SetMaxLen';
-//YA_SET_KEY_COL_MAX_LEN            : String = YA_SETTINGS_KEY + 'ColumnMaxLen';
-//YA_SET_KEY_TYPE_MAX_LEN           : String = YA_SETTINGS_KEY + 'DatatypeMaxLen';
-//YA_SET_KEY_SHORT_QUERY            : String = YA_SETTINGS_KEY + 'ShortQuery';
-//YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT : String = YA_SETTINGS_KEY + 'MaxClauseKeywordIntend';
-//YA_SET_KEY_MAX_IDENTIFIER_LEN     : String = YA_SETTINGS_KEY + 'MaxIdentifierLen';
-//YA_SET_KEY_LINES_AFTER_QUERY      : String = YA_SETTINGS_KEY + 'MoreLinesAfterQuery';
-
 {------------------------------- Registry Keys --------------------------------}
 
 const
@@ -59,98 +48,18 @@ var
 type
   TYaRegKey = ( yarkCommon, yarkSettings );
 
-//var
-//  GT_SET_BOOL_ARR : array [ TGtListerSettings ]
-//  of record Key: TYaRegKey; Reg: String; Def: Boolean end
-//  = ( (Key: yarkSettings; Reg: 'RightIntend';            Def: True),
-//      (Key: yarkSettings; Reg: 'EmptyLineAfterQuery';    Def: True),
-//      (Key: yarkSettings; Reg: 'SpaceBeforeComma';       Def: False),
-//      (Key: yarkSettings; Reg: 'SpaceBeforeSemicolon';   Def: True), // False
-//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClause';  Def: True), // False
-//      (Key: yarkSettings; Reg: 'UpperKeywords';          Def: True),
-//      (Key: yarkSettings; Reg: 'ExpressionAsKeyword';    Def: True),
-//      (Key: yarkSettings; Reg: 'TableAsKeyword';         Def: False), // True
-//      (Key: yarkSettings; Reg: 'ColumnConstraint';       Def: True),
-//      (Key: yarkSettings; Reg: 'OuterJoin';              Def: False),
-//      (Key: yarkSettings; Reg: 'SortShortKeyword';       Def: True),
-//      (Key: yarkSettings; Reg: 'SkipAscending';          Def: True), // False
-//      (Key: yarkSettings; Reg: 'OneExprOnLine';          Def: True),
-//      (Key: yarkSettings; Reg: 'OneCondOnLine';          Def: True),
-//      (Key: yarkSettings; Reg: 'EmptyLineArounUnion';    Def: True),
-//
-//      (Key: yarkSettings; Reg: 'SpaceOutsideBrackets';   Def: False), // True
-//      (Key: yarkSettings; Reg: 'SpaceInsideBrackets';    Def: True),
-//      (Key: yarkSettings; Reg: 'SpaceAroundOperator';    Def: True),
-//      (Key: yarkSettings; Reg: 'SpaceAfterComma';        Def: True),
-//      (Key: yarkSettings; Reg: 'CommaAtNewLine';         Def: True),
-//
-//      (Key: yarkSettings; Reg: 'CaseIntend';             Def: False),
-//      (Key: yarkSettings; Reg: 'CaseWhenAtNewLine';      Def: True),
-//      (Key: yarkSettings; Reg: 'CaseThenAtNewLine';      Def: True),
-//      (Key: yarkSettings; Reg: 'CaseElseAtNewLine';      Def: True),
-//      (Key: yarkSettings; Reg: 'CaseEndAtNewLine';       Def: True),
-//
-//      (Key: yarkSettings; Reg: 'TableAndAliasIntend';    Def: True),
-//      (Key: yarkSettings; Reg: 'SetExprIntend';          Def: True),
-//      (Key: yarkSettings; Reg: 'CreateTableColConsBreakine';Def: True),
-//      (Key: yarkSettings; Reg: 'NoSemicolonOnSingleQuery';Def:True),
-//      (Key: yarkSettings; Reg: 'InnerJoin';              Def: False),
-//      (Key: yarkSettings; Reg: 'AliasFirstUseCase';      Def: True),
-//      (Key: yarkSettings; Reg: 'TableFirstUseCase';      Def: True),
-//      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipFunOneParam'; Def: True),
-//      (Key: yarkSettings; Reg: 'CreateTableColConsNewLineAfter'; Def: True),
-//      (Key: yarkSettings; Reg: 'JoinCondOrder';          Def: True),
-//      (Key: yarkSettings; Reg: 'CreateTableIntend';      Def: True),
-//      (Key: yarkSettings; Reg: 'CreateTableEmptyLineBeforeComplexConstraints'; Def: True),
-//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipSubquery'; Def: True),
-//      (Key: yarkSettings; Reg: 'OnCondIntend';           Def: True),
-//      (Key: yarkSettings; Reg: 'SelectAliasIntend';      Def: True),
-//      (Key: yarkSettings; Reg: 'SpaceInsideBracketsSkipDatatype'; Def: True),
-//      (Key: yarkSettings; Reg: 'EmptyLineBeforeClauseSkipShort'; Def: True),
-//      (Key: yarkSettings; Reg: 'OnCondRefsFirst';        Def: True),
-//      (Key: yarkSettings; Reg: 'ExtQueryKeywordStyle';   Def: True),
-//      (Key: yarkSettings; Reg: 'LinesNoAfterQuery';      Def: False)
-//    );
-
-//var
-//  GT_SET_CASE_ARR : array [ TGtListerCaseSettings ]
-//  of record Key: TYaRegKey; Reg: String; Def: TGtSqlCaseOption end
-//  = ( (Key: yarkSettings; Reg: 'TableCase';             Def: gtcoFirstUseCase  ),
-//      (Key: yarkSettings; Reg: 'ColumnCase';            Def: gtcoNoChange ),
-//      (Key: yarkSettings; Reg: 'TableAliasCase';        Def: gtcoFirstUseCase ),
-//      (Key: yarkSettings; Reg: 'ColumnAliasCase';       Def: gtcoNoChange ),
-//      (Key: yarkSettings; Reg: 'ParameterCase';         Def: gtcoNoChange ),
-//      (Key: yarkSettings; Reg: 'IdentifierCase';        Def: gtcoNoChange ),
-//      (Key: yarkSettings; Reg: 'KeywordCase';           Def: gtcoUpperCase ),
-//      (Key: yarkSettings; Reg: 'ColumnQuotedAliasCase'; Def: gtcoNoChange ),
-//      (Key: yarkSettings; Reg: 'FunctionCase';          Def: gtcoNoChange )
-//    );
-
 type
-  TYaBoolSettings = ( yastSpaceSavingAliases_OBSOLETE, yastPrefixNonUniqueCols_OBSOLETE,
-                      yastBringToFrontOnFileDrag_OBSOLETE,
-                      yastExtColorIdentifiers, yastExtColorKeywords, yastExtColorBrackets, yastExtColorCases,
-                      yastShowFullScreen, yastShowGrid, yastShowTrees, {yastShowGutter,} yastShowStatusBar, yastShowQuickSettings,
-                      yastDontMaximizeOnStart_OBSOLETE);
+  TYaBoolSettings = ( yastExtColorIdentifiers, yastExtColorKeywords, yastExtColorBrackets, yastExtColorCases, yastShowFullScreen );
 
 var
   YA_SET_BOOL_ARR : array [ TYaBoolSettings ]
   of record Key: TYaRegKey; Reg: String; Def: Boolean end
-  = ( (Key: yarkSettings; Reg: 'SpaceSavingAliases';     Def: False),
-      (Key: yarkSettings; Reg: 'PrefixNonUniqueColumns'; Def: False),
-      (Key: yarkSettings; Reg: 'BringToFrontOnFileDrag'; Def: True),
-      (Key: yarkSettings; Reg: 'ExtColorIdentifiers';    Def: True),
+  = ( (Key: yarkSettings; Reg: 'ExtColorIdentifiers';    Def: True),
       (Key: yarkSettings; Reg: 'ExtColorKeywords';       Def: True),
       (Key: yarkSettings; Reg: 'ExtColorBrackets';       Def: True),
       (Key: yarkSettings; Reg: 'ExtColorCases';          Def: True),
 
-      (Key: yarkCommon;   Reg: 'ShowFullScreen';         Def: False),
-      (Key: yarkCommon;   Reg: 'ShowGrid';               Def: False),
-      (Key: yarkCommon;   Reg: 'ShowNavigator';          Def: False),
-      // (Key: yarkCommon;   Reg: 'ShowGutter';             Def: True),
-      (Key: yarkCommon;   Reg: 'ShowStatusBar';          Def: True),
-      (Key: yarkCommon;   Reg: 'ShowQuickSettings';      Def: True),
-      (Key: yarkCommon;   Reg: 'DontMaximizeOnStart';    Def: True)
+      (Key: yarkCommon;   Reg: 'ShowFullScreen';         Def: False)
   );
 
 var
@@ -229,12 +138,6 @@ var
 
 function YaRegKey(aKey: TYaRegKey): String;
 
-//procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
-//function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
-
-//procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
-//function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
-
 procedure YaRegistryPutBool(aSett: TYaBoolSettings; aValue: Boolean; aForce: Boolean = False);
 function  YaRegistryGetBool(aSett: TYaBoolSettings): Boolean;
 
@@ -247,7 +150,6 @@ procedure YaRegistryPutColor   (aStyle: TGtLexTokenStyle; aColor: String);
 procedure YaRegistryPutBIU     (aStyle: TGtLexTokenStyle; aBold, aItalic, aUnderline: Boolean);
 
 procedure SetScriptListerOptions(aScriptLister: TGtSqlProtoLister);
-//procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
 
 {----------------------------- SQL Keyword Tokens -----------------------------}
 var
@@ -483,41 +385,6 @@ begin
   if aKey = yarkSettings then Result := YA_SETTINGS_KEY else Result := YA_COMMON_KEY;
 end;
 
-{ gets YA Boolean Setting }
-//function  GtRegistryGetBool(aSett: TGtListerSettings): Boolean;
-//begin
-//  Result := rguGetBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, GT_SET_BOOL_ARR [ aSett ].Def);
-//end;
-
-{ puts YA Boolean Setting }
-//procedure GtRegistryPutBool(aSett: TGtListerSettings; aValue: Boolean; aForce: Boolean = False);
-//begin
-//  if aForce or (aValue <> GT_SET_BOOL_ARR [ aSett ].Def)
-//    then rguPutBool(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg, aValue)
-//    else rguDeleteVal(YaRegKey(GT_SET_BOOL_ARR [ aSett ].Key) + GT_SET_BOOL_ARR [ aSett ].Reg);
-//end;
-
-{ gets YA Case Setting }
-//function  GtRegistryGetCase(aSett: TGtListerCaseSettings): TGtSqlCaseOption;
-//begin
-//  case rguGetInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg,
-//                 Ord(GT_SET_CASE_ARR [ aSett ].Def)) of
-//    1: Result := gtcoUpperCase;
-//    2: Result := gtcoLowerCase;
-//    3: Result := gtcoFirstCharUpper;
-//    4: Result := gtcoFirstUseCase;
-//  else Result := gtcoNoChange;
-//  end;
-//end;
-
-{ puts YA Case Setting }
-//procedure GtRegistryPutCase(aSett: TGtListerCaseSettings; aValue: Integer; aForce: Boolean = False);
-//begin
-//  if aForce or (aValue <> Ord(GT_SET_CASE_ARR [ aSett ].Def))
-//    then rguPutInt(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg, aValue)
-//    else rguDeleteVal(YaRegKey(GT_SET_CASE_ARR [ aSett ].Key) + GT_SET_CASE_ARR [ aSett ].Reg);
-//end;
-
 { puts YA Boolean Setting }
 procedure YaRegistryPutBool(aSett: TYaBoolSettings; aValue: Boolean; aForce: Boolean = False);
 begin
@@ -601,7 +468,7 @@ procedure SetScriptListerOptions(aScriptLister: TGtSqlProtoLister);
 var lStyle: TGtLexTokenStyle;
 begin
   for lStyle := Low(TGtLexTokenStyle) to High(TGtLexTokenStyle) do begin
-    if lStyle in [gtlsTable, gtlsView, gtlsTableAlias, gtlsColumn, //gtlsRefColumn,
+    if lStyle in [gtlsTable, gtlsView, gtlsTableAlias, gtlsColumn,
                   gtlsColumnAlias, gtlsFunction, gtlsConstraint, gtlsSynonym,
                   gtlsTransaction, gtlsParameter, gtlsExtQueryAliasOrTable] then begin
       if YaRegistryGetBool (yastExtColorIdentifiers)
@@ -635,48 +502,10 @@ begin
   end;
 end;
 
-{ set format options for script lister }
-//procedure SetScriptFormatOptions(aScriptFormater: TGtSqlFormatLister; aScriptFormat: Boolean);
-////var //lOpt: TGtListerSettings;
-//    //lCase: TGtListerCaseSettings;
-//begin
-////  for lCase := Low(TGtListerCaseSettings) to High(TGtListerCaseSettings)
-////    do aScriptFormater.CaseOpt[ lCase ] := GtRegistryGetCase (lCase);
-//
-////if aScriptFormat then begin { Format }
-////    for lOpt := Low(TGtListerSettings) to High(TGtListerSettings)
-////      do aScriptFormater.Options [lOpt] := GtRegistryGetBool (lOpt);
-//
-////  aScriptFormater.ClauseIntend               := True;
-////  aScriptFormater.SubQueryIntend             := True;
-////  aScriptFormater.SubQueryIntendSpace        := 0; //2;
-//
-//  //aScriptFormater.MaxTableNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_TAB_MAX_LEN,   '30'));
-//  //aScriptFormater.MaxAliasNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_ALIAS_MAX_LEN, '10'));
-//
-//  //aScriptFormater.MaxSetLeftExprToIntend := StrToInt(rguGetStr(YA_SET_KEY_SET_MAX_LEN, '30')); // 20
-//
-//  //aScriptFormater.MaxColumnNameToIntend := StrToInt(rguGetStr(YA_SET_KEY_COL_MAX_LEN,  '20'));
-//  //aScriptFormater.MaxDatatypeToIntend   := StrToInt(rguGetStr(YA_SET_KEY_TYPE_MAX_LEN, '20'));
-//
-//  //aScriptFormater.MaxShortQueryLines    := StrToInt(rguGetStr(YA_SET_KEY_SHORT_QUERY,  '20'));
-//  //aScriptFormater.MaxClauseToIntend     := StrToInt(rguGetStr(YA_SET_KEY_MAX_CLAUSE_KEYWORD_INT,  '15'));
-//  //aScriptFormater.MaxIdentifierLen      := StrToInt(rguGetStr(YA_SET_KEY_MAX_IDENTIFIER_LEN,  '30'));
-//
-//  //aScriptFormater.LinesNoAfterQuery     := StrToInt(rguGetStr(YA_SET_KEY_LINES_AFTER_QUERY, '1'));
-////end else begin { Compact }
-//  //aScriptFormater.Options [ gtstColumnConstraint ] := GtRegistryGetBool (gtstColumnConstraint);
-//  //aScriptFormater.Options [ gtstNoSemicolonOnSingleQuery ] := GtRegistryGetBool (gtstNoSemicolonOnSingleQuery);
-//
-//  //aScriptFormater.SubQueryIntend             := False;
-////end;
-//end;
-
 begin
   StatusLogStartTime1 := 0;
   StatusLogLastTimeInt   := 0;
   StatusLogTextInt    := '';
-
 
 {------------------------------- Keyword Tokens -------------------------------}
 
