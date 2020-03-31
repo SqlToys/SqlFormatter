@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/forms/FormFormatter.pas 71    19-03-23 17:11 Tomek $
+(* $Header: /SQL Toys/forms/FormFormatter.pas 72    19-03-24 21:49 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2011.07.24                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -151,39 +151,16 @@ type
     procedure actToolsQuoteFromDelphiExecute(Sender: TObject);
 
     procedure actConvertExprAliasAddKeywordAsExecute(Sender: TObject);
-  //procedure actConvertExprAliasRemoveKeywordAsExecute(Sender: TObject);
-  //procedure actConvertTableAliasAddKeywordAsExecute(Sender: TObject);
-  //procedure actConvertTableAliasRemoveKeywordAsExecute(Sender: TObject);
     procedure actConvertSortOrderShortKeywordsExecute(Sender: TObject);
     procedure actConvertSortOrderLongKeywordsExecute(Sender: TObject);
     procedure actConvertSortOrderAddDefaultKeywordsExecute(Sender: TObject);
     procedure actConvertSortOrderRemoveDefaultKeywordsExecute(Sender: TObject);
-  //procedure actConvertDatatypeIntegerToIntExecute(Sender: TObject);
-  //procedure actConvertDatatypeIntToIntegerExecute(Sender: TObject);
 
     procedure actConvertJoinsAddInnerExecute(Sender: TObject);
     procedure actConvertJoinsRemoveInnerExecute(Sender: TObject);
     procedure actConvertJoinsAddOuterExecute(Sender: TObject);
     procedure actConvertJoinsRemoveOuterExecute(Sender: TObject);
     procedure actConvertResetExecute(Sender: TObject);
-  //procedure actConvertCaseKeywordUpperExecute(Sender: TObject);
-  //procedure actConvertCaseKeywordLowerExecute(Sender: TObject);
-  //procedure actConvertCaseTableLowerExecute(Sender: TObject);
-  //procedure actConvertCaseTableUpperExecute(Sender: TObject);
-  //procedure actConvertCaseColumnUpperExecute(Sender: TObject);
-  //procedure actConvertCaseColumnLowerExecute(Sender: TObject);
-  //procedure actConvertCaseTabAliasUpperExecute(Sender: TObject);
-  //procedure actConvertCaseTabAliasLowerExecute(Sender: TObject);
-  //procedure actConvertCaseColAliasLowerExecute(Sender: TObject);
-  //procedure actConvertCaseColAliasUpperExecute(Sender: TObject);
-  //procedure actConvertCaseParamUpperExecute(Sender: TObject);
-  //procedure actConvertCaseParamLowerExecute(Sender: TObject);
-  //procedure actConvertCaseFuncUpperExecute(Sender: TObject);
-  //procedure actConvertCaseFuncLowerExecute(Sender: TObject);
-  //procedure actConvertCaseColQuoteAliasLowerExecute(Sender: TObject);
-  //procedure actConvertCaseColQuoteAliasUpperExecute(Sender: TObject);
-  //procedure actConvertCaseIdentUpperExecute(Sender: TObject);
-  //procedure actConvertCaseIdentLowerExecute(Sender: TObject);
     procedure actConvertJoinCondRefToLeftExecute(Sender: TObject);
     procedure actConvertCaseKeywordExecute(Sender: TObject);
     procedure actConvertCaseTableNamesExecute(Sender: TObject);
@@ -251,7 +228,6 @@ begin
 
   {$IFDEF RELEASE}
   actHelpTest.Visible := False;
-//RibbonGroupAbout.Items[1].Visible := False;
   RibbonGroupAbout.Items.Delete(1);
   {$ELSE}
   actHelpTest.Visible := True;
@@ -377,12 +353,10 @@ begin
   { main window border and main menu }
   if actToolsFullScreen.Checked then begin
     BorderStyle := bsNone;
-    // Menu := nil;
     Ribbon.Visible := False;
     GlassFrame.Enabled := False;
   end else begin
     BorderStyle := bsSizeable;
-    // Menu := MainMenu;
     Ribbon.Visible := True;
     GlassFrame.Enabled := True;
   end;
@@ -474,18 +448,6 @@ begin
   try
     lSL.Text := FrameScriptEdit.ScriptEdit.Lines.Text;
 
-    { dla unitu testów }
-//    for i := 0 to lSL.Count -1 do
-//      lSL[i] := strif(i=0, '  TestQuery( ', '             ') +
-//                gttkApostrophe.Text +
-//                StringReplace(lSL[i], gttkApostrophe.Text, gttkApostrophe.Text + gttkApostrophe.Text, [rfReplaceAll]) +
-//                gttkApostrophe.Text +
-//                strif(i=lSL.Count-1, ' );', '#13#10 +');
-//
-//    if FrameScriptEdit.ScriptFileName <> '' then
-//      lSL.Insert(0, '  { date: ' + DateToStr(GtFileDate(FrameScriptEdit.ScriptFileName)) +
-//                    ', file: ' + ExtractFileName(FrameScriptEdit.ScriptFileName) + {'.' + ExtractFileExt(FrameScriptEdit.ScriptFileName) +} ' }' );
-
     { normalnie }
     for i := 0 to lSL.Count -1 do
       lSL[i] := gttkApostrophe.TokenText +
@@ -516,7 +478,7 @@ begin
 
   Hide;
 
-  SetVisibleControls; // calls: FormShow ??
+  SetVisibleControls;
 
   if actToolsFullScreen.Checked then begin
     WindowState             := wsMaximized;
@@ -528,7 +490,7 @@ begin
     Width  := Before_FullScreen_Width;
     Height := Before_FullScreen_Height;
 
-    WindowState             := Before_FullScreen_State; // XE7 transition ??
+    WindowState             := Before_FullScreen_State;
   end;
 
   // Hide i Show - zapobiegaja mruganiu formy przy przejsciu z/do FullScreen.
@@ -612,107 +574,18 @@ end;
 { action Convert: RESET converters }
 procedure TMainForm.actConvertResetExecute(Sender: TObject);
 begin
-//actConvertExprAliasAddKeywordAs.Enabled             := True;
-//actConvertExprAliasRemoveKeywordAs.Enabled          := True;
-//actConvertExprAliasChangeKeywordAs.ImageIndex       := actConvertExprAliasAddKeywordAs.ImageIndex;
-
-//actConvertTableAliasAddKeywordAs.Enabled            := True;
-//actConvertTableAliasRemoveKeywordAs.Enabled         := True;
-//actConvertTableAliasChangeKeywordAs.ImageIndex      := actConvertTableAliasAddKeywordAs.ImageIndex;
-
   actConvertSortOrderShortKeywords.Enabled            := True;
   actConvertSortOrderLongKeywords.Enabled             := True;
-//actConvertSortOrderChangeKeywords.ImageIndex        := actConvertSortOrderLongKeywords.ImageIndex;
 
   actConvertSortOrderAddDefaultKeywords.Enabled       := True;
   actConvertSortOrderRemoveDefaultKeywords.Enabled    := True;
-//actConvertSortOrderChangeDefaultKeywords.ImageIndex := actConvertSortOrderAddDefaultKeywords.ImageIndex;
-
-//actConvertDatatypeIntToInteger.Enabled              := True;
-//actConvertDatatypeIntegerToInt.Enabled              := True;
-//actConvertDatatypeIntChange.ImageIndex              := actConvertDatatypeIntToInteger.ImageIndex;
 
   actConvertJoinsAddInner.Enabled                     := True;
   actConvertJoinsRemoveInner.Enabled                  := True;
-//actConvertJoinsChangeInner.ImageIndex               := actConvertJoinsAddInner.ImageIndex;
 
   actConvertJoinsAddOuter.Enabled                     := True;
   actConvertJoinsRemoveOuter.Enabled                  := True;
-//actConvertJoinsChangeOuter.ImageIndex               := actConvertJoinsAddOuter.ImageIndex;
 end;
-
-{ action Convert }
-//procedure TMainForm.actConvertDatatypeIntegerToIntExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Datatype_IntegerToInt );
-////SqlConvertExecute( SQCG_DATA, SQCC_DATA_INT, SQCV_SHORT, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_DATA, SQCC_DATA_INT, SQCV_SHORT );
-//
-//  actConvertDatatypeIntToInteger.Enabled := True;
-//  actConvertDatatypeIntegerToInt.Enabled := False;
-//end;
-
-{ action Convert }
-//procedure TMainForm.actConvertDatatypeIntToIntegerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Datatype_IntToInteger );
-////SqlConvertExecute( SQCG_DATA, SQCC_DATA_INT, SQCV_LONG, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_DATA, SQCC_DATA_INT, SQCV_LONG );
-//
-//  actConvertDatatypeIntToInteger.Enabled := False;
-//  actConvertDatatypeIntegerToInt.Enabled := True;
-//end;
-
-{ action Convert }
-//procedure TMainForm.actConvertCaseColAliasLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnAlias_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN_ALIAS, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN_ALIAS, SQCV_LOWER );
-//
-//  actConvertCaseColAliasLower.Enabled := False;
-//  actConvertCaseColAliasUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseColAliasUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnAlias_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN_ALIAS, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN_ALIAS, SQCV_UPPER );
-//
-//  actConvertCaseColAliasLower.Enabled := True;
-//  actConvertCaseColAliasUpper.Enabled := False;
-//end;
-
-//procedure TMainForm.actConvertCaseColQuoteAliasLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnQuotedAlias_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN_QUOTE, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN_QUOTE, SQCV_LOWER );
-//
-//  actConvertCaseColQuoteAliasLower.Enabled := False;
-//  actConvertCaseColQuoteAliasUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseColQuoteAliasUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnQuotedAlias_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN_QUOTE, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN_QUOTE, SQCV_UPPER );
-//
-//  actConvertCaseColQuoteAliasLower.Enabled := True;
-//  actConvertCaseColQuoteAliasUpper.Enabled := False;
-//end;
-
-//procedure TMainForm.actConvertCaseColumnLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnName_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN, SQCV_LOWER );
-//
-//  actConvertCaseColumnLower.Enabled := False;
-//  actConvertCaseColumnUpper.Enabled := True;
-//end;
 
 procedure TMainForm.actConvertCaseColumnAliasesExecute(Sender: TObject);
 begin
@@ -770,26 +643,6 @@ begin
   end;
 end;
 
-//procedure TMainForm.actConvertCaseColumnUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseColumnName_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_COLUMN, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_COLUMN, SQCV_UPPER );
-//
-//  actConvertCaseColumnUpper.Enabled := False;
-//  actConvertCaseColumnLower.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseFuncLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseFunc_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_FUNC, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_FUNC, SQCV_LOWER );
-//
-//  actConvertCaseFuncLower.Enabled := False;
-//  actConvertCaseFuncUpper.Enabled := True;
-//end;
-
 procedure TMainForm.actConvertCaseFunctionNamesExecute(Sender: TObject);
 begin
   case actConvertCaseFunctionNames.ImageIndex of
@@ -832,36 +685,6 @@ begin
   end;
 end;
 
-//procedure TMainForm.actConvertCaseFuncUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseFunc_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_FUNC, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_FUNC, SQCV_UPPER );
-//
-//  actConvertCaseFuncLower.Enabled := True;
-//  actConvertCaseFuncUpper.Enabled := False;
-//end;
-
-//procedure TMainForm.actConvertCaseIdentLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseIdentifier_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_IDENT, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-////FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_IDENT, SQCV_LOWER );
-//
-////  actConvertCaseIdentLower.Enabled := False;
-////  actConvertCaseIdentUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseIdentUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseIdentifier_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_IDENT, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-////FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_IDENT, SQCV_UPPER );
-//
-////  actConvertCaseIdentLower.Enabled := True;
-////  actConvertCaseIdentUpper.Enabled := False
-//end;
-
 { executes token case converter for keywords }
 procedure TMainForm.actConvertCaseKeywordExecute(Sender: TObject);
 begin
@@ -876,26 +699,6 @@ begin
          end;
   end;
 end;
-
-//procedure TMainForm.actConvertCaseKeywordLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseKeyword_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_KEYWORD, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_KEYWORD, SQCV_LOWER );
-//
-//  actConvertCaseKeywordLower.Enabled := False;
-//  actConvertCaseKeywordUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseKeywordUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseKeyword_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_KEYWORD, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_KEYWORD, SQCV_UPPER );
-//
-//  actConvertCaseKeywordLower.Enabled := True;
-//  actConvertCaseKeywordUpper.Enabled := False;
-//end;
 
 procedure TMainForm.actConvertCaseParametersExecute(Sender: TObject);
 begin
@@ -924,56 +727,6 @@ begin
          end;
   end;
 end;
-
-//procedure TMainForm.actConvertCaseParamLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseParam_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_PARAM, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_PARAM, SQCV_LOWER );
-//
-//  actConvertCaseParamLower.Enabled := False;
-//  actConvertCaseParamUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseParamUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseParam_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_PARAM, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_PARAM, SQCV_UPPER );
-//
-//  actConvertCaseParamLower.Enabled := True;
-//  actConvertCaseParamUpper.Enabled := False;
-//end;
-
-//procedure TMainForm.actConvertCaseTabAliasLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseTableAlias_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_TABLE_ALIAS, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_TABLE_ALIAS, SQCV_LOWER );
-//
-//  actConvertCaseTabAliasLower.Enabled := False;
-//  actConvertCaseTabAliasUpper.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseTabAliasUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseTableAlias_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_TABLE_ALIAS, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_TABLE_ALIAS, SQCV_UPPER );
-//
-//  actConvertCaseTabAliasUpper.Enabled := False;
-//  actConvertCaseTabAliasLower.Enabled := True;
-//end;
-
-//procedure TMainForm.actConvertCaseTableLowerExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseTableName_Lower );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_TABLE, SQCV_LOWER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_TABLE, SQCV_LOWER );
-//
-//  actConvertCaseTableLower.Enabled := False;
-//  actConvertCaseTableUpper.Enabled := True;
-//end;
 
 procedure TMainForm.actConvertCaseTableAliasesExecute(Sender: TObject);
 begin
@@ -1031,53 +784,20 @@ begin
   end;
 end;
 
-//procedure TMainForm.actConvertCaseTableUpperExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_CaseTableName_Upper );
-////SqlConvertExecute( SQCG_CASES, SQCC_CASE_TABLE, SQCV_UPPER, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_CASES, SQCC_CASE_TABLE, SQCV_UPPER );
-//
-//  actConvertCaseTableLower.Enabled := True;
-//  actConvertCaseTableUpper.Enabled := False;
-//end;
-
 { action Convert }
 procedure TMainForm.actConvertExprAliasAddKeywordAsExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_ExprAlias_AddKeyword_AS );
-//SqlConvertExecute( SQCG_KEYWORD, SQCC_KWD_AS_COLUMNS, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_AS_COLUMNS, SQCV_ADD );
-
-//  actConvertExprAliasAddKeywordAs.Enabled := False;
-//  actConvertExprAliasRemoveKeywordAs.Enabled := True;
 end;
-
-{ action Convert }
-//procedure TMainForm.actConvertExprAliasRemoveKeywordAsExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_ExprAlias_RemoveKeyword_AS );
-////SqlConvertExecute( SQCG_KEYWORD, SQCC_KWD_AS_COLUMNS, SQCV_REMOVE, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_AS_COLUMNS, SQCV_REMOVE );
-//
-//  actConvertExprAliasAddKeywordAs.Enabled := True;
-//  actConvertExprAliasRemoveKeywordAs.Enabled := False;
-//end;
 
 { action Convert }
 procedure TMainForm.actConvertJoinCondRefToLeftExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_JoinCond_RefToLeft );
-//SqlConvertExecute( SQCG_JOIN, SQCC_JOIN_ON_LEFT, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_ON_LEFT, SQCV_ADD );
-
-//  actConvertDatatypeIntToInteger.Enabled := False;
-//  actConvertDatatypeIntegerToInt.Enabled := True;
 end;
 
 procedure TMainForm.actConvertJoinsAddInnerExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Joins_AddInner );
-//SqlConvertExecute( SQCG_JOIN, SQCC_JOIN_INNER, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_ADD );
 
   actConvertJoinsAddInner.Enabled       := False;
@@ -1087,8 +807,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsAddOuterExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Joins_AddOuter );
-//SqlConvertExecute( SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_ADD );
 
   actConvertJoinsAddOuter.Enabled       := False;
@@ -1098,8 +816,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsRemoveInnerExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Joins_RemoveInner );
-//SqlConvertExecute( SQCG_JOIN, SQCC_JOIN_INNER, SQCV_REMOVE, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_REMOVE );
 
   actConvertJoinsAddInner.Enabled       := True;
@@ -1109,8 +825,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsRemoveOuterExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_Joins_RemoveOuter );
-//SqlConvertExecute( SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_REMOVE, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_REMOVE );
 
   actConvertJoinsAddOuter.Enabled       := True;
@@ -1174,32 +888,8 @@ begin
 end;
 
 { action Convert }
-//procedure TMainForm.actConvertTableAliasAddKeywordAsExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_TableAlias_AddKeyword_AS );
-////SqlConvertExecute( SQCG_KEYWORD, SQCC_KWD_AS_TABLES, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_AS_TABLES, SQCV_ADD );
-//
-//  actConvertTableAliasAddKeywordAs.Enabled       := False;
-//  actConvertTableAliasRemoveKeywordAs.Enabled    := True;
-//end;
-
-{ action Convert }
-//procedure TMainForm.actConvertTableAliasRemoveKeywordAsExecute(Sender: TObject);
-//begin
-////FrameScriptEdit.ScriptConvert(True, SqlToysConvert_TableAlias_RemoveKeyword_AS );
-////SqlConvertExecute( SQCG_KEYWORD, SQCC_KWD_AS_TABLES, SQCV_REMOVE, FrameScriptEdit.Parser.QueryList );
-//  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_AS_TABLES, SQCV_REMOVE );
-//
-//  actConvertTableAliasAddKeywordAs.Enabled       := True;
-//  actConvertTableAliasRemoveKeywordAs.Enabled    := False;
-//end;
-
-{ action Convert }
 procedure TMainForm.actConvertSortOrderShortKeywordsExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_SortOrder_ShortKeywords );
-//SqlConvertExecute( SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_SHORT, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_SHORT );
 
   actConvertSortOrderShortKeywords.Enabled     := False;
@@ -1293,8 +983,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderLongKeywordsExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_SortOrder_LongKeywords );
-//SqlConvertExecute( SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_LONG, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_LONG );
 
   actConvertSortOrderShortKeywords.Enabled     := True;
@@ -1304,8 +992,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderAddDefaultKeywordsExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_SortOrder_AddDefaultKeywords );
-//SqlConvertExecute( SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_ADD, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_ADD );
 
   actConvertSortOrderAddDefaultKeywords.Enabled       := False;
@@ -1318,8 +1004,6 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderRemoveDefaultKeywordsExecute(Sender: TObject);
 begin
-//FrameScriptEdit.ScriptConvert(True, SqlToysConvert_SortOrder_RemoveDefaultKeywords );
-//SqlConvertExecute( SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_REMOVE, FrameScriptEdit.Parser.QueryList );
   FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_REMOVE );
 
   actConvertSortOrderAddDefaultKeywords.Enabled       := True;

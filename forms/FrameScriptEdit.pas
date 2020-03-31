@@ -1,4 +1,4 @@
-﻿(* $Header: /SQL Toys/forms/FrameScriptEdit.pas 67    19-03-23 19:31 Tomek $
+﻿(* $Header: /SQL Toys/forms/FrameScriptEdit.pas 68    19-03-24 21:49 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2014.08.16                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -66,7 +66,6 @@ type
     actFilesImportXML: TAction;
 
     procedure ScriptEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    // procedure ScriptEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ScriptEditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ScriptEditSelectionChange(Sender: TObject);
 
@@ -230,7 +229,6 @@ begin
     aSL.SaveToStream(TMS);
     TMS.Seek(0, soFromBeginning);
 
-    // ScriptEdit.PlainText := False;
     ScriptEdit.Lines.LoadFromStream(TMS);
   finally
     TMS.Free;
@@ -324,10 +322,8 @@ begin
     ScriptLister.FormattingMode  := gtfoText;
 
     SetScriptListerOptions(ScriptLister);
-  //SetScriptFormatOptions(ScriptLister, aScriptFormat);
 
     StatusLogStartTime;
-  //SqlToysConvert_ExecuteAll(Parser.QueryList, ScriptLister.Options, ScriptLister.CaseOpt);
     if aConverters then SyntaxTreeConvertExecuteAll(Parser.QueryList);
     StatusLogStopTime('Converts');
 
@@ -347,18 +343,8 @@ end;
 
 { uppers/lowers case wo. strings and comments }
 function TFrameScriptEdit.ChangeCaseWoStringComment(aStr: String; aUpperCase: Boolean): String;
-// var lChangeStr, lChangeCmm: Boolean;
 begin
-  { MOVE TO SETTINGS and/or change case form }
-//  lChangeStr := False;
-//  lChangeCmm := False;
-
-  { GO }
   if aUpperCase then Result := AnsiUpperCase(aStr) else Result := AnsiLowerCase(aStr);
-
-  { NIC - TEST }
-//  ScriptEdit.SelStart := 0;
-//  ScriptEdit.SelLength := 0;
 end;
 
 { checks if char is an ANSI letter char }
@@ -415,7 +401,6 @@ begin
     try
       ScriptLister.FormattingMode  := gtfoText;
       SetScriptListerOptions(ScriptLister);
-    //SetScriptFormatOptions(ScriptLister, True);
       ScriptLister.List_SqlParser(Parser);
       ScriptEdit.Font.Style := [];
       ScriptTabToSpaces(ScriptLister.SL);
@@ -464,9 +449,7 @@ begin
   end;
 
   if ExtractFileExt(ScriptFileName) = '.xml' then begin
-//    ParseScript(ScriptLister.SL);
-//    ListScriptByToken;
-    {if not Assigned(Parser) then} ParseScript(nil, False);
+    ParseScript(nil, False);
     ParseTreeToXml (Parser.QueryList, ScriptFileName);
   end else begin
     lSL := TStringList.Create;
@@ -571,12 +554,6 @@ begin
   ScriptEditFormatted := False;
 end;
 
-{ Script Key Up }
-//procedure TFrameScriptEdit.ScriptEditKeyUp(Sender: TObject;var Key: Word; Shift: TShiftState);
-//begin
-//  MainForm.HighlightNavigatorByQueryItem( FrameScriptEdit.ScriptEdit_GetCurrQuery );
-//end;
-
 { Script Key Down }
 procedure TFrameScriptEdit.ScriptEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
@@ -659,7 +636,6 @@ begin
 
   ParseScript;
   ListScriptByToken;
-//  MainForm.FrameNavigator.ListNavigator;
 
   if ScriptEdit.Visible then ScriptEdit.SetFocus;
 end;
@@ -838,7 +814,6 @@ begin
   { kiedys wylaczylem, potem ponownie wlaczylem Parse + ListByTokens }
   ParseScript;
   ListScriptByToken;
-//  MainForm.FrameNavigator.ListNavigator;
   StatusLogStopTime('Paste');
 end;
 
@@ -901,7 +876,6 @@ begin
   else lQuery := Parser.QueryList[i-1] as TGtSqlNode;
 
   HighlightScriptByQueryItem(lQuery);
-  // MainForm.FrameNavigator.HighlightNavigatorByQueryItem(lQuery);
 end;
 
 { action Edit, Next Query }
@@ -920,7 +894,6 @@ begin
   if i > Parser.QueryList.Count -1 then i := Parser.QueryList.Count - 1;
 
   HighlightScriptByQueryItem( Parser.QueryList[i] );
-  // MainForm.FrameNavigator.HighlightNavigatorByQueryItem( Parser.QueryList[i] );
 end;
 
 { action Edit, Highlight Query }
@@ -930,7 +903,6 @@ begin
   lQuery := ScriptEdit_GetCurrQuery;
 
   HighlightScriptByQueryItem(lQuery);
-  // MainForm.FrameNavigator.HighlightNavigatorByQueryItem(lQuery);
 end;
 
 { action Edit, Highlight SubQuery }
@@ -944,12 +916,10 @@ procedure TFrameScriptEdit.actEditUpperCaseExecute(Sender: TObject);
 begin
   StatusLogStartTime;
 
-  // ScriptEdit.SelText := UpperCase(ScriptEdit.SelText);
   ScriptEdit.SelText := ChangeCaseWoStringComment(ScriptEdit.SelText, True);
 
   ParseScript;
   ListScriptByToken;
-//  MainForm.FrameNavigator.ListNavigator;
   StatusLogStopTime('Uppercase');
 end;
 
@@ -962,7 +932,6 @@ begin
 
   ParseScript;
   ListScriptByToken;
-//  MainForm.FrameNavigator.ListNavigator;
   StatusLogStopTime('Lowercase');
 end;
 
@@ -1005,7 +974,6 @@ begin
 
       ParseScript;
       ListScriptByToken;
-//      MainForm.FrameNavigator.ListNavigator;
 
       ScriptEdit.SelStart := lSelStart;
       ScriptEdit.SelLength:= lSelLength;
@@ -1053,7 +1021,6 @@ begin
 
     ParseScript;
     ListScriptByToken;
-//    MainForm.FrameNavigator.ListNavigator;
 
     ScriptEdit.SelStart := lSelStart;
     ScriptEdit.SelLength:= lSelLength - cnt;
@@ -1239,7 +1206,7 @@ begin
   lLength := ScriptEdit.SelLength;
 
   if ScopeSelectionLeft or not ScopeSelectionRight then begin
-    ScriptEdit.SelLength := 0; // potrzebne ??
+    ScriptEdit.SelLength := 0;
 
     ScriptEdit_MoveToStartOfAWord;
 
@@ -1270,7 +1237,7 @@ begin
   lLength := ScriptEdit.SelLength;
 
   if ScopeSelectionLeft then begin
-    ScriptEdit.SelLength := 0; // potrzebne ??
+    ScriptEdit.SelLength := 0;
 
     ScriptEdit_MoveToStartOfNextWord;
 
@@ -1342,11 +1309,6 @@ begin
   lModified := ScriptEdit.Modified;
   ParseScript(nil, False);
 
-//if Assigned(aProc) then aProc( Parser.QueryList );
-//SqlConvertExecute( aGroup, aItem, aState, Parser.QueryList, Parser.TokenList );
-//SyntaxTreeConvertExecute( aGroup, aItem, aState, Parser.QueryList );
-//FormatScript(aScriptFormat, False);
-
   TokenListConvertExecute( aGroup, aItem, aState, Parser.TokenList, Parser.QueryList );
   ListScriptByToken;
 
@@ -1388,7 +1350,6 @@ procedure TFrameScriptEdit.actToolsListByTokensExecute(Sender: TObject);
 begin
   ParseScript;
   ListScriptByToken;
-//  MainForm.FrameNavigator.ListNavigator;
 
   if ScriptEdit.Visible then ScriptEdit.SetFocus;
 end;
