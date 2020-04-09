@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlNode.pas 316   19-03-24 21:50 Tomek $
+(* $Header: /SQL Toys/units/SqlNode.pas 317   19-04-20 13:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -11,12 +11,7 @@ interface
 
 uses Classes, GtContainers, GtTokenizers;
 
-{-------------------------------- Join Operator -------------------------------}
-
-function  JoinOperatorToToken( jo: TGtLexToken; InnerPreff: Boolean = False; OuterPreff: Boolean = False ): TGtLexToken;
-
-
-{---------------------------------- SQL Item ----------------------------------}
+{---------------------------------- SQL Node ----------------------------------}
 
 type
   TGtSqlNodeKind = ( gtsiNone,
@@ -45,7 +40,7 @@ type
   function GtSqlNodeNameToKind( aName: String ): TGtSqlNodeKind;
 
 const
-  cSqlNodeTokenMax = 16;
+  cSqlNodeTokenMax = 7;
 
 type
   TGtSqlNode = class;
@@ -79,30 +74,29 @@ type
     property        Kind: TGtSqlNodeKind read FKind write FKind;
     property        Nodes[Index: Integer]: TGtSqlNode read GetNode; default;
   public // function specific methods
-    property        Keyword   : TGtLexToken index 9 read FTokens[9] write SetFTokens;
-    property        KeywordExt:    TGtLexToken index 11 read FTokens[11] write SetFTokens;
+    property        Keyword   :    TGtLexToken index  1 read FTokens[ 1] write SetFTokens;
+    property        KeywordExt:    TGtLexToken index  2 read FTokens[ 2] write SetFTokens;
 
     // KeywordExt shoud be used to extend meaning of Keyword.
     // As Keyword should be used to point node class type, KeywordExt should be used to point what keyword was exactly used.
     // In other cases KeywordAux should be used.
 //protected
-    property        KeywordAux1:   TGtLexToken      index 12 read FTokens[12] write SetFTokens;
-    property        KeywordAux2:   TGtLexToken      index 13 read FTokens[13] write SetFTokens;
-    property        KeywordAux3:   TGtLexToken      index 14 read FTokens[14] write SetFTokens;
-    property        KeywordAux4:   TGtLexToken      index 15 read FTokens[15] write SetFTokens;
-    property        KeywordAux5:   TGtLexToken      index 16 read FTokens[16] write SetFTokens;
+    property        KeywordAux1:   TGtLexToken index  3 read FTokens[ 3] write SetFTokens;
+    property        KeywordAux2:   TGtLexToken index  4 read FTokens[ 4] write SetFTokens;
+    property        KeywordAux3:   TGtLexToken index  5 read FTokens[ 5] write SetFTokens;
+    property        KeywordAux4:   TGtLexToken index  6 read FTokens[ 6] write SetFTokens;
+    property        KeywordAux5:   TGtLexToken index  7 read FTokens[ 7] write SetFTokens;
   public // service methods
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;
     function        IsSubQuery: Boolean;
-  //function        IsShortQuery: Boolean;
     function        IsClauseKeyword: Boolean;
     function        GetExtQuery: TGtSqlNode;
-  //function        TablesCount: Integer;
+    function        OwnerTableNameOrAlias: String;
 
     function        ExprTreeOwner: TGtSqlNode;
     function        ExprTreeOperator: TGtLexToken;
-  //function        ConditionsCount: Integer;
+    function        ExprHasReferenceTo(aColPrefix: String): Boolean;
 
     procedure       KeywordAuxAdd     (aKeywordAux: TGtLexToken);
     procedure       KeywordAuxRemove  (aKeywordAux: TGtLexToken);
@@ -116,10 +110,6 @@ type
                                        aKeywordAux3: TGtLexToken = nil;
                                        aKeywordAux4: TGtLexToken = nil;
                                        aKeywordAux5: TGtLexToken = nil): TGtLexToken;
-  public
-    function        OwnerTableNameOrAlias: String;
-
-    function        ExprHasReferenceTo(aColPrefix: String): Boolean;
 
     procedure       ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = False;
                               aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken=nil; aName: String='' ); overload;
@@ -127,55 +117,9 @@ type
 
 var GtSqlNodeCount: Integer = 0;
 
-{------------------------------ Resource strings ------------------------------}
-resourcestring
-  (* NOT EXISTS *)
-  gtstrNotExistsDatatype           = 'Datatype %s does not exists.';
-
-const
-  gtsqlSizeOrPrecNotSpecified = -999999;
-  gtsqlSizeOrPrecAny          = -1;
-
 implementation
 
 uses SysUtils, GtStandard, SqlCommon, GtExternals;
-
-{-------------------------------- Join Operator -------------------------------}
-
-{ converts JoinOperator to its name string }
-function JoinOperatorToToken;
-begin
-  if jo = gtkwInto     then Result := gtkwInsert_Into else
-  if jo = gtkwUpdate   then Result := gtkwUpdate else
-  if jo = gtkwFrom     then Result := gtkwFrom else
-
-  if jo = gtkwInner    then begin
-                            if InnerPreff
-                              then Result := gtkwInner_Join
-                              else Result := gtkwJoin;
-                          end else
-  if jo = gtkwLeft     then begin
-                            if OuterPreff
-                              then Result := gtkwLeft_Outer_Join
-                              else Result := gtkwLeft_Join;
-                          end else
-  if jo = gtkwRight    then begin
-                            if OuterPreff
-                              then Result := gtkwRight_Outer_Join
-                              else Result := gtkwRight_Join;
-                          end else
-  if jo = gtkwFull     then begin
-                            if OuterPreff
-                              then Result := gtkwFull_Outer_Join
-                              else Result := gtkwFull_Join;
-                          end else
-
-  if jo = gtkwCross    then Result := gtkwCross_Join else
-  if jo = gttkComma       then Result := gttkComma
-                          else Result := gttkNone;
-end;
-
-{---------------------------------- SQL Item ----------------------------------}
 
 { TGtSqlNodeKind to name }
 function GtSqlNodeKindToName( aKind: TGtSqlNodeKind ): string;
@@ -227,7 +171,7 @@ begin
   end;
 end;
 
-{---------------------------------- SQL Item ----------------------------------}
+{---------------------------------- SQL Node ----------------------------------}
 
 { class constructor }
 constructor     TGtSqlNode.Create(aOwner: TGtItem);

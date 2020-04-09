@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlLister.pas 357   19-03-24 21:50 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 358   19-04-17 19:02 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -47,24 +47,16 @@ type
     FormStyles : array [TGtLexTokenStyle] of TFontStyles;
 
     { list methods }
-    procedure   Add(aRawStr: String; aFormStr: String='');
     procedure   AddSpace(aIle: Integer = -1);
-    procedure   RemSpace(aIle: Integer = -1);
     procedure   AddCurrLine; virtual;
     procedure   AddEmptyLine(aIle: Integer = -1);
 
     function    BracketLevelStyle(aToken: TGtLexToken): TGtLexTokenStyle;
     function    CaseLevelStyle: TGtLexTokenStyle;
 
-    function    ConvertStr(aStr: String): String;
     procedure   AddStr    (aStr: String; aStyle: TGtLexTokenStyle; aAddClearSpace: Boolean = True); overload;
-    procedure   AddStr    (aToken: TGtLexToken; aAddClearSpace: Boolean = True); overload;
-    procedure   AddStr    (aToken: TGtLexToken; aStyle: TGtLexTokenStyle;
-                           aAddClearSpace: Boolean = True; aSingleParam: Boolean = False); overload;
-    procedure   AddStrName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
-    procedure   AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
-    procedure   AddStrKeywordExt(aNode: TGtSqlNode);
-    procedure   AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+    procedure   AddStr    (aToken: TGtLexToken; aStyle: TGtLexTokenStyle = gtlsPlainText; aAddClearSpace: Boolean = True); overload;
+    procedure   AddStr    (aNode: TGtSqlNode; aStyle: TGtLexTokenStyle); overload;
 
     procedure   BeginFormattedFile;
     procedure   EndFormattedFile;
@@ -76,11 +68,7 @@ type
     destructor  Destroy; override;
 
     procedure   SetStyle        (aStyle: TGtLexTokenStyle; aRGB: Integer; aBold, aItalic, aUnderline: Boolean);
-    function    GetStyleTag     (aStyle: TGtLexTokenStyle): String;
     function    GetColor        (aStyle: TGtLexTokenStyle): String; overload;
-    function    GetColorRGB     (aStyle: TGtLexTokenStyle): Integer; overload;
-    function    GetStyleStr     (aStyle: TGtLexTokenStyle): String;
-    function    GetRtfColorSchema: String;
   end;
 
 {----------------------------- SQL Tokens Lister ------------------------------}
@@ -117,7 +105,6 @@ type
     procedure   List         (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet);
   protected
     function   CheckSpaceNeedBeforeExpression: Boolean;
-    function   GetClauseKeywordSpace   (aNode: TGtSqlNode): Integer;
 
     { SQL list methods }
     procedure  List_DataType           (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
@@ -183,7 +170,7 @@ type
 
     procedure  List_Tables             (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
-    procedure  List_DML                (aNode:TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
+    procedure  List_DML                (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
     procedure  List_NotRecognized      (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
@@ -253,14 +240,6 @@ begin
   if aUnderline then FormStyles [aStyle] := FormStyles [aStyle] + [fsUnderline];
 end;
 
-{ gets HTML tag for style }
-function  TGtSqlProtoLister.GetStyleTag;
-begin
-  Result := strif(fsBold      in FormStyles [aStyle], '<B>')
-          + strif(fsItalic    in FormStyles [aStyle], '<I>')
-          + strif(fsUnderline in FormStyles [aStyle], '<U>');
-end;
-
 { gets color for current formatting }
 function  TGtSqlProtoLister.GetColor (aStyle: TGtLexTokenStyle): String;
 begin
@@ -269,42 +248,6 @@ begin
     gtfoRtf   : Result := '\cf' + IntToStr( Ord(aStyle) +1 ) + #32;
   else          Result := FormColors [aStyle, FormattingMode];
   end;
-end;
-
-{ gets color }
-function TGtSqlProtoLister.GetColorRGB (aStyle: TGtLexTokenStyle): Integer;
-begin
-  Result := HexToInt( FormColors [aStyle, gtfoHtml, 8] + FormColors [aStyle, gtfoHtml, 9]) shl 16 +
-            HexToInt( FormColors [aStyle, gtfoHtml,10] + FormColors [aStyle, gtfoHtml,11]) shl  8 +
-            HexToInt( FormColors [aStyle, gtfoHtml,12] + FormColors [aStyle, gtfoHtml,13]);
-end;
-
-{ gets style }
-function TGtSqlProtoLister.GetStyleStr (aStyle: TGtLexTokenStyle): String;
-begin
-  Result := strif( fsBold      in FormStyles [aStyle], 'B', '_') +
-            strif( fsItalic    in FormStyles [aStyle], 'I', '_') +
-            strif( fsUnderline in FormStyles [aStyle], 'U', '_');
-end;
-
-{ gets RTF color schema }
-function TGtSqlProtoLister.GetRtfColorSchema: String;
-var i: TGtLexTokenStyle;
-begin
-  Result := '{\colortbl;';
-  for i := Low(TGtLexTokenStyle) to High(TGtLexTokenStyle) do
-    Result := Result + FormColors [i, gtfoRtf] + ';';
-  Result := Result + '}';
-end;
-
-{ adds to last line }
-procedure TGtSqlProtoLister.Add;
-begin
-  if aRawStr='' then Exit;
-  if aFormStr='' then aFormStr := aRawStr;
-
-  RawText  := RawText  + aRawStr;
-  if FormattingMode in [gtfoHtml, gtfoRtf, gtfoTreeView] then FormText := FormText + aFormStr;
 end;
 
 { adds clear space }
@@ -326,29 +269,6 @@ begin
   for i := 0 to aIle - 1 do begin
     RawText  := RawText  + ' ';
     FormText := FormText + sSpace;
-  end;
-end;
-
-{ removes clear spaces }
-procedure  TGtSqlProtoLister.RemSpace;
-var i: Integer;
-    sSpace: String;
-begin
-  if (RawText = '') or (aIle = 0) then Exit;
-
-  { jesli wiersz zawiera jedynie intendacje }
-  i := Length(RawText);
-  if (i = 0) or (RawText[i] <> ' ') then Exit;
-
-  while (i > 0) and (RawText[i] = ' ') do Dec(i);
-  if i = 0 then Exit;
-
-  if FormattingMode = gtfoHtml then sSpace := '&nbsp;' else sSpace := ' ';
-
-  while (aIle <> 0) and (Length(RawText) > 0) and (Copy(RawText,Length(RawText),1) = ' ') do begin
-    RawText  := Copy(RawText,  1, Length(RawText) - 1);
-    FormText := Copy(FormText, 1, Length(FormText)- Length(sSpace));
-    Dec(aIle);
   end;
 end;
 
@@ -425,16 +345,6 @@ begin
   end;
 end;
 
-{ convert string to proper format }
-function TGtSqlProtoLister.ConvertStr (aStr: String): String;
-begin
-  case FormattingMode of
-    gtfoRtf : Result := StringReplace( StringReplace( StringReplace(aStr, '\', '\\', []), '{', '\{', []), '}', '\}', []);
-  else
-    Result := aStr;
-  end;
-end;
-
 { adds colored string }
 procedure TGtSqlProtoLister.AddStr (aStr: String; aStyle: TGtLexTokenStyle; aAddClearSpace: Boolean = True);
 
@@ -470,59 +380,33 @@ procedure TGtSqlProtoLister.AddStr (aStr: String; aStyle: TGtLexTokenStyle; aAdd
                    lend := '';
     end;
 
-    Result := lbeg + ConvertStr(aStr) + lend;
+    if FormattingMode = gtfoRtf
+      then Result := lbeg + StringReplace( StringReplace( StringReplace(aStr, '\', '\\', []), '{', '\{', []), '}', '\}', []) + lend
+      else Result := lbeg + aStr + lend;
+  end;
+
+  { adds to last line }
+  procedure   Add(aRawStr: String; aFormStr: String='');
+  begin
+    if aRawStr='' then Exit;
+    if aFormStr='' then aFormStr := aRawStr;
+
+    RawText  := RawText  + aRawStr;
+    if FormattingMode in [gtfoHtml, gtfoRtf, gtfoTreeView] then FormText := FormText + aFormStr;
   end;
 
 begin
   if aStr = '' then Exit;
 
-  { optional upper/lower/nochange case }
-  if (aStyle = gtlsOperator) then begin
-    { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siê do identyfikatora }
-    if (UpperCase(aStr)='AND') or (UpperCase(aStr)='OR') or (UpperCase(aStr)='NOT') then AddSpace;
-  end else
-  if aAddClearSpace then AddSpace;
+  { operator logiczny traktuje jako keyword a nie operator - musi wystapic spacja bo przykleji siê do identyfikatora }
+  if aAddClearSpace or(aStyle = gtlsOperator) and((UpperCase(aStr)='AND') or (UpperCase(aStr)='OR') or (UpperCase(aStr)='NOT'))
+    then AddSpace;
 
   Add(aStr, LocalFormatStr(aStr, aStyle));
 end;
 
-{ adds colored string }
-procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken; aAddClearSpace: Boolean = True);
-begin
-  if not Assigned(aToken) or (aToken = gttkNone) then Exit;
-
-  AddStr(aToken, aToken.TokenStyle, aAddClearSpace);
-end;
-
-{ adds colored name with given style }
-procedure TGtSqlProtoLister.AddStrName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
-begin
-  if not Assigned(aNode) then Exit;
-
-  AddStr(aNode.Name, aStyle);
-end;
-
 { adds colored keyword and name with given style }
-procedure TGtSqlProtoLister.AddStrKeywordName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
-begin
-  if not Assigned(aNode) then Exit;
-
-  AddStr(aNode.Keyword);
-  AddStr(aNode.Name, aStyle);
-end;
-
-{ adds colored keyword and name with given style }
-procedure TGtSqlProtoLister.AddStrKeywordExt(aNode: TGtSqlNode);
-begin
-  if not Assigned(aNode) then Exit;
-
-  if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
-    then AddStr(aNode.Keyword)
-    else AddStr(aNode.KeywordExt);
-end;
-
-{ adds colored keyword and name with given style }
-procedure TGtSqlProtoLister.AddStrKeywordExtName(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
+procedure TGtSqlProtoLister.AddStr{KeywordName}(aNode: TGtSqlNode; aStyle: TGtLexTokenStyle);
 begin
   if not Assigned(aNode) then Exit;
 
@@ -533,32 +417,25 @@ begin
 end;
 
 { adds colored string }
-procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken; aStyle: TGtLexTokenStyle;
-                                    aAddClearSpace: Boolean = True; aSingleParam: Boolean = False);
+procedure TGtSqlProtoLister.AddStr (aToken: TGtLexToken; aStyle: TGtLexTokenStyle = gtlsPlainText; aAddClearSpace: Boolean = True);
 var lStyle: TGtLexTokenStyle;
     lStr: String;
 begin
   if not Assigned(aToken) or (aToken = gttkNone) then Exit;
+  if aStyle = gtlsPlainText then aStyle := aToken.TokenStyle;
 
   lStyle := aStyle;
   if (aToken.TokenKind = gtttKeyword) and (aStyle = gtlsKeyword) then lStyle := FKeywordStyle;
 
   if Assigned(aToken.SubToken2) and not (aToken.TokenStyle in [gtlsOperator, gtlsComment]) then begin
     AddStr(aToken.SubToken1, lStyle, aAddClearSpace);
-    AddSpace;
-    AddStr(aToken.SubToken2, lStyle, aAddClearSpace);
-    if not Assigned(aToken.SubToken3) then RemSpace;
+    AddStr(aToken.SubToken2, lStyle, True);
     if not Assigned(aToken.SubToken3) then Exit;
-    AddSpace;
-    AddStr(aToken.SubToken3, lStyle, aAddClearSpace);
-    if not Assigned(aToken.SubToken4) then RemSpace;
+    AddStr(aToken.SubToken3, lStyle, True);
     if not Assigned(aToken.SubToken4) then Exit;
-    AddSpace;
-    AddStr(aToken.SubToken4, lStyle, aAddClearSpace);
-    if not Assigned(aToken.SubToken5) then RemSpace;
+    AddStr(aToken.SubToken4, lStyle, True);
     if not Assigned(aToken.SubToken5) then Exit;
-    AddSpace;
-    AddStr(aToken.SubToken5, lStyle, aAddClearSpace);
+    AddStr(aToken.SubToken5, lStyle, True);
     Exit;
   end;
 
@@ -602,6 +479,17 @@ end;
 
 { formatted file header }
 procedure TGtSqlProtoLister.BeginFormattedFile;
+
+  { gets RTF color schema }
+  function GetRtfColorSchema: String;
+  var i: TGtLexTokenStyle;
+  begin
+    Result := '{\colortbl;';
+    for i := Low(TGtLexTokenStyle) to High(TGtLexTokenStyle) do
+      Result := Result + FormColors [i, gtfoRtf] + ';';
+    Result := Result + '}';
+  end;
+
 begin
   case FormattingMode of
     gtfoHtml : SL.Insert(0, '<BODY><FONT FACE="Courier New">');
@@ -660,13 +548,13 @@ begin
       else
         if aTokenList[i].TokenText = gttkSemicolon.TokenText then begin
           BracketLevel := 0;
-          AddStr(gttkSemicolon, False);
+          AddStr(gttkSemicolon, gtlsPlainText, False);
         end else
         if aTokenList[i].TokenText = gttkLeftBracket.TokenText
-          then AddStr(gttkLeftBracket, False)
+          then AddStr(gttkLeftBracket, gtlsPlainText, False)
           else
         if aTokenList[i].TokenText = gttkRightBracket.TokenText
-          then AddStr(gttkRightBracket, False)
+          then AddStr(gttkRightBracket, gtlsPlainText, False)
           else
         if aTokenList[i].TokenText = gtkwCase.TokenText then begin
           Inc(CaseLevel);
@@ -898,7 +786,7 @@ begin
 
   lNode := aNode.Find(gtsiNone, gtkwSize);
   if Assigned(lNode) then begin
-    AddStr(gttkLeftBracket, False);
+    AddStr(gttkLeftBracket, gtlsPlainText, False);
 
     AddStr(lNode.Name, gtlsNumber, False);
 
@@ -908,7 +796,7 @@ begin
       AddStr(lNode.Name, gtlsNumber, False);
     end;
 
-    AddStr(gttkRightBracket, False);
+    AddStr(gttkRightBracket, gtlsPlainText, False);
   end;
 end;
 
@@ -1031,7 +919,7 @@ end;
 procedure  TGtSqlFormatLister.List_ExprCast;
 begin
   AddStr(gtkwCast);
-  AddStr(gttkLeftBracket, False);
+  AddStr(gttkLeftBracket, gtlsPlainText, False);
 
   List_ExprTree(aNode.Find(gtsiExprTree), aListerOpt);
 
@@ -1045,7 +933,7 @@ begin
   { keywords switch again }
   aNode.Keyword := gtkwCast; { List_DataType overwrites CAST keyword }
 
-  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, False);
+  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True);
 end;
 
 { lists expression function }
@@ -1064,13 +952,13 @@ begin
 
   lExprList := aNode.Find(gtsiExprList);
 
-  AddStr(gttkLeftBracket, gttkLeftBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkLeftBracket, gttkLeftBracket.TokenStyle, True);
 
-  if aNode.Check(gtsiExpr, gtkwDistinct) then AddStr(gtkwDistinct, False);
+  if aNode.Check(gtsiExpr, gtkwDistinct) then AddStr(gtkwDistinct, gtlsPlainText, False);
 
   List_ExprList(lExprList, aListerOpt);
 
-  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True, Assigned(lExprList) and (lExprList.Count = 1));
+  AddStr(gttkRightBracket, gttkRightBracket.TokenStyle, True);
 
   { ORACLE: KEEP DENSE RANK }
   lNode := aNode.Find(gtsiNone, gtkwKeep);
@@ -1129,7 +1017,7 @@ begin
 
   if lColumnPrefix <> '' then begin
     AddStr(lColumnPrefix, FindStyleForColumnPrefix(lColumnPrefix), CheckSpaceNeedBeforeExpression);
-    AddStr(gttkDot, False);
+    AddStr(gttkDot, gtlsPlainText, False);
     AddStr(lColumnName, gtlsColumn, False);
   end else begin
     AddStr(lColumnName, gtlsColumn, CheckSpaceNeedBeforeExpression);
@@ -1297,7 +1185,7 @@ begin
 
     { operator }
     if (aNode.Keyword = gttkEqual) then begin
-        AddStrKeywordExt(aNode);
+        AddStr(gttkEqual);
     end else
     if (aNode.Keyword = gtkwBetween) or (aNode.Keyword = gtkwNot_Between) or
        (aNode.Keyword = gtkwLike)    or (aNode.Keyword = gtkwNot_Like) or
@@ -1316,11 +1204,11 @@ begin
       List(aNode.Find(gtsiNone, nil, '3'), aListerOpt );
     end else
     if ((aNode.Keyword = gtkwLike) or (aNode.Keyword = gtkwNot_Like)) then begin
-      AddStrKeywordName( aNode.Find(gtsiNone, gtkwEscape), gtlsString);
+      AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwEscape), gtlsString);
     end;
 
     { collate }
-    AddStrKeywordName( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
+    AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
   end;
 
   AddRightBracket(aNode);
@@ -1361,13 +1249,13 @@ begin
     lNode := aNode.Find(gtsiNone, gttkTableName);
     if Assigned(lNode) then begin
       AddStr(lNode.Name, gtlsTable);
-      AddStr(gttkDot, False);
+      AddStr(gttkDot, gtlsPlainText, False);
       lNode := lNode.Find(gtsiNone, gttkColumnName);
       if Assigned(lNode) then AddStr(aNode.Name, gtlsColumn, False);
     end;
 
-    AddStr(gttkPercent, False);
-    AddStr(gtkwType, False);
+    AddStr(gttkPercent, gtlsPlainText, False);
+    AddStr(gtkwType, gtlsPlainText, False);
   end else begin
     List_DataType(aNode, aListerOpt);
   end;
@@ -1387,7 +1275,7 @@ begin
     end;
   end;
 
-  AddStrKeywordName( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
+  AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwCollate), gtlsString );
 
   lDefault := aNode.Find(gtsiExprTree);
   if Assigned(lDefault) then begin
@@ -1640,7 +1528,7 @@ begin
   FKeywordStyle := gtlsDdlCreate;
 
   { list: CREATE [[GLOBAL] TEMPORARY] TABLE table-name }
-  AddStrKeywordExtName(aNode, gtlsTable);
+  AddStr{KeywordName}(aNode, gtlsTable);
 
   { BNF: [AS SELECT ...] }
   lItem := aNode.Find(gtsiDml, gtkwSelect);
@@ -1883,7 +1771,7 @@ begin
 
   AddClause(aNode.KeywordExt);
   AddStr(aNode.Name, gtlsIdentifier);
-  AddStrKeywordName( aNode.Find(gtsiNone, gtkwOn), gtlsTable);
+  AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwOn), gtlsTable);
 
   AddStr(gttkLeftBracket);
   List_ExprList(aNode, aListerOpt);
@@ -2000,7 +1888,7 @@ begin
   AddClause(aNode.KeywordExt);
   AddStr(aNode.Name, gtlsSynonym);
 
-  AddStrKeywordName( aNode.Find(gtsiNone, gtkwFor), gtlsIdentifier);
+  AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwFor), gtlsIdentifier);
 end;
 
 { lists GRANT statement }
@@ -2272,79 +2160,6 @@ begin
   AddStr('NOT RECOGNIZED STATEMENT: ', gtlsError);
 end;
 
-{ calculates ML_ClauseKeyword }
-function TGtSqlFormatLister.GetClauseKeywordSpace;
-var i, j, l: Integer;
-begin
-  Result := 0;
-  if not Assigned(aNode) then Exit;
-
-  { klauzula wiodaca }
-  if ((aNode.Kind = gtsiDml) or (aNode.Kind = gtsiDdl)) and Assigned(aNode.Keyword) and (Length(aNode.Keyword.TokenText) > Result)
-    then Result := Length(aNode.Keyword.TokenText);
-
-  for i := 0 to aNode.Count - 1 do begin
-    { keyword sub klauzul }
-    if Assigned(aNode[i].Keyword) and (Length(aNode[i].Keyword.TokenText) > Result)
-        then Result := Length(aNode[i].Keyword.TokenText);
-
-    { INSERT INTO }
-    if aNode[i].Check(gtsiTableRef) then
-      if Assigned(aNode[i].Keyword) then begin
-        l := Length(aNode[i].KeywordExt.TokenText);
-        if l > Result then Result := l;
-      end;
-
-    { JOIN clauses }
-    if aNode[i].Check(gtsiClauseTables, gtkwFrom) then begin
-      for j := 0 to aNode[i].Count - 1 do begin
-        if Assigned(aNode[i][j].Keyword) then begin
-          l := Length(aNode[i][j].KeywordExt.TokenText);
-          if l > Result then Result := l;
-        end;
-
-        { JOIN sub-queries }
-        if aNode[i][j].Check(gtsiDml, gtkwSelect) then begin
-          l := GetClauseKeywordSpace(aNode[i][j]);
-          if l > Result then Result := l;
-        end;
-      end;
-    end;
-
-    { SELECT & ExprTree sub-queries }
-    if aNode[i].Check(gtsiExprList, gtkwSelect) or (aNode[i].Kind = gtsiExprTree) then begin
-      for j := 0 to aNode[i].Count - 1 do begin
-        l := GetClauseKeywordSpace(aNode[i][j]);
-        if l > Result then Result := l;
-      end;
-    end;
-
-    { subqueries }
-    if aNode[i].Check(gtsiDml, gtkwSelect) then begin
-      l := GetClauseKeywordSpace(aNode[i]);
-      if l > Result then Result := l;
-    end;
-
-    { conditions }
-    if aNode[i].Check(gtsiCond) or aNode[i].Check(gtsiCondTree) then begin
-      l := GetClauseKeywordSpace(aNode[i]);
-      if l > Result then Result := l;
-    end;
-
-    { SET-OP queries }
-    if aNode[i].Kind = gtsiUnions then begin
-      l := GetClauseKeywordSpace(aNode[i].Find(gtsiDml, gtkwSelect));
-      if l > Result then Result := l;
-    end;
-
-    { ADD COLUMN }
-    if aNode[i].Check(gtsiClauseAlter, gtkwAdd_Column) then begin
-      l := GetClauseKeywordSpace(aNode[i]);
-      if l > Result then Result := l;
-    end;
-  end;
-end;
-
 { lists SqlParser }
 procedure TGtSqlFormatLister.List_SqlParser;
 var i: Integer;
@@ -2362,7 +2177,7 @@ begin
 
     List( aNode.QueryList[ i ], [] );
 
-    if aNode.QueryList[i].KeywordAuxCheck(gttkSemicolon) then AddStr( gttkSemicolon, False );
+    if aNode.QueryList[i].KeywordAuxCheck(gttkSemicolon) then AddStr( gttkSemicolon, gtlsPlainText, False );
 
     AddCurrLine;
   end;

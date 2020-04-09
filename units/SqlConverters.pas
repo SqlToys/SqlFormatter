@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlConverters.pas 55    19-03-24 21:50 Tomek $
+(* $Header: /SQL Toys/units/SqlConverters.pas 56    19-04-20 13:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.06.14                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlConverters;
@@ -21,22 +21,20 @@ const { converters settings values, same as icon numbers }
   SQCG_NONE     = 0;
   SQCG_MAX      = 9;
 
-  SQCG_GENERAL  = 1;
+  SQCG_INTEND   = 1;
   SQCG_CASES    = 2;
   SQCG_KEYWORD  = 3;
-  SQCG_DATA     = 4;
-  SQCG_JOIN     = 5;
-  SQCG_ORDER    = 6;
-  SQCG_LINES    = 7;
-  SQCG_EMPTY    = 8;
-  SQCG_SPACES   = 9;
+  SQCG_LINES    = 4;
+  SQCG_EMPTY    = 5;
+  SQCG_SPACES   = 6;
+  SQCG_OTHER    = 7;
 
   { converters = converter items }
   SQCC_NONE              =  0;
   SQCC_MAX               = 16;
 
-  SQCC_GEN_SEMICOLON     = 1;
-  SQCC_GEN_SEMICOLON_SQ  = 2;
+  SQCC_INT_CLAUSE        = 1;
+  SQCC_INT_CLAUSE_RGHT   = 2;
 
   SQCC_CASE_KEYWORD      = 1;   // gtttKeyword
   SQCC_CASE_TABLE        = 2;   // gtttIdentifier, gtlsTable
@@ -58,15 +56,12 @@ const { converters settings values, same as icon numbers }
 
   SQCC_KWD_AS_TABLES     = 1;
   SQCC_KWD_AS_COLUMNS    = 2;
-
-  SQCC_DATA_INT          = 1;
-
-  SQCC_JOIN_INNER        = 1;
-  SQCC_JOIN_OUTER        = 2;
-  SQCC_JOIN_ON_LEFT      = 3;
-
-  SQCC_ORDER_KWD_LEN     = 1;
-  SQCC_ORDER_KWD_DEF     = 2;
+  SQCC_KWD_INT           = 3;
+  SQCC_KWD_INNER         = 4;
+  SQCC_KWD_OUTER         = 5;
+  SQCC_JOIN_ON_LEFT      = 6;
+  SQCC_KWD_ORDER_LEN     = 7;
+  SQCC_KWD_ORDER_DEF     = 8;
 
   SQCC_LINE_BEF_EXPR_RIGHT=  1;
   SQCC_LINE_BEF_EXPR_LEFT =  2;
@@ -86,16 +81,19 @@ const { converters settings values, same as icon numbers }
   SQCC_EMPTY_AROUND_UNION= 4;
   SQCC_EMPTY_CMPLX_CONSTR= 5;
 
-  SQCC_SPACE_BEF_SEMICOLON       = 1; { TODO }
-  SQCC_SPACE_BEF_COMMA           = 2; { TODO }
-  SQCC_SPACE_AFT_COMMA           = 3; { TODO }
-  SQCC_SPACE_AROUND_OPER         = 4; { TODO }
-  SQCC_SPACE_AROUND_OPER_MATH    = 5; { TODO }
-  SQCC_SPACE_AROUND_OPER_CONC    = 6; { TODO }
-  SQCC_SPACE_INSIDE_BRACKET      = 7; { TODO }
-  SQCC_SPACE_INSIDE_BRACKET_SPF  = 8; { TODO }
-  SQCC_SPACE_INSIDE_BRACKET_DATA = 9; { TODO }
-  SQCC_SPACE_OUTSIDE_BRACKET     =10; { TODO }
+  SQCC_SPACE_BEF_SEMICOLON       = 1;
+  SQCC_SPACE_BEF_COMMA           = 2;
+  SQCC_SPACE_AFT_COMMA           = 3;
+  SQCC_SPACE_AROUND_OPER         = 4;
+  SQCC_SPACE_AROUND_OPER_MATH    = 5;
+  SQCC_SPACE_AROUND_OPER_CONC    = 6;
+  SQCC_SPACE_INSIDE_BRACKET      = 7;
+  SQCC_SPACE_INSIDE_BRACKET_SPF  = 8;
+  SQCC_SPACE_INSIDE_BRACKET_DATA = 9;
+  SQCC_SPACE_OUTSIDE_BRACKET     =10;
+
+  SQCC_OTH_SEMICOLON     = 1;
+  SQCC_OTH_SEMICOLON_SQ  = 2;
 
 procedure TokenListConvertExecute( aGroup, aItem, aState: Integer; aTokenList: TGtLexTokenList; aNode: TGtSqlNode );
 procedure SyntaxTreeConvertExecute( aGroup, aItem, aState: Integer; aNode: TGtSqlNode );
@@ -766,6 +764,22 @@ begin
   end;
 end;
 
+{ procedure adds empty line before clause keyword }
+procedure SqlToysConvert_NewLine_Clause_Add(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+
+  if aNode.IsClauseKeyword then aNode.KeywordAuxAdd(gttkNewLineBefore);
+end;
+
+{ procedure adds empty line before clause keyword }
+procedure SqlToysConvert_NewLine_Clause_Remove(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+
+  if aNode.IsClauseKeyword then aNode.KeywordAuxRemove(gttkNewLineBefore);
+end;
+
 { procedure adds empty line before CASE }
 procedure SqlToysConvert_NewLine_Case_Add(aNode: TGtSqlNode);
 begin
@@ -1113,14 +1127,11 @@ begin
                                                  SQCV_ADD    : aTokenList.ForEachTokenKindStyle( gtttIdentifier, gtlsColumnAlias, TokenConvert_AddKeywordAS );
                                                  SQCV_REMOVE : aTokenList.ForEachTokenKindStyle( gtttIdentifier, gtlsColumnAlias, TokenConvert_RemoveKeywordAS );
                                                end;
-                    end;
-//  SQCG_DATA     : case aItem of
-    SQCG_JOIN     : case aItem of
-                      SQCC_JOIN_INNER        : case aState of
+                      SQCC_KWD_INNER         : case aState of
                                                  SQCV_ADD    : aTokenList.ForEachTokenKeyword( gtkwJoin, TokenConvert_AddKeywordINNER );
                                                  SQCV_REMOVE : aTokenList.ForEachTokenKeyword( gtkwJoin, TokenConvert_RemoveKeywordINNER );
                                                end;
-                      SQCC_JOIN_OUTER        : case aState of
+                      SQCC_KWD_OUTER         : case aState of
                                                  SQCV_ADD    : aTokenList.ForEachTokenKeyword( gtkwJoin, TokenConvert_AddKeywordOUTER );
                                                  SQCV_REMOVE : aTokenList.ForEachTokenKeyword( gtkwJoin, TokenConvert_RemoveKeywordOUTER );
                                                end;
@@ -1128,7 +1139,6 @@ begin
 //                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_JoinCond_RefToLeft, True );
 //                                               end;
                     end;
-//  SQCG_ORDER    : case aItem of
     SQCG_LINES    : case aItem of
                       SQCC_LINE_BEF_EXPR_RIGHT  : case aState of
                                                    SQCV_ADD    : aNode.ForEach( SqlToysConvert_NewLine_Bef_Expression_Add, True );
@@ -1199,12 +1209,22 @@ end;
 procedure SyntaxTreeConvertExecute( aGroup, aItem, aState: Integer; aNode: TGtSqlNode );
 begin
   case aGroup of
-    SQCG_GENERAL  : case aItem of
-                      SQCC_GEN_SEMICOLON     : case aState of
+    SQCG_INTEND   : case aItem of
+                      SQCC_INT_CLAUSE        : case aState of
+                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_NewLine_Clause_Add, True );
+                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_NewLine_Clause_Remove, True );
+                                               end;
+                      SQCC_INT_CLAUSE_RGHT   : case aState of
+                                                 SQCV_ADD    : ;
+                                                 SQCV_REMOVE : ;
+                                               end;
+                    end;
+    SQCG_OTHER    : case aItem of
+                      SQCC_OTH_SEMICOLON     : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_Semicolon_Add, False {True} );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Semicolon_Remove, False {True} );
                                                end;
-                      SQCC_GEN_SEMICOLON_SQ  : case aState of
+                      SQCC_OTH_SEMICOLON_SQ  : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_Semicolon_SingleQuery_Add, False {True} );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Semicolon_SingleQuery_Remove, False {True} );
                                                end;
@@ -1276,32 +1296,26 @@ begin
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_ExprAlias_AddKeyword_AS, True );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_ExprAlias_RemoveKeyword_AS, True );
                                                end;
-                    end;
-    SQCG_DATA     : case aItem of
-                      SQCC_DATA_INT          : case aState of
+                      SQCC_KWD_INT           : case aState of
                                                  SQCV_SHORT  : aNode.ForEach( SqlToysConvert_DataType_IntegerToInt, True );
                                                  SQCV_LONG   : aNode.ForEach( SqlToysConvert_DataType_IntToInteger, True );
                                                end;
-                    end;
-    SQCG_JOIN     : case aItem of
-                      SQCC_JOIN_INNER        : case aState of
+                      SQCC_KWD_INNER         : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_Joins_AddInner, True );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Joins_RemoveInner, True );
                                                end;
-                      SQCC_JOIN_OUTER        : case aState of
+                      SQCC_KWD_OUTER         : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_Joins_AddOuter, True );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Joins_RemoveOuter, True );
                                                end;
                       SQCC_JOIN_ON_LEFT      : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_JoinCond_RefToLeft, True );
                                                end;
-                    end;
-    SQCG_ORDER    : case aItem of
-                      SQCC_ORDER_KWD_LEN     : case aState of
+                      SQCC_KWD_ORDER_LEN     : case aState of
                                                  SQCV_SHORT  : aNode.ForEach( SqlToysConvert_SortOrder_ShortKeywords, True );
                                                  SQCV_LONG   : aNode.ForEach( SqlToysConvert_SortOrder_LongKeywords, True );
                                                end;
-                      SQCC_ORDER_KWD_DEF     : case aState of
+                      SQCC_KWD_ORDER_DEF     : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_SortOrder_AddDefaultKeywords, True );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_SortOrder_RemoveDefaultKeywords, True );
                       end;
