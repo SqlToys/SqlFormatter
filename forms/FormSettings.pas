@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/forms/FormSettings.pas 125   19-03-24 21:49 Tomek $
+(* $Header: /SQL Toys/forms/FormSettings.pas 126   19-04-20 13:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2012.03.31                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -362,8 +362,6 @@ end;
 { validates converter value }
 function  SqlConvertValidateValue( aGroup, aItem, aState: Integer ): Integer;
 begin
-  Result := SQCV_NONE;
-
   if aItem = SQCC_NONE then begin
     Result := SQCV_GROUP;
     Exit;
@@ -371,29 +369,19 @@ begin
 
   if aState <= SQCV_NONE then Result := SQCV_NONE else
   case aGroup of
-    SQCG_GENERAL  : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                    if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
     SQCG_CASES    : if aState <= SQCV_UPPER  then Result := SQCV_UPPER  else
                     if aState <= SQCV_LOWER  then Result := SQCV_LOWER  else Result := SQCV_NONE ;
-    SQCG_KEYWORD  : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                    if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
-    SQCG_DATA     : if aState <= SQCV_SHORT  then Result := SQCV_SHORT  else
-                    if aState <= SQCV_LONG   then Result := SQCV_LONG   else Result := SQCV_NONE ;
-    SQCG_JOIN     : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                    if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
-    SQCG_ORDER    : case aItem of
-                      SQCC_ORDER_KWD_LEN     :
-                        if aState <= SQCV_SHORT then Result := SQCV_SHORT else
-                        if aState <= SQCV_LONG  then Result := SQCV_LONG  else Result := SQCV_NONE ;
-                      SQCC_ORDER_KWD_DEF     :
-                        if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                        if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
+    SQCG_KEYWORD  : case aItem of
+                      SQCC_KWD_INT ,
+                      SQCC_KWD_ORDER_LEN     :
+                        if aState <= SQCV_SHORT  then Result := SQCV_SHORT  else
+                        if aState <= SQCV_LONG   then Result := SQCV_LONG   else Result := SQCV_NONE ;
+                    else
+                      if aState <= SQCV_ADD    then Result := SQCV_ADD    else
+                      if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
                     end;
-    SQCG_LINES    : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                    if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
-    SQCG_EMPTY    : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
-                    if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
-    SQCG_SPACES   : if aState <= SQCV_ADD    then Result := SQCV_ADD    else
+  else
+                    if aState <= SQCV_ADD    then Result := SQCV_ADD    else
                     if aState <= SQCV_REMOVE then Result := SQCV_REMOVE else Result := SQCV_NONE ;
   end;
 end;
@@ -404,9 +392,9 @@ begin
   Result := SQCV_NONE;
 
   case aGroup of
-    SQCG_GENERAL  : case aItem of
-                      SQCC_GEN_SEMICOLON     : Result := SQCV_NONE;
-                      SQCC_GEN_SEMICOLON_SQ  : Result := SQCV_REMOVE;
+    SQCG_INTEND   : case aItem of
+                      SQCC_INT_CLAUSE        : Result := SQCV_ADD;
+                      SQCC_INT_CLAUSE_RGHT   : Result := SQCV_ADD;
                     end;
     SQCG_CASES    : case aItem of
                       SQCC_CASE_KEYWORD      : Result := SQCV_UPPER;
@@ -429,18 +417,12 @@ begin
     SQCG_KEYWORD  : case aItem of
                       SQCC_KWD_AS_TABLES     : Result := SQCV_ADD;
                       SQCC_KWD_AS_COLUMNS    : Result := SQCV_ADD;
-                    end;
-    SQCG_DATA     : case aItem of
-                      SQCC_DATA_INT          : Result := SQCV_NONE;
-                    end;
-    SQCG_JOIN     : case aItem of
-                      SQCC_JOIN_INNER        : Result := SQCV_REMOVE;
-                      SQCC_JOIN_OUTER        : Result := SQCV_REMOVE;
+                      SQCC_KWD_INT           : Result := SQCV_NONE;
+                      SQCC_KWD_INNER         : Result := SQCV_REMOVE;
+                      SQCC_KWD_OUTER         : Result := SQCV_REMOVE;
                       SQCC_JOIN_ON_LEFT      : Result := SQCV_ADD;
-                    end;
-    SQCG_ORDER    : case aItem of
-                      SQCC_ORDER_KWD_LEN     : Result := SQCV_SHORT;
-                      SQCC_ORDER_KWD_DEF     : Result := SQCV_REMOVE;
+                      SQCC_KWD_ORDER_LEN     : Result := SQCV_SHORT;
+                      SQCC_KWD_ORDER_DEF     : Result := SQCV_REMOVE;
                     end;
     SQCG_LINES    : case aItem of
                       SQCC_LINE_CASE_CASE    : Result := SQCV_NONE;
@@ -471,6 +453,10 @@ begin
                       SQCC_SPACE_INSIDE_BRACKET_DATA : Result := SQCV_REMOVE;
                       SQCC_SPACE_OUTSIDE_BRACKET     : Result := SQCV_ADD;
                     end;
+    SQCG_OTHER    : case aItem of
+                      SQCC_OTH_SEMICOLON     : Result := SQCV_NONE;
+                      SQCC_OTH_SEMICOLON_SQ  : Result := SQCV_REMOVE;
+                    end;
   end;
 end;
 
@@ -480,13 +466,13 @@ begin
   Result := '';
 
   case aGroup of
-    SQCG_GENERAL  : case aItem of
-                      SQCC_NONE              : Result := 'General';
-                      SQCC_GEN_SEMICOLON     : Result := 'Semicolon';
-                      SQCC_GEN_SEMICOLON_SQ  : Result := '    on single query';
+    SQCG_INTEND   : case aItem of
+                      SQCC_NONE              : Result := 'INTENDATION';
+                      SQCC_INT_CLAUSE        : Result := 'Clause keywords at NEW LINE';
+                      SQCC_INT_CLAUSE_RGHT   : Result := 'Clause keywords to right';
                     end;
     SQCG_CASES    : case aItem of
-                      SQCC_NONE              : Result := 'Cases';
+                      SQCC_NONE              : Result := 'CASES';
                       SQCC_CASE_KEYWORD      : Result := 'Keywords';
                       SQCC_CASE_TABLE        : Result := 'Table names';
                       SQCC_CASE_TABLE_ALIAS  : Result := 'Table aliases';
@@ -505,27 +491,18 @@ begin
                       SQCC_CASE_IDENTIFIER   : Result := 'Identifier';
                     end;
     SQCG_KEYWORD  : case aItem of
-                      SQCC_NONE              : Result := 'Keywords';
+                      SQCC_NONE              : Result := 'KEYWORDS';
                       SQCC_KWD_AS_TABLES     : Result := 'AS for table aliases';
                       SQCC_KWD_AS_COLUMNS    : Result := 'AS for column aliases';
-                    end;
-    SQCG_DATA     : case aItem of
-                      SQCC_NONE              : Result := 'Datatypes';
-                      SQCC_DATA_INT          : Result := 'Integer';
-                    end;
-    SQCG_JOIN     : case aItem of
-                      SQCC_NONE              : Result := 'FROM / JOIN';
-                      SQCC_JOIN_INNER        : Result := 'INNER keyword';
-                      SQCC_JOIN_OUTER        : Result := 'OUTER keyword';
+                      SQCC_KWD_INT           : Result := 'INT or INTEGER keyword (short or long)';
+                      SQCC_KWD_INNER         : Result := 'INNER keyword';
+                      SQCC_KWD_OUTER         : Result := 'OUTER keyword';
                       SQCC_JOIN_ON_LEFT      : Result := 'ON condition left side refs';
-                    end;
-    SQCG_ORDER    : case aItem of
-                      SQCC_NONE              : Result := 'ORDER BY';
-                      SQCC_ORDER_KWD_LEN     : Result := 'Keywords length';
-                      SQCC_ORDER_KWD_DEF     : Result := 'Default keywords';
+                      SQCC_KWD_ORDER_LEN     : Result := 'ASC/DESC keywords length (short or long)';
+                      SQCC_KWD_ORDER_DEF     : Result := 'ASC/DESC default keywords';
                     end;
     SQCG_LINES    : case aItem of
-                      SQCC_NONE              : Result := 'New lines';
+                      SQCC_NONE              : Result := 'NEW LINES';
                       SQCC_LINE_BEF_EXPR_RIGHT:Result := 'before expression (comma on right side)';
                       SQCC_LINE_BEF_EXPR_LEFT: Result := 'before expression (comma on left side)';
                       SQCC_LINE_BEF_EXPR_1ST : Result := '    1st expression too';
@@ -539,7 +516,7 @@ begin
                     //SQCC_LINE_AFT_CONSTR   : Result := 'after  CONSTRAINT';
                     end;
     SQCG_EMPTY    : case aItem of
-                      SQCC_NONE              : Result := 'Empty lines';
+                      SQCC_NONE              : Result := 'EMPTY LINES';
                       SQCC_EMPTY_BEF_CLAUSE  : Result := 'before clauses';
                       SQCC_EXC_SUBQUERY      : Result := '    in subqueries';
                     //SQCC_EXC_SHORT_QUERY   : Result := '    in short queries';
@@ -547,7 +524,7 @@ begin
                       SQCC_EMPTY_CMPLX_CONSTR: Result := 'before complex CONSTRAINT';
                     end;
     SQCG_SPACES   : case aItem of
-                      SQCC_NONE                      : Result := 'Spaces';
+                      SQCC_NONE                      : Result := 'SPACES';
                       SQCC_SPACE_BEF_SEMICOLON       : Result := 'before semicolon';
                       SQCC_SPACE_BEF_COMMA           : Result := 'before comma';
                       SQCC_SPACE_AFT_COMMA           : Result := 'after comma';
@@ -558,6 +535,11 @@ begin
                       SQCC_SPACE_INSIDE_BRACKET_SPF  : Result := '   single param function';
                       SQCC_SPACE_INSIDE_BRACKET_DATA : Result := '   datatype';
                       SQCC_SPACE_OUTSIDE_BRACKET     : Result := 'outside bracket';
+                    end;
+    SQCG_OTHER    : case aItem of
+                      SQCC_NONE              : Result := 'OTHERS';
+                      SQCC_OTH_SEMICOLON     : Result := 'Semicolon';
+                      SQCC_OTH_SEMICOLON_SQ  : Result := '    on single query';
                     end;
   end;
 end;

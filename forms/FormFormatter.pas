@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/forms/FormFormatter.pas 72    19-03-24 21:49 Tomek $
+(* $Header: /SQL Toys/forms/FormFormatter.pas 73    19-04-20 13:33 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2011.07.24                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -793,12 +793,12 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinCondRefToLeftExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_ON_LEFT, SQCV_ADD );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_JOIN_ON_LEFT, SQCV_ADD );
 end;
 
 procedure TMainForm.actConvertJoinsAddInnerExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_ADD );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_INNER, SQCV_ADD );
 
   actConvertJoinsAddInner.Enabled       := False;
   actConvertJoinsRemoveInner.Enabled    := True;
@@ -807,7 +807,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsAddOuterExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_ADD );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_OUTER, SQCV_ADD );
 
   actConvertJoinsAddOuter.Enabled       := False;
   actConvertJoinsRemoveOuter.Enabled    := True;
@@ -816,7 +816,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsRemoveInnerExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_REMOVE );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_INNER, SQCV_REMOVE );
 
   actConvertJoinsAddInner.Enabled       := True;
   actConvertJoinsRemoveInner.Enabled    := False;
@@ -825,7 +825,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertJoinsRemoveOuterExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_REMOVE );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_OUTER, SQCV_REMOVE );
 
   actConvertJoinsAddOuter.Enabled       := True;
   actConvertJoinsRemoveOuter.Enabled    := False;
@@ -849,11 +849,11 @@ procedure TMainForm.actConvertKeywordInnerExecute(Sender: TObject);
 begin
   case actConvertKeywordInner.ImageIndex of
     37 : begin
-           FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_ADD );
+           FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_INNER, SQCV_ADD );
            actConvertKeywordInner.ImageIndex := 38;
          end;
     38 : begin
-           FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_INNER, SQCV_REMOVE );
+           FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_INNER, SQCV_REMOVE );
            actConvertKeywordInner.ImageIndex := 37;
          end;
   end;
@@ -863,11 +863,11 @@ procedure TMainForm.actConvertKeywordOuterExecute(Sender: TObject);
 begin
   case actConvertKeywordOuter.ImageIndex of
     37 : begin
-           FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_ADD );
+           FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_OUTER, SQCV_ADD );
            actConvertKeywordOuter.ImageIndex := 38;
          end;
     38 : begin
-           FrameScriptEdit.ScriptConvert(True, SQCG_JOIN, SQCC_JOIN_OUTER, SQCV_REMOVE );
+           FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_OUTER, SQCV_REMOVE );
            actConvertKeywordOuter.ImageIndex := 37;
          end;
   end;
@@ -890,7 +890,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderShortKeywordsExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_SHORT );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_ORDER_LEN, SQCV_SHORT );
 
   actConvertSortOrderShortKeywords.Enabled     := False;
   actConvertSortOrderLongKeywords.Enabled      := True;
@@ -983,7 +983,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderLongKeywordsExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_LEN, SQCV_LONG );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_ORDER_LEN, SQCV_LONG );
 
   actConvertSortOrderShortKeywords.Enabled     := True;
   actConvertSortOrderLongKeywords.Enabled      := False;
@@ -992,7 +992,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderAddDefaultKeywordsExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_ADD );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_ORDER_DEF, SQCV_ADD );
 
   actConvertSortOrderAddDefaultKeywords.Enabled       := False;
   actConvertSortOrderRemoveDefaultKeywords.Enabled    := True;
@@ -1004,7 +1004,7 @@ end;
 { action Convert }
 procedure TMainForm.actConvertSortOrderRemoveDefaultKeywordsExecute(Sender: TObject);
 begin
-  FrameScriptEdit.ScriptConvert(True, SQCG_ORDER, SQCC_ORDER_KWD_DEF, SQCV_REMOVE );
+  FrameScriptEdit.ScriptConvert(True, SQCG_KEYWORD, SQCC_KWD_ORDER_DEF, SQCV_REMOVE );
 
   actConvertSortOrderAddDefaultKeywords.Enabled       := True;
   actConvertSortOrderRemoveDefaultKeywords.Enabled    := False;
