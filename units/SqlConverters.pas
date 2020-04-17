@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlConverters.pas 56    19-04-20 13:33 Tomek $
+(* $Header: /SQL Toys/units/SqlConverters.pas 57    19-07-14 19:41 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.06.14                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlConverters;
@@ -33,8 +33,7 @@ const { converters settings values, same as icon numbers }
   SQCC_NONE              =  0;
   SQCC_MAX               = 16;
 
-  SQCC_INT_CLAUSE        = 1;
-  SQCC_INT_CLAUSE_RGHT   = 2;
+  SQCC_INT_CLAUSE_RGHT   = 1;
 
   SQCC_CASE_KEYWORD      = 1;   // gtttKeyword
   SQCC_CASE_TABLE        = 2;   // gtttIdentifier, gtlsTable
@@ -63,14 +62,15 @@ const { converters settings values, same as icon numbers }
   SQCC_KWD_ORDER_LEN     = 7;
   SQCC_KWD_ORDER_DEF     = 8;
 
-  SQCC_LINE_BEF_EXPR_RIGHT=  1;
-  SQCC_LINE_BEF_EXPR_LEFT =  2;
-  SQCC_LINE_BEF_EXPR_1ST  =  3;
-  SQCC_LINE_BEF_COND      =  4;
-  SQCC_LINE_CASE_CASE     =  5;
-  SQCC_LINE_CASE_WHEN     =  6; {should be subnode}
-  SQCC_LINE_CASE_THEN     =  7; {should be subnode}
-  SQCC_LINE_CASE_ELSE     =  8; {should be subnode}
+  SQCC_LINE_CLAUSE        =  1;
+  SQCC_LINE_BEF_EXPR_RIGHT=  2;
+  SQCC_LINE_BEF_EXPR_LEFT =  3;
+  SQCC_LINE_BEF_EXPR_1ST  =  4;
+  SQCC_LINE_BEF_COND      =  5;
+  SQCC_LINE_CASE_CASE     =  6;
+  SQCC_LINE_CASE_WHEN     =  7; {should be subnode}
+  SQCC_LINE_CASE_THEN     =  8; {should be subnode}
+  SQCC_LINE_CASE_ELSE     =  9; {should be subnode}
 //SQCC_LINE_CASE_END      =  9; {should be subnode}
   SQCC_LINE_BEF_CONSTR    = 10;
 //SQCC_LINE_AFT_CONSTR    = 11;
@@ -711,7 +711,7 @@ procedure SqlToysConvert_EmptyLine_Clause_Add(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.Owner.Kind = gtsiDml) and not aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClauseKeyword
+  if aNode.IsClauseKeyword and not aNode.IsSubQuery {and not aNode.IsShortQuery}
     then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
 end;
 
@@ -720,7 +720,7 @@ procedure SqlToysConvert_EmptyLine_Clause_Remove(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.Owner.Kind = gtsiDml) and not aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClauseKeyword
+  if aNode.IsClauseKeyword and not aNode.IsSubQuery {and not aNode.IsShortQuery}
     then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
 end;
 
@@ -1210,10 +1210,6 @@ procedure SyntaxTreeConvertExecute( aGroup, aItem, aState: Integer; aNode: TGtSq
 begin
   case aGroup of
     SQCG_INTEND   : case aItem of
-                      SQCC_INT_CLAUSE        : case aState of
-                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_NewLine_Clause_Add, True );
-                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_NewLine_Clause_Remove, True );
-                                               end;
                       SQCC_INT_CLAUSE_RGHT   : case aState of
                                                  SQCV_ADD    : ;
                                                  SQCV_REMOVE : ;
@@ -1321,6 +1317,10 @@ begin
                       end;
                     end;
     SQCG_LINES    : case aItem of
+                      SQCC_LINE_CLAUSE       : case aState of
+                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_NewLine_Clause_Add, True );
+                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_NewLine_Clause_Remove, True );
+                                               end;
                       SQCC_LINE_CASE_CASE    : case aState of
                                                  SQCV_ADD    : aNode.ForEach( SqlToysConvert_NewLine_Case_Add, True );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_NewLine_Case_Remove, True );

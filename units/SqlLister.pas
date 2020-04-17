@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlLister.pas 358   19-04-17 19:02 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 359   19-07-14 19:41 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -94,6 +94,7 @@ type
     procedure  AddLeftBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
     procedure  AddRightBracket(aNode: TGtSqlNode; aOneLess: Boolean = False); overload;
 
+    procedure  AddEmptyLine(aNode: TGtSqlNode);
     procedure  AddNewLine(aNode: TGtSqlNode);
   private
     SubQueryLevel: Integer;
@@ -507,7 +508,7 @@ end;
 { formatted file footer }
 procedure TGtSqlProtoLister.EndFormattedFile;
 begin
-  AddEmptyLine;
+  AddCurrLine;
 
   case FormattingMode of
     gtfoHtml : SL.Add('</FONT></BODY>');
@@ -596,14 +597,18 @@ end;
 { adds current line (RawText or FormText) to output string list, commits current line }
 procedure TGtSqlFormatLister.AddCurrLine;
 begin
+  if (SL.Count = 0) and (RawText = '') then Exit;
+
   inherited AddCurrLine;
   AddSpace;
 end;
 
 { adds clause to script }
-procedure TGtSqlFormatLister.AddClauseNode(aNode:TGtSqlNode; aIntendToken: TGtLexToken = nil);
+procedure TGtSqlFormatLister.AddClauseNode(aNode: TGtSqlNode; aIntendToken: TGtLexToken = nil);
 begin
   if not Assigned(aNode) then Exit;
+  AddNewLine(aNode);
+  AddEmptyLine(aNode);
 
   if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
     then AddClause(aNode.Keyword, nil)
@@ -671,11 +676,18 @@ begin
   AddRightBracket(lcnt);
 end;
 
+{ adds EmptyLine when EmptyLineBefore node is found }
+procedure TGtSqlFormatLister.AddEmptyLine(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then inherited AddEmptyLine;
+end;
+
 { adds NewLine when NewLineBefore node is found }
 procedure TGtSqlFormatLister.AddNewLine(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
-  if aNode.KeywordAuxCheck(gttkNewLineBefore) then AddClause;
+  if aNode.KeywordAuxCheck(gttkNewLineBefore) then AddCurrLine;
 end;
 
 { lists item }
@@ -1134,9 +1146,7 @@ var i: Integer;
     lFirst: Boolean;
 begin
   if not Assigned(aNode) then Exit;
-
-  { SET }
-  AddClause(gtkwSet);
+  AddClauseNode(aNode);
 
   lFirst := True;
   for i := 0 to aNode.Count - 1 do
@@ -1934,8 +1944,12 @@ procedure  TGtSqlFormatLister.List_Clause_Name;
 begin
   // if not Assigned(aNode) then Exit;
   if aKeywordStyle <> gtlsPlainText then FKeywordStyle := aKeywordStyle;
+//AddClauseNode(aNode);
 
+  AddEmptyLine(aNode);
+  AddNewLine(aNode);
   AddClause(aClauseToken1);
+
   if Assigned(aClauseToken2) then AddStr(aClauseToken2);
 
   if aName <> '' then AddStr(aName, aNameStyle);
@@ -1945,9 +1959,10 @@ end;
 procedure TGtSqlFormatLister.List_Clause_Expr;
 begin
   if not Assigned(aNode) then Exit;
+//AddClauseNode(aNode);
 
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddEmptyLine;
-
+  AddNewLine(aNode);
+  AddEmptyLine(aNode);
   AddClause(aClauseToken);
 
   List_ExprList(aNode, aListerOpt);
@@ -1957,9 +1972,10 @@ end;
 procedure TGtSqlFormatLister.List_Clause_Cond;
 begin
   if not Assigned(aNode) then Exit;
+//AddClauseNode(aNode);
 
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddEmptyLine;
-
+  AddEmptyLine(aNode);
+  AddNewLine(aNode);
   AddClause(aClauseToken);
 
   List_CondTree(aNode, aListerOpt);
@@ -1971,10 +1987,7 @@ var lNode: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
-  { add new line before clause }
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddEmptyLine;
-
-  AddClause(gtkwSelect);
+  AddClauseNode(aNode);
 
   { BNF: [DISTINCT] }
   if aNode.KeywordAuxCheck(gtkwDistinct) then begin
@@ -2039,8 +2052,12 @@ end;
 procedure TGtSqlFormatLister.List_Values;
 begin
   if not Assigned(aNode) then Exit;
+//AddClauseNode(aNode);
 
+  AddEmptyLine(aNode);
+  AddNewLine(aNode);
   AddClause(gtkwValues_LeftBracket);
+
   List_ExprList(aNode, aListerOpt);
   AddStr(gttkRightBracket);
 end;
@@ -2061,8 +2078,8 @@ procedure TGtSqlFormatLister.List_Tables;
 var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
-
-  if aNode.KeywordAuxCheck(gttkEmptyLineBefore) then AddEmptyLine;
+  AddNewLine(aNode);
+  AddEmptyLine(aNode);
 
   for i := 0 to aNode.Count - 1 do begin
     if aNode[i].Check(gtsiTableRef) then List_TabRef(aNode[i], aListerOpt);
@@ -2101,8 +2118,8 @@ begin
   if aNode.Check(gtsiDml, gtkwInsert) then  List_Fields     (aNode.Find(gtssClauseFields),             aListerOpt);
   if aNode.Check(gtsiDml, gtkwUpdate) then  List_Tables     (aNode.Find(gtsiClauseTables, gtkwUpdate), aListerOpt);
   if aNode.Check(gtsiDml, gtkwSelect) then  List_Clause_Expr(aNode.Find(gtsiExprList, gtkwInto),       aListerOpt, gtkwInto);
-  if aNode.Check(gtsiDml, gtkwInsert) then  List_Values     (aNode.Find(gtsiExprList, gtkwValues), aListerOpt);
-  if aNode.Check(gtsiDml, gtkwUpdate) then  List_SetExprList(aNode.Find(gtsiSetExprList, nil), aListerOpt);
+  if aNode.Check(gtsiDml, gtkwInsert) then  List_Values     (aNode.Find(gtsiExprList, gtkwValues),     aListerOpt);
+  if aNode.Check(gtsiDml, gtkwUpdate) then  List_SetExprList(aNode.Find(gtsiSetExprList, gtkwSet),     aListerOpt);
 
   { DELETE expr-list vs DELETE FROM }
   if aNode.Check(gtsiDml, gtkwDelete) then begin
