@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlLister.pas 359   19-07-14 19:41 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 360   19-12-10 20:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -17,6 +17,10 @@ uses Classes,
 {  TGtSqlProtoLister                                                           }
 {    TGtSqlTokenLister                       TokenList -> Script               }
 {    TGtSqlFormatLister                      SyntaxTree -> Script - TO CHANGE  }
+
+const
+  ClauseBodyIntend = 12  +8 ; // temporary value
+  ClauseBodySize   =  4;
 
 {------------------------------- redeclaration --------------------------------}
 
@@ -611,8 +615,13 @@ begin
   AddEmptyLine(aNode);
 
   if not Assigned(aNode.KeywordExt) or (aNode.KeywordExt = gttkNone)
-    then AddClause(aNode.Keyword, nil)
-    else AddClause(aNode.KeywordExt, nil);
+      or IsKeywordClause(aNode.Keyword) and not IsKeywordClause(aNode.KeywordExt) then begin
+    AddClause(aNode.Keyword, nil);
+    if aNode.KeywordAuxCheck(gttkIntendClauseBody) then AddSpace(ClauseBodyIntend - Length(aNode.Keyword.Name));
+  end else begin
+    AddClause(aNode.KeywordExt, nil);
+    if aNode.KeywordAuxCheck(gttkIntendClauseBody) then AddSpace(ClauseBodyIntend - Length(aNode.KeywordExt.Name));
+  end;
 end;
 
 { adds clause to script }
@@ -1959,11 +1968,8 @@ end;
 procedure TGtSqlFormatLister.List_Clause_Expr;
 begin
   if not Assigned(aNode) then Exit;
-//AddClauseNode(aNode);
 
-  AddNewLine(aNode);
-  AddEmptyLine(aNode);
-  AddClause(aClauseToken);
+  AddClauseNode(aNode);
 
   List_ExprList(aNode, aListerOpt);
 end;
@@ -1972,11 +1978,8 @@ end;
 procedure TGtSqlFormatLister.List_Clause_Cond;
 begin
   if not Assigned(aNode) then Exit;
-//AddClauseNode(aNode);
 
-  AddEmptyLine(aNode);
-  AddNewLine(aNode);
-  AddClause(aClauseToken);
+  AddClauseNode(aNode);
 
   List_CondTree(aNode, aListerOpt);
 end;

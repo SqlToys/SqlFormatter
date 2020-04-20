@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlConverters.pas 57    19-07-14 19:41 Tomek $
+(* $Header: /SQL Toys/units/SqlConverters.pas 58    19-12-10 20:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.06.14                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlConverters;
@@ -33,7 +33,8 @@ const { converters settings values, same as icon numbers }
   SQCC_NONE              =  0;
   SQCC_MAX               = 16;
 
-  SQCC_INT_CLAUSE_RGHT   = 1;
+  SQCC_INT_CLAUSE_BODY   = 1;
+  SQCC_INT_CLAUSE_RGHT   = 2;
 
   SQCC_CASE_KEYWORD      = 1;   // gtttKeyword
   SQCC_CASE_TABLE        = 2;   // gtttIdentifier, gtlsTable
@@ -225,6 +226,24 @@ begin
   end else begin
     SqlToysConvert_TableAlias_Iteration( SqlToysConvert_TableAlias_RemoveKeyword_AS, aNode );
   end;
+end;
+
+{-------------------------- Intendation Converters ----------------------------}
+
+{ converter add clause body space }
+procedure SqlToysConvert_Intend_Clause_Body_Add(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+
+  if aNode.IsClause then aNode.KeywordAuxAdd(gttkIntendClauseBody);
+end;
+
+{ converter add clause body space }
+procedure SqlToysConvert_Intend_Clause_Body_Remove(aNode: TGtSqlNode);
+begin
+  if not Assigned(aNode) then Exit;
+
+  aNode.KeywordAuxRemove(gttkIntendClauseBody);
 end;
 
 {------------------------------ Case Converters -------------------------------}
@@ -711,7 +730,7 @@ procedure SqlToysConvert_EmptyLine_Clause_Add(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.IsClauseKeyword and not aNode.IsSubQuery {and not aNode.IsShortQuery}
+  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
     then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
 end;
 
@@ -720,7 +739,7 @@ procedure SqlToysConvert_EmptyLine_Clause_Remove(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.IsClauseKeyword and not aNode.IsSubQuery {and not aNode.IsShortQuery}
+  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
     then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
 end;
 
@@ -729,7 +748,7 @@ procedure SqlToysConvert_EmptyLine_ClauseSubquery_Add(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClauseKeyword
+  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
     then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
 end;
 
@@ -738,7 +757,7 @@ procedure SqlToysConvert_EmptyLine_ClauseSubquery_Remove(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClauseKeyword
+  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
     then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
 end;
 
@@ -769,7 +788,7 @@ procedure SqlToysConvert_NewLine_Clause_Add(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.IsClauseKeyword then aNode.KeywordAuxAdd(gttkNewLineBefore);
+  if aNode.IsClause then aNode.KeywordAuxAdd(gttkNewLineBefore);
 end;
 
 { procedure adds empty line before clause keyword }
@@ -777,7 +796,7 @@ procedure SqlToysConvert_NewLine_Clause_Remove(aNode: TGtSqlNode);
 begin
   if not Assigned(aNode) then Exit;
 
-  if aNode.IsClauseKeyword then aNode.KeywordAuxRemove(gttkNewLineBefore);
+  if aNode.IsClause then aNode.KeywordAuxRemove(gttkNewLineBefore);
 end;
 
 { procedure adds empty line before CASE }
@@ -1210,6 +1229,11 @@ procedure SyntaxTreeConvertExecute( aGroup, aItem, aState: Integer; aNode: TGtSq
 begin
   case aGroup of
     SQCG_INTEND   : case aItem of
+                      SQCC_INT_CLAUSE_BODY   : case aState of
+                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_Intend_Clause_Body_Add,    True );
+                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Intend_Clause_Body_Remove, True );
+
+                                               end;
                       SQCC_INT_CLAUSE_RGHT   : case aState of
                                                  SQCV_ADD    : ;
                                                  SQCV_REMOVE : ;
@@ -1217,7 +1241,7 @@ begin
                     end;
     SQCG_OTHER    : case aItem of
                       SQCC_OTH_SEMICOLON     : case aState of
-                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_Semicolon_Add, False {True} );
+                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_Semicolon_Add,    False {True} );
                                                  SQCV_REMOVE : aNode.ForEach( SqlToysConvert_Semicolon_Remove, False {True} );
                                                end;
                       SQCC_OTH_SEMICOLON_SQ  : case aState of

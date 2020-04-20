@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlNode.pas 317   19-04-20 13:33 Tomek $
+(* $Header: /SQL Toys/units/SqlNode.pas 318   19-12-10 20:57 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -36,6 +36,7 @@ type
                      gtsiQueryList { na razie jako lista kwerend parsera }
                    );
 
+  function IsKeywordClause(aKeyword: TGtLexToken): Boolean;
   function GtSqlNodeKindToName( aKind: TGtSqlNodeKind ): string;
   function GtSqlNodeNameToKind( aName: String ): TGtSqlNodeKind;
 
@@ -86,11 +87,15 @@ type
     property        KeywordAux3:   TGtLexToken index  5 read FTokens[ 5] write SetFTokens;
     property        KeywordAux4:   TGtLexToken index  6 read FTokens[ 6] write SetFTokens;
     property        KeywordAux5:   TGtLexToken index  7 read FTokens[ 7] write SetFTokens;
+  private
+    function        SubQueryCond: Boolean;
   public // service methods
     function        GetQuery: TGtSqlNode;
     function        SingleColumnConstraint: Boolean;
+    function        IsQuery: Boolean;
     function        IsSubQuery: Boolean;
-    function        IsClauseKeyword: Boolean;
+    function        SubQueryDeep: Integer;
+    function        IsClause: Boolean;
     function        GetExtQuery: TGtSqlNode;
     function        OwnerTableNameOrAlias: String;
 
@@ -120,6 +125,16 @@ var GtSqlNodeCount: Integer = 0;
 implementation
 
 uses SysUtils, GtStandard, SqlCommon, GtExternals;
+
+function IsKeywordClause(aKeyword: TGtLexToken): Boolean;
+begin
+  Result := (aKeyword = gtkwSelect) or (aKeyword = gtkwFrom) or (aKeyword = gtkwWhere) or
+            (aKeyword = gtkwGroup_By) or (aKeyword = gtkwHaving) or (aKeyword = gtkwOrder_By) or
+            (aKeyword = gtkwConnect_By) or (aKeyword = gtkwStart_With) or
+            (aKeyword = gtkwUpdate) or (aKeyword = gtkwDelete) or (aKeyword = gtkwDelete_From) or
+            (aKeyword = gtkwInsert) or (aKeyword = gtkwInsert_Into) or
+            (aKeyword = gtkwSet) or (aKeyword = gtkwValues)
+end;
 
 { TGtSqlNodeKind to name }
 function GtSqlNodeKindToName( aKind: TGtSqlNodeKind ): string;
@@ -298,7 +313,21 @@ begin
   Result := cnt = 1;
 end;
 
-{ returns true if this query is a subquery }
+{ returns true if node is a query or subquery }
+function TGtSqlNode.IsQuery: Boolean;
+begin
+  Result := Check(gtsiDml, gtkwSelect);
+end;
+
+{ subquery condition }
+function TGtSqlNode.SubQueryCond: Boolean;
+begin
+  Result := not( (Owner is TGtSqlNode) and (Owner.FKind = gtsiUnions) and (Owner.Name = 'Parsed Queries List')) and
+            not(  Check(gtsiDml, gtkwInsert) and (Owner = Self) ) and
+            not( (Check(gtsiDDL) and (Check(gtsiDDL, gtkwCreate_View))));
+end;
+
+{ returns true if node is a subquery }
 { INSERT from SELECT - SELECT nie jest subquery dla INSERT }
 function TGtSqlNode.IsSubQuery: Boolean;
 var lQuery, lOwner: TGtSqlNode;
@@ -315,19 +344,32 @@ begin
     lQuery := lQuery.GetExtQuery;
   end;
 
-  Result := Assigned( lQuery ) and
-            not( (Owner is TGtSqlNode) and (Owner.FKind = gtsiUnions) and (lQuery.Owner.Name = 'Parsed Queries List')) and
-            not( lQuery.Check(gtsiDml, gtkwInsert) and (Owner = lQuery) ) and
-            not((lQuery.Check(gtsiDDL) and (lQuery.Check(gtsiDDL, gtkwCreate_View))));
+  Result := Assigned( lQuery ) and lQuery.SubQueryCond ;
+end;
+
+{ TODO: returns nested query deep level }
+function  TGtSqlNode.SubQueryDeep: Integer;
+var lQuery, lOwner: TGtSqlNode;
+begin
+  Result := 0;
+  if not Check(gtsiDml, gtkwSelect) then Exit;
+
+  lOwner := Owner;
+  lQuery := GetExtQuery;
+
+  { dla UNION/MINUS/EXCEPT GetExtQuery nie jest kwerenda nadrzedna }
+  while (lOwner is TGtSqlNode) and (lOwner.Kind = gtsiUnions) do begin
+    lOwner := lQuery.Owner;
+    lQuery := lQuery.GetExtQuery;
+
+    if Assigned( lQuery ) and lQuery.SubQueryCond then Inc(Result);
+  end;
 end;
 
 { returns true if node keyword is an clause keyword }
-function TGtSqlNode.IsClauseKeyword: Boolean;
+function TGtSqlNode.IsClause: Boolean;
 begin
-  Result := (Keyword = gtkwSelect) or (Keyword = gtkwFrom) or (Keyword = gtkwWhere) or
-            (Keyword = gtkwGroup_By) or (Keyword = gtkwHaving) or (Keyword = gtkwOrder_By) or
-            (Keyword = gtkwConnect_By) or (Keyword = gtkwStart_With) or
-            (Keyword = gtkwSet) or (Keyword = gtkwValues) ;
+  Result := IsKeywordClause( Keyword ) or IsKeywordClause( KeywordExt );
 end;
 
 { returns external query for this query, if it is a subquery }
@@ -406,12 +448,13 @@ procedure TGtSqlNode.ForEach ( aProc: TSqlNodeProcedure;       aDeep: Boolean = 
                                aKind: TGtSqlNodeKind=gtsiNone; aKeyword: TGtLexToken=nil; aName: String='' );
 var i: Integer;
 begin
-  for i := 0 to Count -1 do begin
-    if Nodes[i].Check(aKind, aKeyword, aName) then aProc(Nodes[i]);
+  for i := 0 to Count -1 do
+    if Assigned(Nodes[i]) then begin
+      if Nodes[i].Check(aKind, aKeyword, aName) then aProc(Nodes[i]);
 
-    { recursive call for each node }
-    if aDeep then Nodes[i].ForEach ( aProc, aDeep, aKind, aKeyword, aName );
-  end;
+      { recursive call for each node }
+      if aDeep then Nodes[i].ForEach ( aProc, aDeep, aKind, aKeyword, aName );
+    end;
 end;
 
 { adds auxilinary keyword }
