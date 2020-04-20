@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/forms/FormSettings.pas 127   19-07-14 19:41 Tomek $
+(* $Header: /SQL Toys/forms/FormSettings.pas 128   19-12-10 20:56 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2012.03.31                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -393,6 +393,7 @@ begin
 
   case aGroup of
     SQCG_INTEND   : case aItem of
+                      SQCC_INT_CLAUSE_BODY   : Result := SQCV_ADD;
                       SQCC_INT_CLAUSE_RGHT   : Result := SQCV_ADD;
                     end;
     SQCG_CASES    : case aItem of
@@ -468,7 +469,8 @@ begin
   case aGroup of
     SQCG_INTEND   : case aItem of
                       SQCC_NONE              : Result := 'INTENDATION';
-                      SQCC_INT_CLAUSE_RGHT   : Result := 'Clause keywords to right';
+                      SQCC_INT_CLAUSE_BODY   : Result := 'CLAUSE body intend';
+                      SQCC_INT_CLAUSE_RGHT   : Result := 'CLAUSE keywords to right';
                     end;
     SQCG_CASES    : case aItem of
                       SQCC_NONE              : Result := 'CASES';
@@ -502,7 +504,7 @@ begin
                     end;
     SQCG_LINES    : case aItem of
                       SQCC_NONE              : Result := 'NEW LINES';
-                      SQCC_LINE_CLAUSE       : Result := 'before clause keywords';
+                      SQCC_LINE_CLAUSE       : Result := 'before CLAUSE keywords';
                       SQCC_LINE_BEF_EXPR_RIGHT:Result := 'before expression (comma on right side)';
                       SQCC_LINE_BEF_EXPR_LEFT: Result := 'before expression (comma on left side)';
                       SQCC_LINE_BEF_EXPR_1ST : Result := '    1st expression too';
