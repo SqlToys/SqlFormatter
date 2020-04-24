@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlNode.pas 318   19-12-10 20:57 Tomek $
+(* $Header: /SQL Toys/units/SqlNode.pas 319   19-12-11 19:23 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -128,12 +128,16 @@ uses SysUtils, GtStandard, SqlCommon, GtExternals;
 
 function IsKeywordClause(aKeyword: TGtLexToken): Boolean;
 begin
-  Result := (aKeyword = gtkwSelect) or (aKeyword = gtkwFrom) or (aKeyword = gtkwWhere) or
-            (aKeyword = gtkwGroup_By) or (aKeyword = gtkwHaving) or (aKeyword = gtkwOrder_By) or
+  Result := (aKeyword = gtkwSelect) or (aKeyword = gtkwInto) or (aKeyword = gtkwFrom) or
+            (aKeyword = gtkwJoin) or (aKeyword = gtkwInner_Join) or
+            (aKeyword = gtkwLeft_Join) or (aKeyword = gtkwLeft_Outer_Join) or
+            (aKeyword = gtkwRight_Join) or (aKeyword = gtkwRight_Outer_Join) or
+            (aKeyword = gtkwWhere) or (aKeyword = gtkwGroup_By) or (aKeyword = gtkwHaving) or (aKeyword = gtkwOrder_By) or
             (aKeyword = gtkwConnect_By) or (aKeyword = gtkwStart_With) or
             (aKeyword = gtkwUpdate) or (aKeyword = gtkwDelete) or (aKeyword = gtkwDelete_From) or
             (aKeyword = gtkwInsert) or (aKeyword = gtkwInsert_Into) or
-            (aKeyword = gtkwSet) or (aKeyword = gtkwValues)
+            (aKeyword = gtkwSet) or (aKeyword = gtkwValues) or
+            (aKeyword = gtkwCreate_Table) or (aKeyword = gtkwDrop_Table) or (aKeyword = gtkwAlter_Table);
 end;
 
 { TGtSqlNodeKind to name }

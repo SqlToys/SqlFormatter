@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlXmlTree.pas 17    19-03-24 21:50 Tomek $
+(* $Header: /SQL Toys/units/SqlXmlTree.pas 18    19-12-11 19:23 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2017.12.12                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlXmlTree;
@@ -100,11 +100,10 @@ procedure XmlToParseTree (aFileName: String; aTopNode: TGtSqlNode);
 
       for i := 0 to aXmlNode.AttributeNodes.Count - 1 do
         if not VarIsNull(aXmlNode.AttributeNodes[i].NodeValue) then begin
-          if aXmlNode.AttributeNodes[i].NodeName = 'Name' then Result.Name := XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue ) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'Nullable' then begin
-          end else
-          if aXmlNode.AttributeNodes[i].NodeName = 'Keyword'   then Result.Keyword  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
-          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordExt'      then Result.KeywordExt  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'Keyword'       then Result.Keyword  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'KeywordExt'    then Result.KeywordExt  := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'Name'          then Result.Name := XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue ) else
+          if aXmlNode.AttributeNodes[i].NodeName = 'Nullable'      then else
           if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAux1'   then Result.KeywordAux1 := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAux2'   then Result.KeywordAux2 := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
           if aXmlNode.AttributeNodes[i].NodeName = 'KeywordAux3'   then Result.KeywordAux3 := LexKeywordTokenFind( XmlUnQuote( aXmlNode.AttributeNodes[i].NodeValue )) else
