@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/forms/FormSettings.pas 128   19-12-10 20:56 Tomek $
+(* $Header: /SQL Toys/forms/FormSettings.pas 129   19-12-14 12:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2012.03.31                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -436,8 +436,8 @@ begin
                     //SQCC_LINE_BEF_EXPR     : Result := SQCV_ADD;
                     end;
     SQCG_EMPTY    : case aItem of
-                      SQCC_EMPTY_BEF_CLAUSE  : Result := SQCV_ADD;
-                      SQCC_EXC_SUBQUERY      : Result := SQCV_REMOVE;
+                    //SQCC_EMPTY_BEF_CLAUSE  : Result := SQCV_ADD;
+                    //SQCC_EXC_SUBQUERY      : Result := SQCV_REMOVE;
                     //SQCC_EXC_SHORT_QUERY   : Result := SQCV_REMOVE;
                       SQCC_EMPTY_AROUND_UNION: Result := SQCV_ADD;
                       SQCC_EMPTY_CMPLX_CONSTR: Result := SQCV_ADD;
@@ -519,8 +519,8 @@ begin
                     end;
     SQCG_EMPTY    : case aItem of
                       SQCC_NONE              : Result := 'EMPTY LINES';
-                      SQCC_EMPTY_BEF_CLAUSE  : Result := 'before clauses';
-                      SQCC_EXC_SUBQUERY      : Result := '    in subqueries';
+                    //SQCC_EMPTY_BEF_CLAUSE  : Result := 'before clauses';
+                    //SQCC_EXC_SUBQUERY      : Result := '    in subqueries';
                     //SQCC_EXC_SHORT_QUERY   : Result := '    in short queries';
                       SQCC_EMPTY_AROUND_UNION: Result := 'around UNION, MINUS etc.';
                       SQCC_EMPTY_CMPLX_CONSTR: Result := 'before complex CONSTRAINT';
