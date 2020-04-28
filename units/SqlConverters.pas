@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlConverters.pas 58    19-12-10 20:57 Tomek $
+(* $Header: /SQL Toys/units/SqlConverters.pas 59    19-12-14 12:31 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2015.06.14                          *)
 {--------------------------------------  --------------------------------------}
 unit SqlConverters;
@@ -76,11 +76,11 @@ const { converters settings values, same as icon numbers }
   SQCC_LINE_BEF_CONSTR    = 10;
 //SQCC_LINE_AFT_CONSTR    = 11;
 
-  SQCC_EMPTY_BEF_CLAUSE  = 1;
-  SQCC_EXC_SUBQUERY      = 2; {should be subnode}
+//SQCC_EMPTY_BEF_CLAUSE  = 1;
+//SQCC_EXC_SUBQUERY      = 2; {should be subnode}
 //SQCC_EXC_SHORT_QUERY   = 3; {should be subnode}
-  SQCC_EMPTY_AROUND_UNION= 4;
-  SQCC_EMPTY_CMPLX_CONSTR= 5;
+  SQCC_EMPTY_AROUND_UNION= 1;
+  SQCC_EMPTY_CMPLX_CONSTR= 2;
 
   SQCC_SPACE_BEF_SEMICOLON       = 1;
   SQCC_SPACE_BEF_COMMA           = 2;
@@ -726,40 +726,40 @@ end;
 {--------------------------------- Empty lines --------------------------------}
 
 { procedure adds empty line before clause }
-procedure SqlToysConvert_EmptyLine_Clause_Add(aNode: TGtSqlNode);
-begin
-  if not Assigned(aNode) then Exit;
-
-  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
-    then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
-end;
+//procedure SqlToysConvert_EmptyLine_Clause_Add(aNode: TGtSqlNode);
+//begin
+//  if not Assigned(aNode) then Exit;
+//
+//  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
+//    then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
+//end;
 
 { procedure removes empty line before clause }
-procedure SqlToysConvert_EmptyLine_Clause_Remove(aNode: TGtSqlNode);
-begin
-  if not Assigned(aNode) then Exit;
-
-  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
-    then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
-end;
+//procedure SqlToysConvert_EmptyLine_Clause_Remove(aNode: TGtSqlNode);
+//begin
+//  if not Assigned(aNode) then Exit;
+//
+//  if aNode.IsClause and not aNode.IsSubQuery {and not aNode.IsShortQuery}
+//    then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
+//end;
 
 { procedure adds empty line before clause in subqueries }
-procedure SqlToysConvert_EmptyLine_ClauseSubquery_Add(aNode: TGtSqlNode);
-begin
-  if not Assigned(aNode) then Exit;
-
-  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
-    then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
-end;
+//procedure SqlToysConvert_EmptyLine_ClauseSubquery_Add(aNode: TGtSqlNode);
+//begin
+//  if not Assigned(aNode) then Exit;
+//
+//  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
+//    then aNode.KeywordAuxAdd(gttkEmptyLineBefore);
+//end;
 
 { procedure removes empty line before clause in subqueries }
-procedure SqlToysConvert_EmptyLine_ClauseSubquery_Remove(aNode: TGtSqlNode);
-begin
-  if not Assigned(aNode) then Exit;
-
-  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
-    then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
-end;
+//procedure SqlToysConvert_EmptyLine_ClauseSubquery_Remove(aNode: TGtSqlNode);
+//begin
+//  if not Assigned(aNode) then Exit;
+//
+//  if (aNode.Owner.Kind = gtsiDml) and aNode.IsSubQuery {and not aNode.IsShortQuery} and aNode.IsClause
+//    then aNode.KeywordAuxRemove(gttkEmptyLineBefore);
+//end;
 
 { procedure adds empty line around UNION, MINUS, etc }
 procedure SqlToysConvert_EmptyLine_Union_Add(aNode: TGtSqlNode);
@@ -1379,14 +1379,14 @@ begin
 //                                                  end;
                     end;
     SQCG_EMPTY    : case aItem of
-                      SQCC_EMPTY_BEF_CLAUSE  : case aState of
-                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_EmptyLine_Clause_Add, True );
-                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_EmptyLine_Clause_Remove, True );
-                                               end;
-                      SQCC_EXC_SUBQUERY      : case aState of
-                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseSubquery_Add, True );
-                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseSubquery_Remove, True );
-                                               end;
+//                      SQCC_EMPTY_BEF_CLAUSE  : case aState of
+//                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_EmptyLine_Clause_Add, True );
+//                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_EmptyLine_Clause_Remove, True );
+//                                               end;
+//                      SQCC_EXC_SUBQUERY      : case aState of
+//                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseSubquery_Add, True );
+//                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseSubquery_Remove, True );
+//                                               end;
 //                      SQCC_EXC_SHORT_QUERY   : case aState of
 //                                                 SQCV_ADD    : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseShortQuery_Add, True );
 //                                                 SQCV_REMOVE : aNode.ForEach( SqlToysConvert_EmptyLine_ClauseShortQuery_Remove, True );

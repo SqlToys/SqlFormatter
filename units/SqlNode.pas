@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlNode.pas 319   19-12-11 19:23 Tomek $
+(* $Header: /SQL Toys/units/SqlNode.pas 320   19-12-14 12:31 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.10.15                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -134,10 +134,20 @@ begin
             (aKeyword = gtkwRight_Join) or (aKeyword = gtkwRight_Outer_Join) or
             (aKeyword = gtkwWhere) or (aKeyword = gtkwGroup_By) or (aKeyword = gtkwHaving) or (aKeyword = gtkwOrder_By) or
             (aKeyword = gtkwConnect_By) or (aKeyword = gtkwStart_With) or
-            (aKeyword = gtkwUpdate) or (aKeyword = gtkwDelete) or (aKeyword = gtkwDelete_From) or
-            (aKeyword = gtkwInsert) or (aKeyword = gtkwInsert_Into) or
-            (aKeyword = gtkwSet) or (aKeyword = gtkwValues) or
-            (aKeyword = gtkwCreate_Table) or (aKeyword = gtkwDrop_Table) or (aKeyword = gtkwAlter_Table);
+            (aKeyword = gtkwUpdate) or (aKeyword = gtkwSet) or
+            (aKeyword = gtkwDelete) or (aKeyword = gtkwDelete_From) or
+            (aKeyword = gtkwInsert) or (aKeyword = gtkwInsert_Into) or (aKeyword = gtkwValues) or (aKeyword = gtkwReturning) or
+            (aKeyword = gtkwCreate_Table) or (aKeyword = gtkwDrop_Table) or (aKeyword = gtkwAlter_Table) or
+            (aKeyword = gtkwCreate_Index) or (aKeyword = gtkwCreate_Unique_Index) or (aKeyword = gtkwDrop_Index) or
+            (aKeyword = gtkwSavepoint) or
+            (aKeyword = gtkwCommit) or (aKeyword = gtkwCommit_Work) or (aKeyword = gtkwCommit_Tran) or
+            (aKeyword = gtkwRollback) or (aKeyword = gtkwRollback_Tran) or (aKeyword = gtkwRollback_To_Savepoint) or
+            (aKeyword = gtkwCreate_Sequence) or (aKeyword = gtkwDrop_Sequence) or
+            (aKeyword = gtkwCreate_View) or (aKeyword = gtkwCreate_Or_Replace_View) or (aKeyword = gtkwDrop_View) or
+            (aKeyword = gtkwTruncate_Table) or
+            (aKeyword = gtkwUse) ;
+//          (aKeyword = gtkwCreate_Synonym) or (aKeyword = gtkwDrop_Synonym) or
+//          (aKeyword = gtkwGrant) or (aKeyword = gtkwDeny) or (aKeyword = gtkwRevoke);
 end;
 
 { TGtSqlNodeKind to name }

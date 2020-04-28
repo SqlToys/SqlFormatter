@@ -1,4 +1,4 @@
-(* $Header: /SQL Toys/units/SqlLister.pas 360   19-12-10 20:57 Tomek $
+(* $Header: /SQL Toys/units/SqlLister.pas 361   19-12-14 12:30 Tomek $
    (c) Tomasz Gierka, github.com/SqlToys, 2010.08.18                          *)
 {--------------------------------------  --------------------------------------}
 {$IFDEF RELEASE}
@@ -19,7 +19,7 @@ uses Classes,
 {    TGtSqlFormatLister                      SyntaxTree -> Script - TO CHANGE  }
 
 const
-  ClauseBodyIntend = 12  +8 ; // temporary value
+  ClauseBodyIntend = 12  +8 +10; // temporary value
   ClauseBodySize   =  4;
 
 {------------------------------- redeclaration --------------------------------}
@@ -180,8 +180,8 @@ type
     procedure  List_NotRecognized      (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet); virtual;
 
     procedure  List_Clause_Name        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet;
-                                        aClauseToken1: TGtLexToken; aClauseToken2: TGtLexToken;
-                                        aName: String='';
+                                      //aClauseToken1: TGtLexToken; aClauseToken2: TGtLexToken;
+                                      //aName: String='';
                                         aNameStyle: TGtLexTokenStyle=gtlsPlainText;
                                         aKeywordStyle: TGtLexTokenStyle=gtlsPlainText); virtual;
     procedure  List_Clause_Expr        (aNode: TGtSqlNode; aListerOpt: TGtSqlListerOptionsSet; aClauseToken: TGtLexToken); virtual;
@@ -734,34 +734,34 @@ begin
       if aNode.Check(gtsiDDL, gtkwAlter_Index)  then List_AlterIndex     (aNode, aListerOpt) else
       if aNode.Check(gtsiDDL, gtkwAnalyze_Index)then List_AnalyzeIndex   (aNode, aListerOpt) else
       if aNode.Check(gtsiDDL, gtkwCreate_Sequence)then List_CreateSequence(aNode,aListerOpt)else
-      if aNode.Check(gtsiDDL, gtkwDrop_Sequence)then List_Clause_Name    (aNode, aListerOpt, gtkwDrop_Sequence, nil, aNode.Name, gtlsIdentifier, gtlsDdlDrop) else
+      if aNode.Check(gtsiDDL, gtkwDrop_Sequence)then List_Clause_Name    (aNode, aListerOpt, gtlsIdentifier, gtlsDdlDrop) else
       if aNode.Check(gtsiDDL, gtkwCreate_View)  then List_CreateView     (aNode, aListerOpt) else
-      if aNode.Check(gtsiDDL, gtkwDrop_View)    then List_Clause_Name    (aNode, aListerOpt, gtkwDrop_View, nil, aNode.Name, gtlsView, gtlsDdlDrop) else
+      if aNode.Check(gtsiDDL, gtkwDrop_View)    then List_Clause_Name    (aNode, aListerOpt, gtlsView, gtlsDdlDrop) else
       if aNode.Check(gtsiDDL, gtkwCreate_Synonym)then List_CreateSynonym (aNode, aListerOpt) else
-      if aNode.Check(gtsiDDL, gtkwDrop_Synonym) then List_Clause_Name    (aNode, aListerOpt, gtkwDrop_Synonym, nil, aNode.Name, gtlsSynonym, gtlsDdlDrop) else
+      if aNode.Check(gtsiDDL, gtkwDrop_Synonym) then List_Clause_Name    (aNode, aListerOpt, gtlsSynonym, gtlsDdlDrop) else
       if aNode.Check(gtsiDDL, gtkwAlter_Trigger)then List_AlterTrigger   (aNode, aListerOpt);
 
     gtsiDcl:
       if aNode.Check(gtsiDCL, gtkwGrant)       then List_Grant       (aNode, aListerOpt, gtkwGrant) else
       if aNode.Check(gtsiDCL, gtkwDeny)        then List_Grant       (aNode, aListerOpt, gtkwDeny)  else
       if aNode.Check(gtsiDCL, gtkwRevoke)      then List_Grant       (aNode, aListerOpt, gtkwRevoke)else
-      if aNode.Check(gtsiDCL, gtkwCreate_User) then List_Clause_Name (aNode, aListerOpt, gtkwCreate, gtkwUser,  aNode.Name, gtlsIdentifier, gtlsDcl) else
-      if aNode.Check(gtsiDCL, gtkwCreate_Login)then List_Clause_Name (aNode, aListerOpt, gtkwCreate, gtkwLogin, aNode.Name, gtlsIdentifier, gtlsDcl);
+      if aNode.Check(gtsiDCL, gtkwCreate_User) then List_Clause_Name (aNode, aListerOpt, gtlsIdentifier, gtlsDcl) else
+      if aNode.Check(gtsiDCL, gtkwCreate_Login)then List_Clause_Name (aNode, aListerOpt, gtlsIdentifier, gtlsDcl);
 
     gtsiTcl:
-      if aNode.Check(gtsiTCL, gtkwCommit)              then List_Clause_Name    (aNode, aListerOpt, gtkwCommit, nil, '', gtlsPlainText, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwCommit_Work)         then List_Clause_Name    (aNode, aListerOpt, gtkwCommit, gtkwWork, '', gtlsPlainText, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwCommit_Tran)         then List_Clause_Name    (aNode, aListerOpt, gtkwCommit, gtkwTran, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwRollback)            then List_Clause_Name    (aNode, aListerOpt, gtkwRollback, nil, '', gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwRollback_Tran)       then List_Clause_Name    (aNode, aListerOpt, gtkwRollback, gtkwTran, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwRollback_To_Savepoint)then List_Clause_Name   (aNode, aListerOpt, gtkwRollback, gtkwTo_Savepoint, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwSavepoint)           then List_Clause_Name    (aNode, aListerOpt, gtkwSavepoint, nil, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwBegin_Tran)          then List_Clause_Name    (aNode, aListerOpt, gtkwBegin, gtkwTran, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwBegin_Transaction)   then List_Clause_Name    (aNode, aListerOpt, gtkwBegin, gtkwTransaction, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwStart_Transaction)   then List_Clause_Name    (aNode, aListerOpt, gtkwStart, gtkwTransaction, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwEnd_Tran)            then List_Clause_Name    (aNode, aListerOpt, gtkwEnd, gtkwTran, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwEnd_Transaction)     then List_Clause_Name    (aNode, aListerOpt, gtkwEnd, gtkwTransaction, aNode.Name, gtlsTransaction, gtlsTcl) else
-      if aNode.Check(gtsiTCL, gtkwStop_Transaction)    then List_Clause_Name    (aNode, aListerOpt, gtkwStop, gtkwTransaction, aNode.Name, gtlsTransaction, gtlsTcl);
+      if aNode.Check(gtsiTCL, gtkwCommit)              then List_Clause_Name    (aNode, aListerOpt, gtlsPlainText,   gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwCommit_Work)         then List_Clause_Name    (aNode, aListerOpt, gtlsPlainText,   gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwCommit_Tran)         then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwRollback)            then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwRollback_Tran)       then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwRollback_To_Savepoint)then List_Clause_Name   (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwSavepoint)           then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwBegin_Tran)          then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwBegin_Transaction)   then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwStart_Transaction)   then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwEnd_Tran)            then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwEnd_Transaction)     then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl) else
+      if aNode.Check(gtsiTCL, gtkwStop_Transaction)    then List_Clause_Name    (aNode, aListerOpt, gtlsTransaction, gtlsTcl);
 
     gtsiClauseTables               : List_Tables         (aNode, aListerOpt);
 
@@ -776,9 +776,9 @@ begin
 
     gtsiProgram:
       if aNode.Check(gtsiProgram, gtkwBegin) then begin
-           List_Clause_Name        (aNode, aListerOpt, gtkwBegin, nil);
+           List_Clause_Name        (aNode, aListerOpt);
       end else
-      if aNode.Check(gtsiProgram, gtkwEnd) then List_Clause_Name (aNode, aListerOpt, gtkwEnd, nil) else
+      if aNode.Check(gtsiProgram, gtkwEnd) then List_Clause_Name (aNode, aListerOpt) else
       if aNode.Check(gtsiProgram, gtkwReturn) then begin
            AddClause(gtkwReturn);
            List_ExprTree(aNode, aListerOpt);
@@ -787,7 +787,7 @@ begin
     gtsiOther:
       if aNode.Check(gtsiOther, gtkwPurge_RecycleBin) or aNode.Check(gtsiOther, gtkwGo) or
          aNode.Check(gtsiOther, gtkwTruncate_Table) or aNode.Check(gtsiOther, gtkwUse)
-        then List_Clause_Name (aNode, aListerOpt, aNode.Keyword, nil, aNode.Name);
+        then List_Clause_Name (aNode, aListerOpt);
   end;
 end;
 
@@ -1495,10 +1495,12 @@ begin
   if not Assigned(aNode) then Exit;
 
   if (aNode.Keyword = gttkNone) and aNode.GetQuery.Check(gtsiDml, gtkwUpdate)
-    then AddClause(gtkwUpdate)
+  //then AddClause(gtkwUpdate)
+    then AddClauseNode(aNode)
     else
   if (aNode.Keyword = gtkwInto) and aNode.GetQuery.Check(gtsiDml, gtkwInsert) then begin
-    AddClause(aNode.KeywordExt);
+  //AddClause(aNode.KeywordExt);
+    AddClauseNode(aNode);
   end else
   if (aNode.Keyword = gttkComma) then begin
       AddComma;
@@ -1547,7 +1549,9 @@ begin
   FKeywordStyle := gtlsDdlCreate;
 
   { list: CREATE [[GLOBAL] TEMPORARY] TABLE table-name }
-  AddStr{KeywordName}(aNode, gtlsTable);
+//AddStr{KeywordName}(aNode, gtlsTable);
+  AddClauseNode(aNode);
+  AddStr(aNode.Name, gtlsTable);
 
   { BNF: [AS SELECT ...] }
   lItem := aNode.Find(gtsiDml, gtkwSelect);
@@ -1601,7 +1605,7 @@ procedure TGtSqlFormatLister.List_DropTable;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name (aNode, aListerOpt, gtkwDrop_Table, nil, aNode.Name, gtlsTable, gtlsDdlDrop);
+  List_Clause_Name (aNode, aListerOpt, gtlsTable, gtlsDdlDrop);
 
   AddStr(aNode.KeywordAuxCheckKwd(gtkwCascade_Constraints));
   AddStr(aNode.KeywordAuxCheckKwd(gtkwPurge));
@@ -1726,8 +1730,8 @@ var lPrevClause: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlModify;
-
-  AddClause(gtkwAlter_Table);
+  AddClauseNode(aNode);
+//AddClause(gtkwAlter_Table);
   AddStr(aNode.Name, gtlsTable);
 
   { ALTER clauses }
@@ -1788,7 +1792,9 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreate;
 
-  AddClause(aNode.KeywordExt);
+//AddClause(aNode.KeywordExt);
+  AddClauseNode(aNode);
+
   AddStr(aNode.Name, gtlsIdentifier);
   AddStr{KeywordName}( aNode.Find(gtsiNone, gtkwOn), gtlsTable);
 
@@ -1802,7 +1808,7 @@ procedure TGtSqlFormatLister.List_DropIndex;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name(aNode, aListerOpt, gtkwDrop_Index, nil, aNode.Name, gtlsIdentifier, gtlsDdlDrop);
+  List_Clause_Name(aNode, aListerOpt, gtlsIdentifier, gtlsDdlDrop);
 
   aNode := aNode.Find(gtsiNone, gtkwOn);
   if Assigned(aNode) then begin
@@ -1817,7 +1823,7 @@ var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name(aNode, aListerOpt, gtkwAlter_Index, nil, aNode.Name, gtlsIdentifier, gtlsDdlDrop);
+  List_Clause_Name(aNode, aListerOpt, gtlsIdentifier, gtlsDdlDrop);
 
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Kind = gtssOtherKeyword then AddStr(aNode[i].Keyword);
@@ -1829,7 +1835,7 @@ var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name(aNode, aListerOpt, gtkwAnalyze_Index, nil, aNode.Name, gtlsIdentifier, gtlsDdlDrop);
+  List_Clause_Name(aNode, aListerOpt, gtlsIdentifier, gtlsDdlDrop);
 
   for i := 0 to aNode.Count - 1 do
     if aNode[i].Kind = gtssOtherKeyword then AddStr(aNode[i].Keyword);
@@ -1840,7 +1846,7 @@ procedure TGtSqlFormatLister.List_AlterTrigger;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name(aNode, aListerOpt, gtkwAlter_Trigger, nil, aNode.Name, gtlsIdentifier, gtlsDdlModify);
+  List_Clause_Name(aNode, aListerOpt, gtlsIdentifier, gtlsDdlModify);
   AddStr(aNode.KeywordAuxCheckKwd(gtkwEnable, gtkwDisable));
 end;
 
@@ -1850,7 +1856,7 @@ var lExpr: TGtSqlNode;
 begin
   if not Assigned(aNode) then Exit;
 
-  List_Clause_Name(aNode, aListerOpt, gtkwCreate_Sequence, nil, aNode.Name, gtlsIdentifier, gtlsDdlCreate);
+  List_Clause_Name(aNode, aListerOpt, gtlsIdentifier, gtlsDdlCreate);
 
   lExpr := aNode.Find(gtsiExprTree, gtkwStart_With);
   if Assigned(lExpr) then begin
@@ -1872,7 +1878,8 @@ begin
   if not Assigned(aNode) then Exit;
   FKeywordStyle := gtlsDdlCreateView;
 
-  AddClause(aNode.KeywordExt);
+//AddClause(aNode.KeywordExt);
+  AddClauseNode(aNode);
 
   AddStr(aNode.Name, gtlsView);
 
@@ -1893,7 +1900,7 @@ begin
   end;
 
   AddStr(gtkwAs);
-  AddCurrLine;
+//AddCurrLine;
 
   List_DML(aNode.Find(gtsiDml, gtkwSelect), aListerOpt);
 end;
@@ -1951,17 +1958,10 @@ end;
 { common list function }
 procedure  TGtSqlFormatLister.List_Clause_Name;
 begin
-  // if not Assigned(aNode) then Exit;
+  if not Assigned(aNode) then Exit;
   if aKeywordStyle <> gtlsPlainText then FKeywordStyle := aKeywordStyle;
-//AddClauseNode(aNode);
-
-  AddEmptyLine(aNode);
-  AddNewLine(aNode);
-  AddClause(aClauseToken1);
-
-  if Assigned(aClauseToken2) then AddStr(aClauseToken2);
-
-  if aName <> '' then AddStr(aName, aNameStyle);
+  AddClauseNode(aNode);
+  AddStr(aNode.Name, aNameStyle);
 end;
 
 { common list function }
@@ -2055,11 +2055,12 @@ end;
 procedure TGtSqlFormatLister.List_Values;
 begin
   if not Assigned(aNode) then Exit;
-//AddClauseNode(aNode);
+  AddClauseNode(aNode);
+  AddStr(gttkLeftBracket);
 
-  AddEmptyLine(aNode);
-  AddNewLine(aNode);
-  AddClause(gtkwValues_LeftBracket);
+//  AddEmptyLine(aNode);
+//  AddNewLine(aNode);
+//  AddClause(gtkwValues_LeftBracket);
 
   List_ExprList(aNode, aListerOpt);
   AddStr(gttkRightBracket);
@@ -2081,8 +2082,8 @@ procedure TGtSqlFormatLister.List_Tables;
 var i: Integer;
 begin
   if not Assigned(aNode) then Exit;
-  AddNewLine(aNode);
-  AddEmptyLine(aNode);
+//AddNewLine(aNode);
+//AddEmptyLine(aNode);
 
   for i := 0 to aNode.Count - 1 do begin
     if aNode[i].Check(gtsiTableRef) then List_TabRef(aNode[i], aListerOpt);
@@ -2126,8 +2127,7 @@ begin
 
   { DELETE expr-list vs DELETE FROM }
   if aNode.Check(gtsiDml, gtkwDelete) then begin
-
-      AddClause       (gtkwDelete);
+      AddClauseNode   (aNode);
       List_ExprList   (aNode.Find(gtsiExprList, gtkwDelete), aListerOpt);
       List_Tables     (aNode.Find(gtsiClauseTables, gtkwFrom), aListerOpt);
   end;
